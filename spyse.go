@@ -12,8 +12,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const BaseURL = "https://api.spyse.com/v3/data/"
-
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
 type httpClient interface {
@@ -30,31 +28,44 @@ type Client struct {
 
 	// Base URL for API requests.
 	baseURL *url.URL
+
+	AS *ASService
 }
 
-func (c *Client) AS() *ASService {
-	return NewASService(c)
+// PaginatedRequest struct for pagination params
+type PaginatedRequest struct {
+	// The limit of rows to receive, value must be an integer in range from 1 to 100
+	// required: false
+	Size int `json:"limit"`
+	// The offset of rows iterator,value must be an integer in range from 0 to 9999
+	From int `json:"offset"`
 }
 
-func (c *Client) ASSearch() *ASSearchService {
-	return NewASSearchService(c)
-}
-
-// Response represents Spyse API response. It wraps http.Response returned from
-// API and provides information about pagination.
-type Response struct {
-	*http.Response
+type PaginatedResponse struct {
+	// The total number of records stored in the database
+	TotalCount *int64 `json:"total_count,omitempty"`
+	// Maximum allowed number of records for viewing
+	MaxViewCount *int `json:"max_view_count,omitempty"`
+	// The offset of rows iterator
+	Offset *int `json:"offset,omitempty"`
+	// Received Rows Limit
+	Limit *int `json:"limit,omitempty"`
 }
 
 // NewClient returns a new Spyse API client.
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods you must provide your API token.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(httpClient httpClient, apiToken string) (*Client, error) {
+func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
-	parsedBaseURL, err := url.Parse(BaseURL)
+
+	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
+	if !strings.HasSuffix(baseURL, "/") {
+		baseURL += "/"
+	}
+	parsedBaseURL, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, err
 	}
@@ -64,6 +75,8 @@ func NewClient(httpClient httpClient, apiToken string) (*Client, error) {
 		baseURL: parsedBaseURL,
 		token:   apiToken,
 	}
+
+	c.AS = &ASService{client: c}
 
 	return c, nil
 }
