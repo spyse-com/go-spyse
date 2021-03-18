@@ -4,32 +4,30 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/spyse-com/go-spyse"
 )
 
+const BaseURL = "https://api.spyse.com/v3/data/"
+
 func main() {
-	client, _ := spyse.NewClient(http.DefaultClient, "your_API_token")
-	as, err := client.AS().Details(context.Background(), 1)
+	client, _ := spyse.NewClient(BaseURL, "your_API_token", nil)
+	as, err := client.AS.Details(context.Background(), 1)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)
 	}
 	outputResponse(as)
-	filters := &spyse.ASSearchFilters{
-		Filters: map[string]spyse.Filter{
-			"as_num": {
+	var filters = []map[string]spyse.Filter{
+		{
+			"as_num": spyse.Filter{
 				Operator: "eq",
 				Value:    "1",
 			},
 		},
 	}
-	asSearch, err := client.ASSearch().
-		Filter(filters).
-		Size(1).From(0).
-		Do(context.Background())
+	asSearch, err := client.AS.Search(context.Background(), filters, 1, 0)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)
