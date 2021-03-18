@@ -1,7 +1,6 @@
 package spyse
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -31,9 +30,14 @@ type Client struct {
 
 	// Base URL for API requests.
 	baseURL *url.URL
+}
 
-	// Services used for talking to different parts of the Spyse API.
-	AS *ASService
+func (c *Client) AS() *ASService {
+	return NewASService(c)
+}
+
+func (c *Client) ASSearch() *ASSearchService {
+	return NewASSearchService(c)
 }
 
 // Response represents Spyse API response. It wraps http.Response returned from
@@ -60,7 +64,6 @@ func NewClient(httpClient httpClient, apiToken string) (*Client, error) {
 		baseURL: parsedBaseURL,
 		token:   apiToken,
 	}
-	c.AS = &ASService{client: c}
 
 	return c, nil
 }
@@ -68,9 +71,7 @@ func NewClient(httpClient httpClient, apiToken string) (*Client, error) {
 // NewRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
-func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
-	var buf io.ReadWriter
-
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.Reader) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -80,14 +81,7 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
 
 	u := c.baseURL.ResolveReference(rel)
 
-	if body != nil {
-		buf = new(bytes.Buffer)
-		if err = json.NewEncoder(buf).Encode(body); err != nil {
-			return nil, err
-		}
-	}
-
-	req, err := newRequestWithContext(ctx, method, u.String(), buf)
+	req, err := newRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
 		return nil, err
 	}
