@@ -1,6 +1,7 @@
 package spyse
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/pkg/errors"
 )
+
+const BaseURL = "https://api.spyse.com/v3/data/"
 
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
@@ -29,43 +32,25 @@ type Client struct {
 	// Base URL for API requests.
 	baseURL *url.URL
 
+	// Services used for talking to different parts of the Spyse API.
 	AS *ASService
 }
 
-// PaginatedRequest struct for pagination params
-type PaginatedRequest struct {
-	// The limit of rows to receive, value must be an integer in range from 1 to 100
-	// required: false
-	Size int `json:"limit"`
-	// The offset of rows iterator,value must be an integer in range from 0 to 9999
-	From int `json:"offset"`
-}
-
-type PaginatedResponse struct {
-	// The total number of records stored in the database
-	TotalCount *int64 `json:"total_count,omitempty"`
-	// Maximum allowed number of records for viewing
-	MaxViewCount *int `json:"max_view_count,omitempty"`
-	// The offset of rows iterator
-	Offset *int `json:"offset,omitempty"`
-	// Received Rows Limit
-	Limit *int `json:"limit,omitempty"`
+// Response represents Spyse API response. It wraps http.Response returned from
+// API and provides information about pagination.
+type Response struct {
+	*http.Response
 }
 
 // NewClient returns a new Spyse API client.
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods you must provide your API token.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error) {
+func NewClient(httpClient httpClient, apiToken string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
-
-	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	parsedBaseURL, err := url.Parse(baseURL)
+	parsedBaseURL, err := url.Parse(BaseURL)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +60,6 @@ func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error)
 		baseURL: parsedBaseURL,
 		token:   apiToken,
 	}
-
 	c.AS = &ASService{client: c}
 
 	return c, nil
@@ -84,7 +68,9 @@ func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error)
 // NewRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
-func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.Reader) (*http.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
+	var buf io.ReadWriter
+
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -94,7 +80,14 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 
 	u := c.baseURL.ResolveReference(rel)
 
-	req, err := newRequestWithContext(ctx, method, u.String(), body)
+	if body != nil {
+		buf = new(bytes.Buffer)
+		if err = json.NewEncoder(buf).Encode(body); err != nil {
+			return nil, err
+		}
+	}
+
+	req, err := newRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
 		return nil, err
 	}

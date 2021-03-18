@@ -1,11 +1,8 @@
 package spyse
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"strconv"
 )
 
@@ -50,7 +47,7 @@ type IPV6Range struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as
 func (s *ASService) Details(ctx context.Context, asn int) (*ASData, error) {
 	refURI := fmt.Sprintf("as?asn=%s", strconv.Itoa(asn))
-	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
+	req, err := s.client.NewRequest(ctx, "GET", refURI, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -60,44 +57,5 @@ func (s *ASService) Details(ctx context.Context, asn int) (*ASData, error) {
 		return nil, NewSpyseError(err)
 	}
 
-	return as, nil
-}
-
-type Filter struct {
-	Operator string `json:"operator"`
-	Value    string `json:"value"`
-}
-
-type SearchRequest struct {
-	SearchParams []map[string]Filter `json:"search_params"`
-	PaginatedRequest
-}
-
-// Do returns a list of Autonomous Systems that match the specified filters.
-//
-// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) (*ASData, error) {
-	refURI := "as/search"
-	body, err := json.Marshal(
-		SearchRequest{
-			SearchParams: filters,
-			PaginatedRequest: PaginatedRequest{
-				Size: limit,
-				From: offset,
-			},
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-	req, err := s.client.NewRequest(ctx, http.MethodPost, refURI, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-
-	as := new(ASData)
-	if err = s.client.Do(req, as); err != nil {
-		return nil, NewSpyseError(err)
-	}
 	return as, nil
 }
