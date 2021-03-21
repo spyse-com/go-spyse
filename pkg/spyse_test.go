@@ -1,5 +1,7 @@
 package spyse
 
+import "testing"
+
 import (
 	"testing"
 
