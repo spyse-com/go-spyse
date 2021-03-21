@@ -72,10 +72,8 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
-			PaginatedRequest: PaginatedRequest{
-				Size: limit,
-				From: offset,
-			},
+			Limit:        limit,
+			Offset:       offset,
 		},
 	)
 	if err != nil {
