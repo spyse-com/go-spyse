@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+const DefaultBaseURL = "https://api.spyse.com/v3/data/"
+
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
 type httpClient interface {
@@ -29,26 +31,6 @@ type Client struct {
 	baseURL *url.URL
 
 	AS *ASService
-}
-
-// PaginatedRequest struct for pagination params
-type PaginatedRequest struct {
-	// The limit of rows to receive, value must be an integer in range from 1 to 100
-	// required: false
-	Size int `json:"limit"`
-	// The offset of rows iterator,value must be an integer in range from 0 to 9999
-	From int `json:"offset"`
-}
-
-type PaginatedResponse struct {
-	// The total number of records stored in the database
-	TotalCount *int64 `json:"total_count,omitempty"`
-	// Maximum allowed number of records for viewing
-	MaxViewCount *int `json:"max_view_count,omitempty"`
-	// The offset of rows iterator
-	Offset *int `json:"offset,omitempty"`
-	// Received Rows Limit
-	Limit *int `json:"limit,omitempty"`
 }
 
 // NewClient returns a new Spyse API client.
@@ -78,6 +60,26 @@ func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error)
 	c.AS = &ASService{client: c}
 
 	return c, nil
+}
+
+// PaginatedRequest struct for pagination params
+type PaginatedRequest struct {
+	// The limit of rows to receive, value must be an integer in range from 1 to 100
+	// required: false
+	Size int `json:"limit"`
+	// The offset of rows iterator,value must be an integer in range from 0 to 9999
+	From int `json:"offset"`
+}
+
+type PaginatedResponse struct {
+	// The total number of records stored in the database
+	TotalCount *int64 `json:"total_count,omitempty"`
+	// Maximum allowed number of records for viewing
+	MaxViewCount *int `json:"max_view_count,omitempty"`
+	// The offset of rows iterator
+	Offset *int `json:"offset,omitempty"`
+	// Received Rows Limit
+	Limit *int `json:"limit,omitempty"`
 }
 
 // NewRequest creates an API request.
