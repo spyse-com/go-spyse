@@ -79,6 +79,7 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 	if err != nil {
 		return nil, err
 	}
+
 	req, err := s.client.NewRequest(ctx, http.MethodPost, AutonomousSystemSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err

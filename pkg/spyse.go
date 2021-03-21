@@ -2,7 +2,6 @@ package spyse
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -10,7 +9,13 @@ import (
 	"strings"
 )
 
-const DefaultBaseURL = "https://api.spyse.com/v3/data/"
+const (
+	DefaultBaseURL          = "https://api.spyse.com/v3/data/"
+	AuthorizationHeaderName = "Authorization"
+	AuthorizationType       = "Bearer"
+	ContentTypeHeaderName   = "Content-Type"
+	DefaultContentType      = "application/json"
+)
 
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
@@ -20,11 +25,11 @@ type httpClient interface {
 
 // A Client manages communication with the Spyse API.
 type Client struct {
-	// HTTP client used to communicate with the API.
-	client httpClient
+	// HTTP httpClient used to communicate with the API.
+	httpClient httpClient
 
-	// The Spyse API's uses token-based authentication, which means that developers must pass their API token.
-	token string
+	// The Spyse API's uses accessToken-based authentication, which means that developers must pass their API accessToken.
+	accessToken string
 
 	// Base URL for API requests.
 	baseURL *url.URL
@@ -32,11 +37,11 @@ type Client struct {
 	AS *ASService
 }
 
-// NewClient returns a new Spyse API client.
+// NewClient returns a new Spyse API httpClient.
 // If a nil httpClient is provided, http.DefaultClient will be used.
-// To use API methods you must provide your API token.
+// To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error) {
+func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
@@ -51,9 +56,9 @@ func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error)
 	}
 
 	c := &Client{
-		client:  httpClient,
-		baseURL: parsedBaseURL,
-		token:   apiToken,
+		httpClient:  httpClient,
+		baseURL:     parsedBaseURL,
+		accessToken: accessToken,
 	}
 
 	c.AS = &ASService{client: c}
@@ -79,8 +84,8 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	req.Header.Set(ContentTypeHeaderName, DefaultContentType)
+	req.Header.Set(AuthorizationHeaderName, AuthorizationType+" "+c.accessToken)
 
 	return req, nil
 }
@@ -89,7 +94,7 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 // The API response is JSON decoded and stored in the value pointed to result,
 // or returned an error if an API error has occurred.
 func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
-	httpResp, err := c.client.Do(req)
+	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
