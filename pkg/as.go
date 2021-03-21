@@ -65,16 +65,6 @@ func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
 	return nil, nil
 }
 
-type Filter struct {
-	Operator string `json:"operator"`
-	Value    string `json:"value"`
-}
-
-type SearchRequest struct {
-	SearchParams []map[string]Filter `json:"search_params"`
-	PaginatedRequest
-}
-
 // Do returns a list of Autonomous Systems that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
