@@ -3,13 +3,12 @@ package spyse
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 // httpClient defines an interface for an http.Client implementation so that alternative
