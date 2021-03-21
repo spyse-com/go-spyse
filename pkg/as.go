@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+const (
+	AutonomousSystemDetailsEndpoint = "as"
+	AutonomousSystemSearchEndpoint  = "as/search"
+	ASNumberQueryParam              = "asn"
+)
+
 // ASService handles Autonomous Systems for the Spyse API.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems
@@ -40,7 +46,8 @@ type IPV6Range struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as
 func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
-	refURI := fmt.Sprintf("as?asn=%s", strconv.Itoa(asn))
+	// TODO: refactor
+	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"?"+ASNumberQueryParam+"=%s", strconv.Itoa(asn))
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err
@@ -72,7 +79,6 @@ type SearchRequest struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
 func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*AS, error) {
-	refURI := "as/search"
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
@@ -85,7 +91,7 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 	if err != nil {
 		return nil, err
 	}
-	req, err := s.client.NewRequest(ctx, http.MethodPost, refURI, bytes.NewReader(body))
+	req, err := s.client.NewRequest(ctx, http.MethodPost, AutonomousSystemSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
