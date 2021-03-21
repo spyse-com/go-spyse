@@ -22,10 +22,6 @@ type Data struct {
 	Limit *int `json:"limit,omitempty"`
 }
 
-func (r *Response) CheckForErrors() {
-
-}
-
 func (r *Response) decodeFromJSON(source []byte, result interface{}) error {
 	var err error
 	var items []interface{}

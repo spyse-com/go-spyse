@@ -113,3 +113,5 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 
 	return nil, nil
 }
+
+// TODO: Add "SearchAll" method
