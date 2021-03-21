@@ -16,18 +16,9 @@ type ASService struct {
 	client *Client
 }
 
-//type ASData struct {
-//	Data ASItems `json:"data"`
-//}
-//
-//type ASItems struct {
-//	Items []AS `json:"items"`
-//	PaginatedResponse
-//}
-
 type AS struct {
-	ASN           *int        `json:"asn,omitempty"`
-	ASOrg         *string     `json:"as_org,omitempty"`
+	ASN           int         `json:"asn,omitempty"`
+	ASOrg         string      `json:"as_org,omitempty"`
 	IPv4CIDRList  []IPV4Range `json:"ipv4_cidr,omitempty"`
 	IPv6CIDRList  []IPV6Range `json:"ipv6_cidr,omitempty"`
 	IPv4CIDRArray []string    `json:"ipv4_cidr_array,omitempty"`
@@ -35,9 +26,9 @@ type AS struct {
 }
 
 type IPV4Range struct {
-	CIDR         *string `json:"cidr,omitempty"`
-	ISP          *string `json:"isp,omitempty"`
-	DomainsCount *int64  `json:"domains_count,omitempty"`
+	CIDR         string `json:"cidr,omitempty"`
+	ISP          string `json:"isp,omitempty"`
+	DomainsCount int64  `json:"domains_count,omitempty"`
 }
 
 type IPV6Range struct {
