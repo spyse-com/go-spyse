@@ -16,14 +16,14 @@ type ASService struct {
 	client *Client
 }
 
-type ASData struct {
-	Data ASItems `json:"data"`
-}
-
-type ASItems struct {
-	Items []AS `json:"items"`
-	PaginatedResponse
-}
+//type ASData struct {
+//	Data ASItems `json:"data"`
+//}
+//
+//type ASItems struct {
+//	Items []AS `json:"items"`
+//	PaginatedResponse
+//}
 
 type AS struct {
 	ASN           *int        `json:"asn,omitempty"`
@@ -48,19 +48,23 @@ type IPV6Range struct {
 // Details returns a full representation of the Autonomous System for the given AS number.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as
-func (s *ASService) Details(ctx context.Context, asn int) (*ASData, error) {
+func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
 	refURI := fmt.Sprintf("as?asn=%s", strconv.Itoa(asn))
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	as := new(ASData)
-	if err = s.client.Do(req, as); err != nil {
+	resp, err := s.client.Do(req, &AS{})
+	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	return as, nil
+	if len(resp.Data.Items) > 0 {
+		return resp.Data.Items[0].(*AS), nil
+	}
+
+	return nil, nil
 }
 
 type Filter struct {
@@ -76,7 +80,7 @@ type SearchRequest struct {
 // Do returns a list of Autonomous Systems that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) (*ASData, error) {
+func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*AS, error) {
 	refURI := "as/search"
 	body, err := json.Marshal(
 		SearchRequest{
@@ -95,9 +99,20 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 		return nil, err
 	}
 
-	as := new(ASData)
-	if err = s.client.Do(req, as); err != nil {
+	resp, err := s.client.Do(req, &AS{})
+	if err != nil {
 		return nil, NewSpyseError(err)
 	}
-	return as, nil
+
+	var items []*AS
+
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			items = append(items, i.(*AS))
+		}
+
+		return items, nil
+	}
+
+	return nil, nil
 }

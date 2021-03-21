@@ -2,10 +2,9 @@ package spyse
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -89,22 +88,29 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to result,
 // or returned an error if an API error has occurred.
-func (c *Client) Do(req *http.Request, result interface{}) error {
+func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 	httpResp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if httpResp.StatusCode != http.StatusOK {
-		return getErrorFromResponse(httpResp)
+		return nil, getErrorFromResponse(httpResp)
 	}
 
 	if result != nil {
-		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
-		defer httpResp.Body.Close()
-		if err = json.NewDecoder(httpResp.Body).Decode(result); err != nil {
-			return errors.New("failed to decode response body")
+		body, err := ioutil.ReadAll(httpResp.Body)
+		if err != nil {
+			return nil, err
 		}
+
+		response := newResponse()
+		if err = response.decodeFromJSON(body, result); err != nil {
+			return nil, err
+		}
+
+		return response, nil
+
 	}
-	return err
+	return nil, err
 }
