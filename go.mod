@@ -1,4 +1,4 @@
-module go-spyse
+module github.com/spyse-com/go-spyse
 
 go 1.16
 

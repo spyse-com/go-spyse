@@ -53,25 +53,6 @@ func (r *Response) decodeFromJSON(source []byte, result interface{}) error {
 }
 
 func newResponse() *Response {
-	//if nil == r {
-	//	return nil,
-	//		&IllegalArgumentError{ErrString: "*http.Response cannot be null"}
-	//}
 	resp := new(Response)
-	//resp.httpResponse = r
-	////populate first
-	//resp.populatePagingInfo()
-	//resp.populateRateLimits()
-	////read the response
-	//buf, err := ioutil.ReadAll(resp.httpResponse.Body)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//resp.body = &buf
-	////now check for errors
-	//err = resp.checkForErrors()
-	//if err != nil {
-	//	return nil, err
-	//}
 	return resp
 }

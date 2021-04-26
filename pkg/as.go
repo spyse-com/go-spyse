@@ -65,7 +65,7 @@ func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
 	return nil, nil
 }
 
-// Do returns a list of Autonomous Systems that match the specified filters.
+// Search returns a list of Autonomous Systems that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
 func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*AS, error) {
