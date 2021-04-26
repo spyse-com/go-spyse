@@ -22,6 +22,11 @@ type ASService struct {
 	client *Client
 }
 
+type TotalCountResponseData struct {
+	// The precise number of search results that matched the search query.
+	TotalCount int64 `json:"total_count"`
+}
+
 type AS struct {
 	Number       int            `json:"num,omitempty"`
 	Organization string         `json:"org,omitempty"`
