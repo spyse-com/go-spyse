@@ -60,7 +60,7 @@ linters-settings:
   gocyclo:
     min-complexity: 10
   dupl:
-    threshold: 100
+    threshold: 200
   goconst:
     min-len: 2
     min-occurrences: 3

@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestASService_Details(t *testing.T) {
+func TestCVEService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/as/1"
+	testAPIEdpoint := "/cve/CVE-2004-2343"
 
-	raw, err := ioutil.ReadFile("../mocks/as_details.json")
+	raw, err := ioutil.ReadFile("../mocks/cve_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -23,9 +23,9 @@ func TestASService_Details(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.AS.Details(context.Background(), 1)
+	autonomousSystem, err := testClient.CVE.Details(context.Background(), "CVE-2004-2343")
 	if autonomousSystem == nil {
-		t.Error("Expected AS struct. AS struct is nil")
+		t.Error("Expected CVE struct. CVE struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)

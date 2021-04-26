@@ -18,6 +18,16 @@ Registered users can find the API token on the [account page](https://spyse.com/
 - [x] Search: /certificate/search
 - [x] Search count: /certificate/search/count
 
+#### CVEs Methods
+- [x] Details: /cve/{cve_id}
+- [x] Search: /cve/search
+- [x] Search count: /cve/search/count
+
+#### Domains Methods
+- [x] Details: /domain/{domain_name}
+- [x] Search: /domain/search
+- [x] Search count: /domain/search/count
+
 ### Links
 * [spyse.com](https://spyse.com)
 * [API Documentation](https://spyse-dev.readme.io/reference/quick-start)

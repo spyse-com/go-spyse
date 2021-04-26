@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	AutonomousSystemDetailsEndpoint = "as/"
-	AutonomousSystemSearchEndpoint  = "as/search"
-	AutonomousSystemSearchCountEndpoint  = "as/search/count"
+	AutonomousSystemDetailsEndpoint     = "as/"
+	AutonomousSystemSearchEndpoint      = "as/search"
+	AutonomousSystemSearchCountEndpoint = "as/search/count"
 )
 
 // ASService handles Autonomous Systems for the Spyse API.
