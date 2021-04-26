@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	CertificateDetailsEndpoint = "certificate/"
-	CertificateSearchEndpoint  = "certificate/search"
-	CertificateSearchCountEndpoint  = "certificate/search/count"
+	CertificateDetailsEndpoint     = "certificate/"
+	CertificateSearchEndpoint      = "certificate/search"
+	CertificateSearchCountEndpoint = "certificate/search/count"
 )
 
 // CertificateService handles SSL/TLS Certificates for the Spyse API.
@@ -27,7 +27,7 @@ type Certificate struct {
 	Raw               string      `json:"raw,omitempty"`
 	FingerprintSHA256 string      `json:"fingerprint_sha256,omitempty"`
 	Validation        *Validation `json:"validation,omitempty"`
-	UpdatedAt         string  `json:"updated_at,omitempty"`
+	UpdatedAt         string      `json:"updated_at,omitempty"`
 }
 
 type CertParsed struct {
@@ -291,9 +291,9 @@ type CertParsedSubjectKeyInfo struct {
 }
 
 type CertParsedValidity struct {
-	Status string     `json:"status,omitempty"`
+	Status string `json:"status,omitempty"`
 	End    string `json:"end,omitempty"`
-	Length int64      `json:"length,omitempty"`
+	Length int64  `json:"length,omitempty"`
 	Start  string `json:"start,omitempty"`
 }
 
@@ -327,7 +327,11 @@ func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 stri
 // Search returns a list of Certificates that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
-func (s *CertificateService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*Certificate, error) {
+func (s *CertificateService) Search(
+	ctx context.Context,
+	filters []map[string]Filter,
+	limit, offset int,
+) ([]*Certificate, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,

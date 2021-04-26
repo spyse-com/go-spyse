@@ -2,6 +2,7 @@ package spyse
 
 import (
 	"encoding/json"
+
 	"github.com/mitchellh/mapstructure"
 )
 
