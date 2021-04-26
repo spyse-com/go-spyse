@@ -2,23 +2,25 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"flag"
 	"fmt"
+	spyse "github.com/spyse-com/go-spyse/pkg"
 	"os"
-
-	"github.com/spyse-com/go-spyse"
 )
 
 const BaseURL = "https://api.spyse.com/v3/data/"
 
 func main() {
-	client, _ := spyse.NewClient(BaseURL, "your_API_token", nil)
+	accessToken := flag.String("access_token", "", "API personal access token")
+	flag.Parse()
+
+	client, _ := spyse.NewClient(BaseURL, *accessToken, nil)
 	as, err := client.AS.Details(context.Background(), 1)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)
 	}
-	outputResponse(as)
+	println(as.ASN)
 	var filters = []map[string]spyse.Filter{
 		{
 			"as_num": spyse.Filter{
@@ -32,20 +34,7 @@ func main() {
 		outputErr(err)
 		os.Exit(1)
 	}
-	outputResponse(asSearch)
-}
-
-func outputResponse(resp *spyse.ASData) {
-	if resp != nil && len(resp.Data.Items) > 0 {
-		b, err := json.Marshal(resp)
-		if err != nil {
-			fmt.Printf("marshal err: %s\n", err)
-			return
-		}
-		fmt.Printf("%s\n", string(b))
-		return
-	}
-	fmt.Println("data not found")
+	println(asSearch[0].ASN)
 }
 
 func outputErr(err error) {

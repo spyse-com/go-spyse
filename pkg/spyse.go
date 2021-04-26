@@ -2,14 +2,19 @@ package spyse
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+)
 
-	"github.com/pkg/errors"
+const (
+	DefaultBaseURL          = "https://api.spyse.com/v3/data/"
+	AuthorizationHeaderName = "Authorization"
+	AuthorizationType       = "Bearer"
+	ContentTypeHeaderName   = "Content-Type"
+	DefaultContentType      = "application/json"
 )
 
 // httpClient defines an interface for an http.Client implementation so that alternative
@@ -20,11 +25,11 @@ type httpClient interface {
 
 // A Client manages communication with the Spyse API.
 type Client struct {
-	// HTTP client used to communicate with the API.
-	client httpClient
+	// HTTP httpClient used to communicate with the API.
+	httpClient httpClient
 
-	// The Spyse API's uses token-based authentication, which means that developers must pass their API token.
-	token string
+	// The Spyse API's uses accessToken-based authentication, which means that developers must pass their API accessToken.
+	accessToken string
 
 	// Base URL for API requests.
 	baseURL *url.URL
@@ -32,31 +37,11 @@ type Client struct {
 	AS *ASService
 }
 
-// PaginatedRequest struct for pagination params
-type PaginatedRequest struct {
-	// The limit of rows to receive, value must be an integer in range from 1 to 100
-	// required: false
-	Size int `json:"limit"`
-	// The offset of rows iterator,value must be an integer in range from 0 to 9999
-	From int `json:"offset"`
-}
-
-type PaginatedResponse struct {
-	// The total number of records stored in the database
-	TotalCount *int64 `json:"total_count,omitempty"`
-	// Maximum allowed number of records for viewing
-	MaxViewCount *int `json:"max_view_count,omitempty"`
-	// The offset of rows iterator
-	Offset *int `json:"offset,omitempty"`
-	// Received Rows Limit
-	Limit *int `json:"limit,omitempty"`
-}
-
-// NewClient returns a new Spyse API client.
+// NewClient returns a new Spyse API httpClient.
 // If a nil httpClient is provided, http.DefaultClient will be used.
-// To use API methods you must provide your API token.
+// To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error) {
+func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
@@ -71,9 +56,9 @@ func NewClient(baseURL, apiToken string, httpClient httpClient) (*Client, error)
 	}
 
 	c := &Client{
-		client:  httpClient,
-		baseURL: parsedBaseURL,
-		token:   apiToken,
+		httpClient:  httpClient,
+		baseURL:     parsedBaseURL,
+		accessToken: accessToken,
 	}
 
 	c.AS = &ASService{client: c}
@@ -99,8 +84,8 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	req.Header.Set(ContentTypeHeaderName, DefaultContentType)
+	req.Header.Set(AuthorizationHeaderName, AuthorizationType+" "+c.accessToken)
 
 	return req, nil
 }
@@ -108,22 +93,29 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to result,
 // or returned an error if an API error has occurred.
-func (c *Client) Do(req *http.Request, result interface{}) error {
-	httpResp, err := c.client.Do(req)
+func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
+	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if httpResp.StatusCode != http.StatusOK {
-		return getErrorFromResponse(httpResp)
+		return nil, getErrorFromResponse(httpResp)
 	}
 
 	if result != nil {
-		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
-		defer httpResp.Body.Close()
-		if err = json.NewDecoder(httpResp.Body).Decode(result); err != nil {
-			return errors.New("failed to decode response body")
+		body, err := ioutil.ReadAll(httpResp.Body)
+		if err != nil {
+			return nil, err
 		}
+
+		response := newResponse()
+		if err = response.decodeFromJSON(body, result); err != nil {
+			return nil, err
+		}
+
+		return response, nil
+
 	}
-	return err
+	return nil, err
 }
