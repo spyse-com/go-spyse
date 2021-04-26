@@ -1,0 +1,248 @@
+{
+  "data": {
+    "items": [
+      {
+        "alexa": {
+          "rank": 45948,
+          "updated_at": "2021-04-25T06:32:30.633147345Z"
+        },
+        "cert_summary": {
+          "fingerprint_sha256": "39b1d164f63d6044e92b4b72ff054a6ad0e9584968b132a9e1fcd90b4b45d449",
+          "issuer_dn": {
+            "C": "US",
+            "CN": "Network Solutions DV Server CA 2",
+            "L": "Herndon",
+            "O": "Network Solutions L.L.C.",
+            "OU": "",
+            "ST": "VA",
+            "emailAddress": "",
+            "raw": "C=US, ST=VA, L=Herndon, O=Network Solutions L.L.C., CN=Network Solutions DV Server CA 2"
+          },
+          "subject_dn": {
+            "C": "",
+            "CN": "www.test.com",
+            "L": "",
+            "O": "",
+            "OU": "",
+            "ST": "",
+            "businessCategory": "",
+            "emailAddress": "",
+            "jurisdictionCountry": "",
+            "jurisdictionStateOrProvince": "",
+            "postalCode": "",
+            "raw": "CN=www.test.com",
+            "serialNumber": "",
+            "street": ""
+          },
+          "tls_version": "TLSv1.2",
+          "validity_end": "2022-01-24T23:59:59Z",
+          "updated_at": null
+        },
+        "dns_records": {
+          "A": [
+            "69.172.200.235"
+          ],
+          "AAAA": null,
+          "CAA": null,
+          "CNAME": null,
+          "MX": null,
+          "NS": [
+            "ns3.hosting.com",
+            "ns1.hosting.com",
+            "ns2.hosting.com"
+          ],
+          "SOA": {
+            "email": "jposch.testcentral.com",
+            "expire": 604800,
+            "min_ttl": 3600,
+            "ns": "ns1.hosting.com",
+            "refresh": 10800,
+            "retry": 3600,
+            "serial": 65
+          },
+          "TXT": [
+            "google-site-verification=kW9t2V_S7WjOX57zq0tP8Ae_WJhRwUcZoqpdEkvuXJk"
+          ],
+          "SPF": null,
+          "updated_at": null
+        },
+        "hosts_enrichment": [
+          {
+            "ip": "69.172.200.235",
+            "as_num": 19324,
+            "as_org": "DOSARREST",
+            "isp": "Dosarrest Internet Security",
+            "city_name": "",
+            "country": "Canada",
+            "country_iso_code": "CA",
+            "location": {
+              "lat": 43.6319,
+              "lon": -79.3716
+            }
+          }
+        ],
+        "http_extract": {
+          "cookies": null,
+          "description": "",
+          "emails": null,
+          "final_redirect_url": {
+            "full_uri": "https://www.test.com/",
+            "host": "www.test.com",
+            "path": "/"
+          },
+          "extracted_at": "2021-04-21T05:47:08.725880748Z",
+          "favicon_sha256": "ca3e9878d22dcffc4e4e943207d5441483c002ecee6b05e1a12a91c3b1823f07",
+          "http_headers": [
+            {
+              "name": "Server",
+              "value": "nginx/1.18.0"
+            },
+            {
+              "name": "Date",
+              "value": "Wed, 21 Apr 2021 05:46:52 GMT"
+            },
+            {
+              "name": "Content-Type",
+              "value": "text/html"
+            },
+            {
+              "name": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Keep-Alive",
+              "value": "timeout=20"
+            },
+            {
+              "name": "X-DIS-Request-ID",
+              "value": "1d51f19793be83cf919070a74cf9a6ec"
+            },
+            {
+              "name": "P3P",
+              "value": "CP=\"NON DSP COR ADMa OUR IND UNI COM NAV INT\""
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            }
+          ],
+          "http_status_code": 200,
+          "links": null,
+          "meta_tags": null,
+          "robots_txt": "",
+          "scripts": null,
+          "styles": null,
+          "title": ""
+        },
+        "is_CNAME": true,
+        "is_MX": true,
+        "is_NS": true,
+        "is_PTR": true,
+        "is_subdomain": null,
+        "name": "test.com",
+        "name_without_suffix": "test",
+        "updated_at": "2021-04-25T06:32:30.633147345Z",
+        "whois_parsed": {
+          "admin": {
+            "city": "Jacksonville",
+            "country": "US",
+            "email": "fy4gz7f67tr@networksolutionsprivateregistration.com",
+            "fax": "",
+            "fax_ext": "",
+            "id": "",
+            "name": "PERFECT PRIVACY, LLC",
+            "organization": "",
+            "phone": "+1.5707088780",
+            "phone_ext": "",
+            "postal_code": "32256",
+            "province": "FL",
+            "street": "5335 Gate Parkway care of Network Solutions PO Box 459",
+            "street_ext": ""
+          },
+          "registrant": {
+            "city": "Jacksonville",
+            "country": "US",
+            "email": "fy4gz7f67tr@networksolutionsprivateregistration.com",
+            "fax": "",
+            "fax_ext": "",
+            "id": "",
+            "name": "PERFECT PRIVACY, LLC",
+            "organization": "",
+            "phone": "+1.5707088780",
+            "phone_ext": "",
+            "postal_code": "32256",
+            "province": "FL",
+            "street": "5335 Gate Parkway care of Network Solutions PO Box 459",
+            "street_ext": ""
+          },
+          "registrar": {
+            "created_date": "1997-06-18T04:00:00Z",
+            "domain_dnssec": "unsigned",
+            "domain_id": "5429075_DOMAIN_COM-VRSN",
+            "domain_name": "TEST.COM",
+            "domain_status": "clientTransferProhibited",
+            "emails": "abuse@web.com",
+            "expiration_date": "2021-06-17T04:00:00Z",
+            "name_servers": "NS1.HOSTING.COM,NS2.HOSTING.COM,NS3.HOSTING.COM",
+            "referral_url": "",
+            "registrar_id": "2",
+            "registrar_name": "Network Solutions, LLC",
+            "updated_date": "2019-04-18T07:16:01Z",
+            "whois_server": "whois.networksolutions.com"
+          },
+          "tech": {
+            "city": "Jacksonville",
+            "country": "US",
+            "email": "p96av9hq7dq@networksolutionsprivateregistration.com",
+            "fax": "",
+            "fax_ext": "",
+            "id": "",
+            "name": "PERFECT PRIVACY, LLC",
+            "organization": "",
+            "phone": "+1.5707088780",
+            "phone_ext": "",
+            "postal_code": "32256",
+            "province": "FL",
+            "street": "5335 Gate Parkway care of Network Solutions PO Box 459",
+            "street_ext": ""
+          },
+          "updated_at": null
+        },
+        "whois_updated_at": null,
+        "screenshot_url": "https://spycdn.com/screenshot/41/4193efb171a5de1859c0117faef60903.png",
+        "neighbors": 12,
+        "severity_details": {
+          "HIGH": 0,
+          "MEDIUM": 0,
+          "LOW": 0
+        },
+        "security_score": {
+          "score": 100
+        },
+        "cve_list": null,
+        "organization": {
+          "id": "02ee1f65-4fc3-4988-a929-b6ceeaa5d16d",
+          "name": "Text.com",
+          "image_url": "https://res.cloudinary.com/crunchbase-production/image/upload/bpe8ymkfkqerireojc1d"
+        },
+        "technology": [
+          {
+            "name": "Nginx",
+            "version": "1.18.0"
+          }
+        ],
+        "trackers": {
+          "adsense_id": "",
+          "apple_itunes_app": "",
+          "google_play_app": "",
+          "google_analytics_key": "",
+          "google_site_verification": ""
+        }
+      }
+    ]
+  }
+}
