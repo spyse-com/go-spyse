@@ -9,7 +9,9 @@ Registered users can find the API token on the [account page](https://spyse.com/
 ### Implemented REST API
 
 #### Autonomous Systems Methods
-- [x] Details: /as
+- [x] Details: /as/{asn}
+- [x] Search: /as/search
+- [x] Search count: /as/search/count
 
 ### Links
 * [spyse.com](https://spyse.com)

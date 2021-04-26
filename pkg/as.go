@@ -12,6 +12,7 @@ import (
 const (
 	AutonomousSystemDetailsEndpoint = "as/"
 	AutonomousSystemSearchEndpoint  = "as/search"
+	AutonomousSystemSearchCountEndpoint  = "as/search/count"
 )
 
 // ASService handles Autonomous Systems for the Spyse API.
@@ -98,6 +99,28 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 	}
 
 	return nil, nil
+}
+
+// SearchCount returns a count of Autonomous Systems that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search_count
+func (s *ASService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+	if err != nil {
+		return 0, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, AutonomousSystemSearchCountEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return 0, err
+	}
+
+	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	if err != nil {
+		return 0, NewSpyseError(err)
+	}
+
+	return *resp.Data.TotalCount, nil
 }
 
 // TODO: Add "SearchAll" method
