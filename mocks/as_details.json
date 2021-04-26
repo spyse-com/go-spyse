@@ -1,0 +1,18 @@
+{
+  "data": {
+    "items": [
+      {
+        "num": 1,
+        "org": "LVLT-1",
+        "ipv4_prefixes": [
+          {
+            "cidr": "4.34.12.0/23",
+            "isp": "Level 3 Communications",
+            "domains_count": 0
+          }
+        ],
+        "ipv6_prefixes": null
+      }
+    ]
+  }
+}
