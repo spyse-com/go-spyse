@@ -13,6 +13,11 @@ Registered users can find the API token on the [account page](https://spyse.com/
 - [x] Search: /as/search
 - [x] Search count: /as/search/count
 
+#### SSL/TLS Certificates Methods
+- [x] Details: /certificate/{fingerprint_sha256}
+- [x] Search: /certificate/search
+- [x] Search count: /certificate/search/count
+
 ### Links
 * [spyse.com](https://spyse.com)
 * [API Documentation](https://spyse-dev.readme.io/reference/quick-start)
