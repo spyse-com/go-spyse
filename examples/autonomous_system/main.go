@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const BaseURL = "https://api.spyse.com/v3/data/"
+const BaseURL = "https://api.spyse.com/v4/data/"
 
 func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
@@ -20,7 +20,7 @@ func main() {
 		outputErr(err)
 		os.Exit(1)
 	}
-	println(as.ASN)
+	println(as.Number)
 	var filters = []map[string]spyse.Filter{
 		{
 			"as_num": spyse.Filter{
@@ -34,7 +34,7 @@ func main() {
 		outputErr(err)
 		os.Exit(1)
 	}
-	println(asSearch[0].ASN)
+	println(asSearch[0].Number)
 }
 
 func outputErr(err error) {

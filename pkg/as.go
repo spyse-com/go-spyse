@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	AutonomousSystemDetailsEndpoint = "as"
+	AutonomousSystemDetailsEndpoint = "as/"
 	AutonomousSystemSearchEndpoint  = "as/search"
-	ASNumberQueryParam              = "asn"
 )
 
 // ASService handles Autonomous Systems for the Spyse API.
@@ -23,21 +22,19 @@ type ASService struct {
 }
 
 type AS struct {
-	ASN           int         `json:"asn,omitempty"`
-	ASOrg         string      `json:"as_org,omitempty"`
-	IPv4CIDRList  []IPV4Range `json:"ipv4_cidr,omitempty"`
-	IPv6CIDRList  []IPV6Range `json:"ipv6_cidr,omitempty"`
-	IPv4CIDRArray []string    `json:"ipv4_cidr_array,omitempty"`
-	IPv6CIDRArray []string    `json:"ipv6_cidr_array,omitempty"`
+	Number       int            `json:"num,omitempty"`
+	Organization string         `json:"org,omitempty"`
+	IPv4Prefixes []IPV4Prefixes `json:"ipv4_prefixes,omitempty"`
+	IPv6Prefixes []IPV6Prefixes `json:"ipv6_prefixes,omitempty"`
 }
 
-type IPV4Range struct {
+type IPV4Prefixes struct {
 	CIDR         string `json:"cidr,omitempty"`
 	ISP          string `json:"isp,omitempty"`
 	DomainsCount int64  `json:"domains_count,omitempty"`
 }
 
-type IPV6Range struct {
+type IPV6Prefixes struct {
 	CIDR *string `json:"cidr,omitempty"`
 	ISP  *string `json:"isp,omitempty"`
 }
@@ -47,7 +44,7 @@ type IPV6Range struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as
 func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
 	// TODO: refactor
-	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"?"+ASNumberQueryParam+"=%s", strconv.Itoa(asn))
+	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"%s", strconv.Itoa(asn))
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err
