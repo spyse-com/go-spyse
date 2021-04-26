@@ -28,6 +28,11 @@ Registered users can find the API token on the [account page](https://spyse.com/
 - [x] Search: /domain/search
 - [x] Search count: /domain/search/count
 
+#### Emails Methods
+- [x] Details: /email/{domain_name}
+- [x] Search: /email/search
+- [x] Search count: /email/search/count
+
 ### Links
 * [spyse.com](https://spyse.com)
 * [API Documentation](https://spyse-dev.readme.io/reference/quick-start)
