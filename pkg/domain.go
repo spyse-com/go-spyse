@@ -40,7 +40,7 @@ type Domain struct {
 	WhoisUpdatedAt  string            `json:"whois_updated_at,omitempty"`
 	ScreenshotURL   string            `json:"screenshot_url,omitempty"`
 	Score           DomainScore       `json:"security_score,omitempty"`
-	CVEList         []CVEInfo         `json:"cve_lists,omitempty"`
+	CVEList         []CVEInfo         `json:"cve_list,omitempty"`
 	Organization    *DomainOrg        `json:"organization,omitempty"`
 	Technologies    []Technology      `json:"technology"`
 	Trackers        Trackers          `json:"trackers"`
@@ -52,11 +52,6 @@ type Trackers struct {
 	GooglePlayApp          string `json:"google_play_app,omitempty"`
 	GoogleAnalyticsKey     string `json:"google_analytics_key,omitempty"`
 	GoogleSiteVerification string `json:"google_site_verification,omitempty"`
-}
-
-type Technology struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
 }
 
 type AlexaInfo struct {
@@ -132,20 +127,15 @@ type SeverityDetails struct {
 }
 
 type IPCVE struct {
-	Ports          []int  `json:"ports,omitempty"`
-	Tech           string `json:"technology,omitempty"`
-	TechVersion    string `json:"technology_version,omitempty"`
-	TechWebsite    string `json:"technology_website,omitempty"`
-	TechFaviconURL string `json:"technology_favicon_url,omitempty"`
-	CVEInfo
+	ID        string  `json:"id,omitempty"`
+	BaseScore float32 `json:"base_score_cvss2,omitempty"`
+	Ports     []int   `json:"ports,omitempty"`
+	Tech      string  `json:"technology,omitempty"`
 }
 
 type CVEInfo struct {
-	ID          string  `json:"id,omitempty"`
-	Description string  `json:"description,omitempty"`
-	BaseScore   float32 `json:"base_score,omitempty"`
-	Severity    string  `json:"severity,omitempty"`
-	Vector      string  `json:"vector,omitempty"`
+	ID        string  `json:"id,omitempty"`
+	BaseScore float32 `json:"base_score_cvss2,omitempty"`
 }
 
 type GeoData struct {
@@ -302,9 +292,6 @@ type DomainWHOISRegistrar struct {
 	RegistrarName  string `json:"registrar_name,omitempty"`
 	UpdatedDate    string `json:"updated_date,omitempty"`
 	WHOISServer    string `json:"whois_server,omitempty"`
-}
-type CVELists struct {
-	HTTPCVELists []CVEInfo `json:"http_cve_list,omitempty"`
 }
 
 type DomainOrg struct {

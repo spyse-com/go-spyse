@@ -22,9 +22,9 @@ type EmailService struct {
 }
 
 type Email struct {
-	Email     string         `json:"email,omitempty,omitempty"`
+	Email     string         `json:"email,omitempty"`
 	Sources   []EmailSources `json:"sources,omitempty"`
-	UpdatedAt string         `json:"updated_at,omitempty,omitempty"`
+	UpdatedAt string         `json:"updated_at,omitempty"`
 }
 
 type EmailSources struct {
