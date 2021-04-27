@@ -11,20 +11,20 @@ import (
 func TestCVEService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/cve/CVE-2004-2343"
+	testAPIEndpoint := "/cve/CVE-2004-2343"
 
 	raw, err := ioutil.ReadFile("../mocks/cve_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.CVE.Details(context.Background(), "CVE-2004-2343")
-	if autonomousSystem == nil {
+	cves, err := testClient.CVE.Details(context.Background(), "CVE-2004-2343")
+	if cves == nil {
 		t.Error("Expected CVE struct. CVE struct is nil")
 	}
 	if err != nil {

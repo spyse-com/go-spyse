@@ -11,20 +11,20 @@ import (
 func TestDomainService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/domain/test.com"
+	testAPIEndpoint := "/domain/test.com"
 
 	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.Domain.Details(context.Background(), "test.com")
-	if autonomousSystem == nil {
+	domains, err := testClient.Domain.Details(context.Background(), "test.com")
+	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
 	}
 	if err != nil {
@@ -35,15 +35,15 @@ func TestDomainService_Details(t *testing.T) {
 func TestDomainService_Search(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/domain/search"
+	testAPIEndpoint := "/domain/search"
 
 	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 	var filters = []map[string]Filter{
@@ -54,8 +54,8 @@ func TestDomainService_Search(t *testing.T) {
 			},
 		},
 	}
-	autonomousSystem, err := testClient.Domain.Search(context.Background(), filters, 1, 0)
-	if autonomousSystem == nil {
+	domains, err := testClient.Domain.Search(context.Background(), filters, 1, 0)
+	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
 	}
 	if err != nil {

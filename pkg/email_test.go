@@ -11,20 +11,20 @@ import (
 func TestEmailService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/email/test@gmail.com"
+	testAPIEndpoint := "/email/test@gmail.com"
 
 	raw, err := ioutil.ReadFile("../mocks/email_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.Email.Details(context.Background(), "test@gmail.com")
-	if autonomousSystem == nil {
+	emails, err := testClient.Email.Details(context.Background(), "test@gmail.com")
+	if emails == nil {
 		t.Error("Expected Email struct. Email struct is nil")
 	}
 	if err != nil {
@@ -35,15 +35,15 @@ func TestEmailService_Details(t *testing.T) {
 func TestEmailService_Search(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/email/search"
+	testAPIEndpoint := "/email/search"
 
 	raw, err := ioutil.ReadFile("../mocks/email_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 	var filters = []map[string]Filter{
@@ -54,8 +54,8 @@ func TestEmailService_Search(t *testing.T) {
 			},
 		},
 	}
-	autonomousSystem, err := testClient.Email.Search(context.Background(), filters, 1, 0)
-	if autonomousSystem == nil {
+	emails, err := testClient.Email.Search(context.Background(), filters, 1, 0)
+	if emails == nil {
 		t.Error("Expected Email struct. Email struct is nil")
 	}
 	if err != nil {

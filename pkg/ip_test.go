@@ -23,8 +23,8 @@ func TestIPService_Details(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.IP.Details(context.Background(), "8.8.8.8")
-	if autonomousSystem == nil {
+	ips, err := testClient.IP.Details(context.Background(), "8.8.8.8")
+	if ips == nil {
 		t.Error("Expected IP struct. IP struct is nil")
 	}
 	if err != nil {
@@ -54,9 +54,9 @@ func TestIPService_Search(t *testing.T) {
 			},
 		},
 	}
-	autonomousSystem, err := testClient.IP.Search(context.Background(), filters, 1, 0)
-	if autonomousSystem == nil {
-		t.Error("Expected Domain struct. Domain struct is nil")
+	ips, err := testClient.IP.Search(context.Background(), filters, 1, 0)
+	if ips == nil {
+		t.Error("Expected IP struct. IP struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
