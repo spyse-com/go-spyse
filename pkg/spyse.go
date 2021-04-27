@@ -38,6 +38,8 @@ type Client struct {
 	AS          *ASService
 	CVE         *CVEService
 	Domain      *DomainService
+	Email       *EmailService
+	IP          *IPService
 }
 
 // NewClient returns a new Spyse API httpClient.
@@ -68,6 +70,8 @@ func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, err
 	c.Certificate = &CertificateService{client: c}
 	c.CVE = &CVEService{client: c}
 	c.Domain = &DomainService{client: c}
+	c.Email = &EmailService{client: c}
+	c.IP = &IPService{client: c}
 
 	return c, nil
 }

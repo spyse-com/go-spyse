@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestDomainService_Details(t *testing.T) {
+func TestIPService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEndpoint := "/domain/test.com"
+	testAPIEndpoint := "/ip/8.8.8.8"
 
-	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
+	raw, err := ioutil.ReadFile("../mocks/ip_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -23,21 +23,21 @@ func TestDomainService_Details(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.Domain.Details(context.Background(), "test.com")
-	if domains == nil {
-		t.Error("Expected Domain struct. Domain struct is nil")
+	ips, err := testClient.IP.Details(context.Background(), "8.8.8.8")
+	if ips == nil {
+		t.Error("Expected IP struct. IP struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
 }
 
-func TestDomainService_Search(t *testing.T) {
+func TestIPService_Search(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEndpoint := "/domain/search"
+	testAPIEndpoint := "/ip/search"
 
-	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
+	raw, err := ioutil.ReadFile("../mocks/ip_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -48,15 +48,15 @@ func TestDomainService_Search(t *testing.T) {
 	})
 	var filters = []map[string]Filter{
 		{
-			"name": Filter{
+			"cidr": Filter{
 				Operator: "eq",
-				Value:    "spyse.com",
+				Value:    "8.8.8.8/32",
 			},
 		},
 	}
-	domains, err := testClient.Domain.Search(context.Background(), filters, 1, 0)
-	if domains == nil {
-		t.Error("Expected Domain struct. Domain struct is nil")
+	ips, err := testClient.IP.Search(context.Background(), filters, 1, 0)
+	if ips == nil {
+		t.Error("Expected IP struct. IP struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)

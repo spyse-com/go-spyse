@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestDomainService_Details(t *testing.T) {
+func TestEmailService_Details(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEndpoint := "/domain/test.com"
+	testAPIEndpoint := "/email/test@gmail.com"
 
-	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
+	raw, err := ioutil.ReadFile("../mocks/email_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -23,21 +23,21 @@ func TestDomainService_Details(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.Domain.Details(context.Background(), "test.com")
-	if domains == nil {
-		t.Error("Expected Domain struct. Domain struct is nil")
+	emails, err := testClient.Email.Details(context.Background(), "test@gmail.com")
+	if emails == nil {
+		t.Error("Expected Email struct. Email struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
 }
 
-func TestDomainService_Search(t *testing.T) {
+func TestEmailService_Search(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEndpoint := "/domain/search"
+	testAPIEndpoint := "/email/search"
 
-	raw, err := ioutil.ReadFile("../mocks/domain_details.json")
+	raw, err := ioutil.ReadFile("../mocks/email_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -48,15 +48,15 @@ func TestDomainService_Search(t *testing.T) {
 	})
 	var filters = []map[string]Filter{
 		{
-			"name": Filter{
+			"email": Filter{
 				Operator: "eq",
-				Value:    "spyse.com",
+				Value:    "test@gmail.com",
 			},
 		},
 	}
-	domains, err := testClient.Domain.Search(context.Background(), filters, 1, 0)
-	if domains == nil {
-		t.Error("Expected Domain struct. Domain struct is nil")
+	emails, err := testClient.Email.Search(context.Background(), filters, 1, 0)
+	if emails == nil {
+		t.Error("Expected Email struct. Email struct is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
