@@ -335,8 +335,10 @@ func (s *CertificateService) Search(
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
-			Limit:        limit,
-			Offset:       offset,
+			PaginatedRequest: PaginatedRequest{
+				Limit:  limit,
+				Offset: offset,
+			},
 		},
 	)
 	if err != nil {

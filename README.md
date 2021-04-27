@@ -38,6 +38,10 @@ Registered users can find the API token on the [account page](https://spyse.com/
 - [x] Search: /ip/search
 - [x] Search count: /ip/search/count
 
+#### Bulk search Methods
+- [x] Domains lookup: /bulk-search/domain
+- [x] IPs lookup: /bulk-search/ip
+
 ### Links
 * [spyse.com](https://spyse.com)
 * [API Documentation](https://spyse-dev.readme.io/reference/quick-start)

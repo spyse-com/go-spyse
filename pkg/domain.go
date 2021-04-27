@@ -344,8 +344,10 @@ func (s *DomainService) Search(ctx context.Context, filters []map[string]Filter,
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
-			Limit:        limit,
-			Offset:       offset,
+			PaginatedRequest: PaginatedRequest{
+				Limit:  limit,
+				Offset: offset,
+			},
 		},
 	)
 	if err != nil {
