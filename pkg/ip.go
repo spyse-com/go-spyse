@@ -122,8 +122,10 @@ func (s *IPService) Search(ctx context.Context, filters []map[string]Filter, lim
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
-			Limit:        limit,
-			Offset:       offset,
+			PaginatedRequest: PaginatedRequest{
+				Limit:  limit,
+				Offset: offset,
+			},
 		},
 	)
 	if err != nil {

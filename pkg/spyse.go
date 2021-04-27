@@ -40,6 +40,7 @@ type Client struct {
 	Domain      *DomainService
 	Email       *EmailService
 	IP          *IPService
+	BulkSearch  *BulkSearchService
 }
 
 // NewClient returns a new Spyse API httpClient.
@@ -72,6 +73,7 @@ func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, err
 	c.Domain = &DomainService{client: c}
 	c.Email = &EmailService{client: c}
 	c.IP = &IPService{client: c}
+	c.BulkSearch = &BulkSearchService{client: c}
 
 	return c, nil
 }
