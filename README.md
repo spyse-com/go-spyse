@@ -42,6 +42,10 @@ Registered users can find the API token on the [account page](https://spyse.com/
 - [x] Domains lookup: /bulk-search/domain
 - [x] IPs lookup: /bulk-search/ip
 
+#### History Methods
+- [x] DNS history: /history/dns/{dns_type}/{domain_name}
+- [x] WHOIS history: /history/domain-whois/{domain_name}
+
 ### Links
 * [spyse.com](https://spyse.com)
 * [API Documentation](https://spyse-dev.readme.io/reference/quick-start)
