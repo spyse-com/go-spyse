@@ -258,7 +258,7 @@ type WHOISParsedData struct {
 	Registrant DomainWHOIS          `json:"registrant,omitempty"`
 	Registrar  DomainWHOISRegistrar `json:"registrar,omitempty"`
 	Tech       DomainWHOIS          `json:"tech,omitempty"`
-	UpdatedAt  string               `json:"updated_at"`
+	UpdatedAt  string               `json:"updated_at,omitempty"`
 }
 
 type DomainWHOIS struct {
