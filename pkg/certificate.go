@@ -336,8 +336,8 @@ func (s *CertificateService) Search(
 		SearchRequest{
 			SearchParams: filters,
 			PaginatedRequest: PaginatedRequest{
-				Limit:  limit,
-				Offset: offset,
+				Size: limit,
+				From: offset,
 			},
 		},
 	)
@@ -388,4 +388,50 @@ func (s *CertificateService) SearchCount(ctx context.Context, filters []map[stri
 	}
 
 	return *resp.Data.TotalCount, nil
+}
+
+// SearchAll returns a list of Certificates that match the specified filters.
+func (s *CertificateService) SearchAll(
+	ctx context.Context,
+	filters []map[string]Filter,
+) (items []*Certificate, err error) {
+	var from int
+
+	for {
+		body, err := json.Marshal(
+			SearchRequest{
+				SearchParams: filters,
+				PaginatedRequest: PaginatedRequest{
+					Size: MaxSearchSize,
+					From: from,
+				},
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		req, err := s.client.NewRequest(ctx, http.MethodPost, CertificateSearchEndpoint, bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := s.client.Do(req, &Certificate{})
+		if err != nil {
+			return nil, NewSpyseError(err)
+		}
+
+		if len(resp.Data.Items) > 0 {
+			for _, i := range resp.Data.Items {
+				items = append(items, i.(*Certificate))
+			}
+			from += MaxSearchSize
+			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
+				break
+			}
+			continue
+		}
+		break
+	}
+	return
 }

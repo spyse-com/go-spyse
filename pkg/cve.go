@@ -160,8 +160,8 @@ func (s *CVEService) Search(ctx context.Context, filters []map[string]Filter, li
 		SearchRequest{
 			SearchParams: filters,
 			PaginatedRequest: PaginatedRequest{
-				Limit:  limit,
-				Offset: offset,
+				Size: limit,
+				From: offset,
 			},
 		},
 	)
@@ -210,4 +210,47 @@ func (s *CVEService) SearchCount(ctx context.Context, filters []map[string]Filte
 	}
 
 	return *resp.Data.TotalCount, nil
+}
+
+// SearchAll returns a list of CVEs that match the specified filters.
+func (s *CVEService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*CVE, err error) {
+	var from int
+
+	for {
+		body, err := json.Marshal(
+			SearchRequest{
+				SearchParams: filters,
+				PaginatedRequest: PaginatedRequest{
+					Size: MaxSearchSize,
+					From: from,
+				},
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		req, err := s.client.NewRequest(ctx, http.MethodPost, CVESearchEndpoint, bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := s.client.Do(req, &CVE{})
+		if err != nil {
+			return nil, NewSpyseError(err)
+		}
+
+		if len(resp.Data.Items) > 0 {
+			for _, i := range resp.Data.Items {
+				items = append(items, i.(*CVE))
+			}
+			from += MaxSearchSize
+			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
+				break
+			}
+			continue
+		}
+		break
+	}
+	return
 }

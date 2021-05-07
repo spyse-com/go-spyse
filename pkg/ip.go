@@ -115,7 +115,7 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 	return nil, nil
 }
 
-// Search returns a list of IPs that match the specified filters.
+// Search returns a paginated list of IPs that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search
 func (s *IPService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*IP, error) {
@@ -123,8 +123,8 @@ func (s *IPService) Search(ctx context.Context, filters []map[string]Filter, lim
 		SearchRequest{
 			SearchParams: filters,
 			PaginatedRequest: PaginatedRequest{
-				Limit:  limit,
-				Offset: offset,
+				Size: limit,
+				From: offset,
 			},
 		},
 	)
@@ -173,4 +173,47 @@ func (s *IPService) SearchCount(ctx context.Context, filters []map[string]Filter
 	}
 
 	return *resp.Data.TotalCount, nil
+}
+
+// SearchAll returns a list of IPs that match the specified filters.
+func (s *IPService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*IP, err error) {
+	var from int
+
+	for {
+		body, err := json.Marshal(
+			SearchRequest{
+				SearchParams: filters,
+				PaginatedRequest: PaginatedRequest{
+					Size: MaxSearchSize,
+					From: from,
+				},
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		req, err := s.client.NewRequest(ctx, http.MethodPost, IPSearchEndpoint, bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := s.client.Do(req, &IP{})
+		if err != nil {
+			return nil, NewSpyseError(err)
+		}
+
+		if len(resp.Data.Items) > 0 {
+			for _, i := range resp.Data.Items {
+				items = append(items, i.(*IP))
+			}
+			from += MaxSearchSize
+			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
+				break
+			}
+			continue
+		}
+		break
+	}
+	return
 }

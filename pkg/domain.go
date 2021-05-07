@@ -345,8 +345,8 @@ func (s *DomainService) Search(ctx context.Context, filters []map[string]Filter,
 		SearchRequest{
 			SearchParams: filters,
 			PaginatedRequest: PaginatedRequest{
-				Limit:  limit,
-				Offset: offset,
+				Size: limit,
+				From: offset,
 			},
 		},
 	)
@@ -397,4 +397,47 @@ func (s *DomainService) SearchCount(ctx context.Context, filters []map[string]Fi
 	}
 
 	return *resp.Data.TotalCount, nil
+}
+
+// SearchAll returns a list of Domains that match the specified filters.
+func (s *DomainService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*Domain, err error) {
+	var from int
+
+	for {
+		body, err := json.Marshal(
+			SearchRequest{
+				SearchParams: filters,
+				PaginatedRequest: PaginatedRequest{
+					Size: MaxSearchSize,
+					From: from,
+				},
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		req, err := s.client.NewRequest(ctx, http.MethodPost, DomainSearchEndpoint, bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := s.client.Do(req, &Domain{})
+		if err != nil {
+			return nil, NewSpyseError(err)
+		}
+
+		if len(resp.Data.Items) > 0 {
+			for _, i := range resp.Data.Items {
+				items = append(items, i.(*Domain))
+			}
+			from += MaxSearchSize
+			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
+				break
+			}
+			continue
+		}
+		break
+	}
+	return
 }
