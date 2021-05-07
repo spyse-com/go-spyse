@@ -26,8 +26,8 @@ func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string, li
 	body, err := json.Marshal(DomainBulkSearchRequest{
 		DomainList: domainNames,
 		PaginatedRequest: PaginatedRequest{
-			Limit:  limit,
-			Offset: offset,
+			Size: limit,
+			From: offset,
 		},
 	})
 	if err != nil {
@@ -64,8 +64,8 @@ func (s *BulkSearchService) IP(ctx context.Context, ipList []string, limit, offs
 	body, err := json.Marshal(IPBulkSearchRequest{
 		IPList: ipList,
 		PaginatedRequest: PaginatedRequest{
-			Limit:  limit,
-			Offset: offset,
+			Size: limit,
+			From: offset,
 		},
 	})
 	if err != nil {
