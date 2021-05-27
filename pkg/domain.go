@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	DomainDetailsEndpoint     = "domain/"
-	DomainSearchEndpoint      = "domain/search"
-	DomainSearchCountEndpoint = "domain/search/count"
+	DomainDetailsEndpoint      = "domain/"
+	DomainSearchEndpoint       = "domain/search"
+	DomainScrollSearchEndpoint = "domain/scroll/search"
+	DomainSearchCountEndpoint  = "domain/search/count"
 )
 
 // DomainService handles Domains for the Spyse API.
@@ -399,45 +400,46 @@ func (s *DomainService) SearchCount(ctx context.Context, filters []map[string]Fi
 	return *resp.Data.TotalCount, nil
 }
 
-// SearchAll returns a list of Domains that match the specified filters.
-func (s *DomainService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*Domain, err error) {
-	var from int
+type DomainScrollResponse struct {
+	SearchID   string    `json:"search_id"`
+	TotalItems int64     `json:"total_items"`
+	Offset     int       `json:"offset"`
+	Items      []*Domain `json:"items"`
+}
 
-	for {
-		body, err := json.Marshal(
-			SearchRequest{
-				SearchParams: filters,
-				PaginatedRequest: PaginatedRequest{
-					Size: MaxSearchSize,
-					From: from,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		req, err := s.client.NewRequest(ctx, http.MethodPost, DomainSearchEndpoint, bytes.NewReader(body))
-		if err != nil {
-			return nil, err
-		}
-
-		resp, err := s.client.Do(req, &Domain{})
-		if err != nil {
-			return nil, NewSpyseError(err)
-		}
-
-		if len(resp.Data.Items) > 0 {
-			for _, i := range resp.Data.Items {
-				items = append(items, i.(*Domain))
-			}
-			from += MaxSearchSize
-			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
-				break
-			}
-			continue
-		}
-		break
+// ScrollSearch returns a list of Domains that match the specified filters.
+func (s *DomainService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*DomainScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
 	}
-	return
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, DomainScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &Domain{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &DomainScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*Domain))
+		}
+	}
+	return response, err
 }

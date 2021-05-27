@@ -47,7 +47,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /domain/{domain_name}
 - [x] Search: /domain/search
-- [x] SearchAll: /domain/search
+- [x] Scroll search: /domain/scroll/search
 - [x] Search count: /domain/search/count
 
 **Emails Methods**
