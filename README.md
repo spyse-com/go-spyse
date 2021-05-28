@@ -1,6 +1,6 @@
 # go-spyse-v4
 
-[![codecov.io](https://codecov.io/github/spyse-com/go-spyse/coverage.svg?branch=readme-update)](https://codecov.io/github/spyse-com/go-spyse?branch=readme-update)
+[![codecov](https://codecov.io/gh/spyse-com/go-spyse/branch/readme-update/graph/badge.svg?token=IDRG4ZFWLE)](https://codecov.io/gh/spyse-com/go-spyse)
 
 The official wrapper around Spyse APIv4, written in Golang.
 
