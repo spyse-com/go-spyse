@@ -117,49 +117,6 @@ func (s *EmailService) SearchCount(ctx context.Context, filters []map[string]Fil
 	return *resp.Data.TotalCount, nil
 }
 
-// SearchAll returns a list of Emails that match the specified filters.
-func (s *EmailService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*Email, err error) {
-	var from int
-
-	for {
-		body, err := json.Marshal(
-			SearchRequest{
-				SearchParams: filters,
-				PaginatedRequest: PaginatedRequest{
-					Size: MaxSearchSize,
-					From: from,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		req, err := s.client.NewRequest(ctx, http.MethodPost, EmailSearchEndpoint, bytes.NewReader(body))
-		if err != nil {
-			return nil, err
-		}
-
-		resp, err := s.client.Do(req, &Email{})
-		if err != nil {
-			return nil, NewSpyseError(err)
-		}
-
-		if len(resp.Data.Items) > 0 {
-			for _, i := range resp.Data.Items {
-				items = append(items, i.(*Email))
-			}
-			from += MaxSearchSize
-			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
-				break
-			}
-			continue
-		}
-		break
-	}
-	return
-}
-
 type EmailScrollResponse struct {
 	SearchID   string   `json:"search_id"`
 	TotalItems int64    `json:"total_items"`
