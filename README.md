@@ -54,7 +54,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /email/{email}
 - [x] Search: /email/search
-- [x] SearchAll: /email/search
+- [x] Scroll search: /email/scroll/search
 - [x] Search count: /email/search/count
 
 **IPs Methods**
