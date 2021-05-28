@@ -319,7 +319,7 @@ type DNSRecordsInfo struct {
 
 // Details returns a full representation of the Domain for the given Domain name.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_details
 func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain, error) {
 	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(DomainDetailsEndpoint+"%s", domainName), nil)
 	if err != nil {
