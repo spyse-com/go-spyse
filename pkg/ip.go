@@ -156,7 +156,7 @@ func (s *IPService) Search(ctx context.Context, filters []map[string]Filter, lim
 
 // SearchCount returns a count of IPs that match the specified filters.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#ip_search_count
+// Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search_count
 func (s *IPService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
