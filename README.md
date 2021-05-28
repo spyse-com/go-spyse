@@ -26,7 +26,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /as/{asn}
 - [x] Search: /as/search
-- [x] SearchAll: /as/search
+- [x] Scroll search: /as/scroll/search
 - [x] Search count: /as/search/count
 
 **SSL/TLS Certificates Methods**
