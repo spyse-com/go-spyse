@@ -2,7 +2,7 @@
 
 [![codecov.io](https://codecov.io/github/spyse-com/go-spyse/coverage.svg?branch=readme-update)](https://codecov.io/github/spyse-com/go-spyse?branch=readme-update)
 
-The official wrapper around Spyse APIv4 is written in Golang.
+The official wrapper around Spyse APIv4, written in Golang.
 
 The Spyse API uses token-based authentication, which means that developers must pass their API token parameter with
 every request.
