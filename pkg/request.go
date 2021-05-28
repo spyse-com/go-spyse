@@ -29,6 +29,11 @@ type SearchRequest struct {
 	PaginatedRequest
 }
 
+type ScrollSearchRequest struct {
+	SearchParams []map[string]Filter `json:"search_params"`
+	SearchID     string              `json:"search_id"`
+}
+
 type DomainBulkSearchRequest struct {
 	DomainList []string `json:"domain_list" schema:"domain_list"`
 	PaginatedRequest

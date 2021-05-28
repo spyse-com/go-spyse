@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	AutonomousSystemDetailsEndpoint     = "as/"
-	AutonomousSystemSearchEndpoint      = "as/search"
-	AutonomousSystemSearchCountEndpoint = "as/search/count"
+	AutonomousSystemDetailsEndpoint      = "as/"
+	AutonomousSystemSearchEndpoint       = "as/search"
+	AutonomousSystemScrollSearchEndpoint = "as/scroll/search"
+	AutonomousSystemSearchCountEndpoint  = "as/search/count"
 )
 
 // ASService handles Autonomous Systems for the Spyse API.
@@ -130,45 +131,48 @@ func (s *ASService) SearchCount(ctx context.Context, filters []map[string]Filter
 	return *resp.Data.TotalCount, nil
 }
 
-// SearchAll returns a list of Autonomous Systems that match the specified filters.
-func (s *ASService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*AS, err error) {
-	var from int
+type ASScrollResponse struct {
+	SearchID   string `json:"search_id"`
+	TotalItems int64  `json:"total_items"`
+	Offset     int    `json:"offset"`
+	Items      []*AS  `json:"items"`
+}
 
-	for {
-		body, err := json.Marshal(
-			SearchRequest{
-				SearchParams: filters,
-				PaginatedRequest: PaginatedRequest{
-					Size: MaxSearchSize,
-					From: from,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		req, err := s.client.NewRequest(ctx, http.MethodPost, AutonomousSystemSearchEndpoint, bytes.NewReader(body))
-		if err != nil {
-			return nil, err
-		}
-
-		resp, err := s.client.Do(req, &AS{})
-		if err != nil {
-			return nil, NewSpyseError(err)
-		}
-
-		if len(resp.Data.Items) > 0 {
-			for _, i := range resp.Data.Items {
-				items = append(items, i.(*AS))
-			}
-			from += MaxSearchSize
-			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
-				break
-			}
-			continue
-		}
-		break
+// ScrollSearch returns a list of autonomous systems that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_scroll_search
+func (s *ASService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*ASScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
 	}
-	return
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, AutonomousSystemScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &AS{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &ASScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*AS))
+		}
+	}
+	return response, err
 }

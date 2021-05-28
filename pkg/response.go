@@ -14,11 +14,13 @@ type Response struct {
 type Data struct {
 	Items []interface{} `json:"items"`
 	// The total number of records stored in the database
-	TotalCount *int64 `json:"total_count,omitempty"`
+	TotalCount *int64 `json:"total_items,omitempty"`
 	// The offset of rows iterator
 	Offset *int `json:"offset,omitempty"`
 	// Received Rows Limit
 	Limit *int `json:"limit,omitempty"`
+	// Received search_id in scroll requests
+	SearchID *string `json:"search_id,omitempty"`
 }
 
 func (r *Response) decodeFromJSON(source []byte, result interface{}) error {

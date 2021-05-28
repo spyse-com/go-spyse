@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	EmailDetailsEndpoint     = "email/"
-	EmailSearchEndpoint      = "email/search"
-	EmailSearchCountEndpoint = "email/search/count"
+	EmailDetailsEndpoint      = "email/"
+	EmailSearchEndpoint       = "email/search"
+	EmailScrollSearchEndpoint = "email/scroll/search"
+	EmailSearchCountEndpoint  = "email/search/count"
 )
 
 // EmailService handles Emails for the Spyse API.
@@ -116,45 +117,48 @@ func (s *EmailService) SearchCount(ctx context.Context, filters []map[string]Fil
 	return *resp.Data.TotalCount, nil
 }
 
-// SearchAll returns a list of Emails that match the specified filters.
-func (s *EmailService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*Email, err error) {
-	var from int
+type EmailScrollResponse struct {
+	SearchID   string   `json:"search_id"`
+	TotalItems int64    `json:"total_items"`
+	Offset     int      `json:"offset"`
+	Items      []*Email `json:"items"`
+}
 
-	for {
-		body, err := json.Marshal(
-			SearchRequest{
-				SearchParams: filters,
-				PaginatedRequest: PaginatedRequest{
-					Size: MaxSearchSize,
-					From: from,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		req, err := s.client.NewRequest(ctx, http.MethodPost, EmailSearchEndpoint, bytes.NewReader(body))
-		if err != nil {
-			return nil, err
-		}
-
-		resp, err := s.client.Do(req, &Email{})
-		if err != nil {
-			return nil, NewSpyseError(err)
-		}
-
-		if len(resp.Data.Items) > 0 {
-			for _, i := range resp.Data.Items {
-				items = append(items, i.(*Email))
-			}
-			from += MaxSearchSize
-			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
-				break
-			}
-			continue
-		}
-		break
+// ScrollSearch returns a list of Emails that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_scroll_search
+func (s *EmailService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*EmailScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
 	}
-	return
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, EmailScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &Email{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &EmailScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*Email))
+		}
+	}
+	return response, err
 }

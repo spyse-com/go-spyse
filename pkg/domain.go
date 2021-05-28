@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	DomainDetailsEndpoint     = "domain/"
-	DomainSearchEndpoint      = "domain/search"
-	DomainSearchCountEndpoint = "domain/search/count"
+	DomainDetailsEndpoint      = "domain/"
+	DomainSearchEndpoint       = "domain/search"
+	DomainScrollSearchEndpoint = "domain/scroll/search"
+	DomainSearchCountEndpoint  = "domain/search/count"
 )
 
 // DomainService handles Domains for the Spyse API.
@@ -23,27 +24,57 @@ type DomainService struct {
 
 // Domain represents the web site domain model
 type Domain struct {
-	AlexaInfo       AlexaInfo         `json:"alexa,omitempty"`
-	CertSummary     DomainCertSummary `json:"cert_summary,omitempty"`
-	DNSRecords      DNSRecords        `json:"dns_records,omitempty"`
-	HostsEnrichment []GeoData         `json:"hosts_enrichment"`
-	Extract         DomainExtractData `json:"http_extract,omitempty"`
-	IsCNAME         *bool             `json:"is_CNAME,omitempty"`
-	IsMX            *bool             `json:"is_MX,omitempty"`
-	IsNS            *bool             `json:"is_NS,omitempty"`
-	IsPTR           *bool             `json:"is_PTR,omitempty"`
-	IsSubdomain     *bool             `json:"is_subdomain,omitempty"`
-	Name            string            `json:"name,omitempty"`
-	NameWithoutTLD  string            `json:"name_without_suffix,omitempty"`
-	UpdatedAt       string            `json:"updated_at,omitempty"`
-	WHOISParsed     WHOISParsedData   `json:"whois_parsed,omitempty"`
-	WhoisUpdatedAt  string            `json:"whois_updated_at,omitempty"`
-	ScreenshotURL   string            `json:"screenshot_url,omitempty"`
-	Score           DomainScore       `json:"security_score,omitempty"`
-	CVEList         []CVEInfo         `json:"cve_list,omitempty"`
-	Organization    *DomainOrg        `json:"organization,omitempty"`
-	Technologies    []Technology      `json:"technology"`
-	Trackers        Trackers          `json:"trackers"`
+	AlexaInfo       AlexaInfo            `json:"alexa,omitempty"`
+	CertSummary     DomainCertSummary    `json:"cert_summary,omitempty"`
+	DNSRecords      DNSRecords           `json:"dns_records,omitempty"`
+	HostsEnrichment []GeoData            `json:"hosts_enrichment"`
+	Extract         DomainExtractData    `json:"http_extract,omitempty"`
+	IsCNAME         *bool                `json:"is_CNAME,omitempty"`
+	IsMX            *bool                `json:"is_MX,omitempty"`
+	IsNS            *bool                `json:"is_NS,omitempty"`
+	IsPTR           *bool                `json:"is_PTR,omitempty"`
+	IsSubdomain     *bool                `json:"is_subdomain,omitempty"`
+	Name            string               `json:"name,omitempty"`
+	NameWithoutTLD  string               `json:"name_without_suffix,omitempty"`
+	UpdatedAt       string               `json:"updated_at,omitempty"`
+	WHOISParsed     WHOISParsedData      `json:"whois_parsed,omitempty"`
+	ScreenshotURL   string               `json:"screenshot_url,omitempty"`
+	Score           DomainScore          `json:"security_score,omitempty"`
+	CVEList         []CVEInfo            `json:"cve_list,omitempty"`
+	Technologies    []Technology         `json:"technologies,omitempty"`
+	Trackers        Trackers             `json:"trackers,omitempty"`
+	Organizations   []DomainOrganization `json:"organizations,omitempty"`
+}
+
+type DomainOrganization struct {
+	CrunchBase DomainCrunchBase `json:"crunchbase"`
+}
+
+type DomainCrunchBase struct {
+	Name             string   `json:"name"`
+	LegalName        string   `json:"legal_name"`
+	HomepageURL      string   `json:"homepage_url"`
+	Description      string   `json:"description"`
+	ShortDescription string   `json:"short_description"`
+	Address          string   `json:"address"`
+	Categories       []string `json:"categories"`
+	FoundedOn        string   `json:"founded_on"`
+	ClosedOn         string   `json:"closed_on"`
+	ContactEmail     string   `json:"contact_email"`
+	ImageURL         string   `json:"image_url"`
+	NumberEmployees  string   `json:"num_employees_enum"`
+	OperatingStatus  string   `json:"operating_status"`
+	Phone            string   `json:"phone_number"`
+	RevenueRange     string   `json:"revenue_range"`
+	Status           string   `json:"status"`
+	CountryCode      string   `json:"country_code"`
+	StatusCode       string   `json:"state_code"`
+	Region           string   `json:"region"`
+	City             string   `json:"city"`
+	PostalCode       string   `json:"postal_code"`
+	CrunchBaseURL    string   `json:"cb_url"`
+	CreatedAt        string   `json:"created_at"`
+	UpdatedAt        string   `json:"updated_at"`
 }
 
 type Trackers struct {
@@ -105,7 +136,7 @@ type DNSRecords struct {
 	SOA       *DNSSOARecord `json:"SOA,omitempty"`
 	TXT       []string      `json:"TXT,omitempty"`
 	SPF       []*SPF        `json:"SPF,omitempty"`
-	UpdatedAt string        `json:"updated_at"`
+	UpdatedAt string        `json:"updated_at,omitempty"`
 }
 
 type IPInfo struct {
@@ -239,8 +270,7 @@ type Hyperlink struct {
 }
 
 type HyperlinkAttributes struct {
-	NoFollow *bool    `json:"nofollow,omitempty"`
-	URI      URIParts `json:"uri,omitempty"`
+	URI URIParts `json:"uri,omitempty"`
 }
 
 type MetaTag struct {
@@ -318,7 +348,7 @@ type DNSRecordsInfo struct {
 
 // Details returns a full representation of the Domain for the given Domain name.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_details
 func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain, error) {
 	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(DomainDetailsEndpoint+"%s", domainName), nil)
 	if err != nil {
@@ -379,7 +409,7 @@ func (s *DomainService) Search(ctx context.Context, filters []map[string]Filter,
 
 // SearchCount returns a count of domains that match the specified filters.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#domain_search_count
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search_count
 func (s *DomainService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
@@ -399,45 +429,48 @@ func (s *DomainService) SearchCount(ctx context.Context, filters []map[string]Fi
 	return *resp.Data.TotalCount, nil
 }
 
-// SearchAll returns a list of Domains that match the specified filters.
-func (s *DomainService) SearchAll(ctx context.Context, filters []map[string]Filter) (items []*Domain, err error) {
-	var from int
+type DomainScrollResponse struct {
+	SearchID   string    `json:"search_id"`
+	TotalItems int64     `json:"total_items"`
+	Offset     int       `json:"offset"`
+	Items      []*Domain `json:"items"`
+}
 
-	for {
-		body, err := json.Marshal(
-			SearchRequest{
-				SearchParams: filters,
-				PaginatedRequest: PaginatedRequest{
-					Size: MaxSearchSize,
-					From: from,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		req, err := s.client.NewRequest(ctx, http.MethodPost, DomainSearchEndpoint, bytes.NewReader(body))
-		if err != nil {
-			return nil, err
-		}
-
-		resp, err := s.client.Do(req, &Domain{})
-		if err != nil {
-			return nil, NewSpyseError(err)
-		}
-
-		if len(resp.Data.Items) > 0 {
-			for _, i := range resp.Data.Items {
-				items = append(items, i.(*Domain))
-			}
-			from += MaxSearchSize
-			if from >= MaxTotalItems || len(resp.Data.Items) < MaxSearchSize {
-				break
-			}
-			continue
-		}
-		break
+// ScrollSearch returns a list of Domains that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_scroll_search
+func (s *DomainService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*DomainScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
 	}
-	return
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, DomainScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &Domain{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &DomainScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*Domain))
+		}
+	}
+	return response, err
 }

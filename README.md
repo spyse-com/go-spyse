@@ -26,42 +26,42 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /as/{asn}
 - [x] Search: /as/search
-- [x] SearchAll: /as/search
+- [x] Scroll search: /as/scroll/search
 - [x] Search count: /as/search/count
 
 **SSL/TLS Certificates Methods**
 
 - [x] Details: /certificate/{fingerprint_sha256}
 - [x] Search: /certificate/search
-- [x] SearchAll: /certificate/search
+- [x] Scroll search: /certificate/scroll/search
 - [x] Search count: /certificate/search/count
 
 **CVEs Methods**
 
 - [x] Details: /cve/{cve_id}
 - [x] Search: /cve/search
-- [x] SearchAll: /cve/search
+- [x] Scroll search: /cve/scroll/search
 - [x] Search count: /cve/search/count
 
 **Domains Methods**
 
 - [x] Details: /domain/{domain_name}
 - [x] Search: /domain/search
-- [x] SearchAll: /domain/search
+- [x] Scroll search: /domain/scroll/search
 - [x] Search count: /domain/search/count
 
 **Emails Methods**
 
 - [x] Details: /email/{email}
 - [x] Search: /email/search
-- [x] SearchAll: /email/search
+- [x] Scroll search: /email/scroll/search
 - [x] Search count: /email/search/count
 
 **IPs Methods**
 
 - [x] Details: /ip/{ip_address}
 - [x] Search: /ip/search
-- [x] SearchAll: /ip/search
+- [x] Scroll search: /ip/scroll/search
 - [x] Search count: /ip/search/count
 
 **Bulk search Methods**
