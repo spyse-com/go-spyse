@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	CVEDetailsEndpoint     = "cve/"
-	CVESearchEndpoint      = "cve/search"
-	CVESearchCountEndpoint = "cve/search/count"
+	CVEDetailsEndpoint      = "cve/"
+	CVESearchEndpoint       = "cve/search"
+	CVEScrollSearchEndpoint = "cve/scroll/search"
+	CVESearchCountEndpoint  = "cve/search/count"
 )
 
 // CVEService handles CVEs for the Spyse API.
@@ -253,4 +254,50 @@ func (s *CVEService) SearchAll(ctx context.Context, filters []map[string]Filter)
 		break
 	}
 	return
+}
+
+type CVEScrollResponse struct {
+	SearchID   string `json:"search_id"`
+	TotalItems int64  `json:"total_items"`
+	Offset     int    `json:"offset"`
+	Items      []*CVE `json:"items"`
+}
+
+// ScrollSearch returns a list of CVEs that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_scroll_search
+func (s *CVEService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*CVEScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
+	}
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, CVEScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &CVE{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &CVEScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*CVE))
+		}
+	}
+	return response, err
 }
