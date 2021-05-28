@@ -380,7 +380,7 @@ func (s *DomainService) Search(ctx context.Context, filters []map[string]Filter,
 
 // SearchCount returns a count of domains that match the specified filters.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#domain_search_count
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search_count
 func (s *DomainService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
