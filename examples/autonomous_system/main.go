@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	spyse "github.com/spyse-com/go-spyse/pkg"
 	"os"
+
+	spyse "github.com/spyse-com/go-spyse/pkg"
 )
 
 const BaseURL = "https://api.spyse.com/v4/data/"
@@ -15,12 +16,12 @@ func main() {
 	flag.Parse()
 
 	client, _ := spyse.NewClient(BaseURL, *accessToken, nil)
-	as, err := client.AS.Details(context.Background(), 1)
+	asResponse, err := client.AS.Details(context.Background(), 1)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)
 	}
-	println(as.Number)
+	println(asResponse.Number)
 	var filters = []map[string]spyse.Filter{
 		{
 			"as_num": spyse.Filter{
@@ -29,12 +30,12 @@ func main() {
 			},
 		},
 	}
-	asSearch, err := client.AS.Search(context.Background(), filters, 1, 0)
+	asSearchResponse, err := client.AS.Search(context.Background(), filters, 1, 0)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)
 	}
-	println(asSearch[0].Number)
+	println(asSearchResponse[0].Number)
 }
 
 func outputErr(err error) {
