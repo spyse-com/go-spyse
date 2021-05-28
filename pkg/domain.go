@@ -408,6 +408,8 @@ type DomainScrollResponse struct {
 }
 
 // ScrollSearch returns a list of Domains that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_scroll_search
 func (s *DomainService) ScrollSearch(
 	ctx context.Context,
 	searchParams []map[string]Filter,
