@@ -6,11 +6,6 @@ import (
 	"net/http"
 )
 
-const (
-	MaxSearchSize = 100
-	MaxTotalItems = 10000
-)
-
 type Filter struct {
 	Operator string `json:"operator"`
 	Value    string `json:"value"`
