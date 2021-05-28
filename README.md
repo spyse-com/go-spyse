@@ -40,7 +40,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /cve/{cve_id}
 - [x] Search: /cve/search
-- [x] SearchAll: /cve/search
+- [x] Scroll search: /cve/scroll/search
 - [x] Search count: /cve/search/count
 
 **Domains Methods**
