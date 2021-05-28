@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	IPDetailsEndpoint     = "ip/"
-	IPSearchEndpoint      = "ip/search"
-	IPSearchCountEndpoint = "ip/search/count"
+	IPDetailsEndpoint      = "ip/"
+	IPSearchEndpoint       = "ip/search"
+	IPScrollSearchEndpoint = "ip/scroll/search"
+	IPSearchCountEndpoint  = "ip/search/count"
 )
 
 // IPService handles IPs for the Spyse API.
@@ -216,4 +217,50 @@ func (s *IPService) SearchAll(ctx context.Context, filters []map[string]Filter) 
 		break
 	}
 	return
+}
+
+type IPScrollResponse struct {
+	SearchID   string `json:"search_id"`
+	TotalItems int64  `json:"total_items"`
+	Offset     int    `json:"offset"`
+	Items      []*IP  `json:"items"`
+}
+
+// ScrollSearch returns a list of IPs that match the specified filters.
+//
+// Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_scroll_search
+func (s *IPService) ScrollSearch(
+	ctx context.Context,
+	searchParams []map[string]Filter,
+	searchID string,
+) (*IPScrollResponse, error) {
+	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	if searchID != "" {
+		scrollRequest.SearchID = searchID
+	}
+	body, err := json.Marshal(scrollRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, IPScrollSearchEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, &IP{})
+	if err != nil {
+		return nil, NewSpyseError(err)
+	}
+	response := &IPScrollResponse{
+		SearchID:   *resp.Data.SearchID,
+		TotalItems: *resp.Data.TotalCount,
+		Offset:     *resp.Data.Offset,
+	}
+	if len(resp.Data.Items) > 0 {
+		for _, i := range resp.Data.Items {
+			response.Items = append(response.Items, i.(*IP))
+		}
+	}
+	return response, err
 }
