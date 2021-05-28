@@ -61,7 +61,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /ip/{ip_address}
 - [x] Search: /ip/search
-- [x] SearchAll: /ip/search
+- [x] Scroll search: /ip/scroll/search
 - [x] Search count: /ip/search/count
 
 **Bulk search Methods**
