@@ -24,27 +24,57 @@ type DomainService struct {
 
 // Domain represents the web site domain model
 type Domain struct {
-	AlexaInfo       AlexaInfo         `json:"alexa,omitempty"`
-	CertSummary     DomainCertSummary `json:"cert_summary,omitempty"`
-	DNSRecords      DNSRecords        `json:"dns_records,omitempty"`
-	HostsEnrichment []GeoData         `json:"hosts_enrichment"`
-	Extract         DomainExtractData `json:"http_extract,omitempty"`
-	IsCNAME         *bool             `json:"is_CNAME,omitempty"`
-	IsMX            *bool             `json:"is_MX,omitempty"`
-	IsNS            *bool             `json:"is_NS,omitempty"`
-	IsPTR           *bool             `json:"is_PTR,omitempty"`
-	IsSubdomain     *bool             `json:"is_subdomain,omitempty"`
-	Name            string            `json:"name,omitempty"`
-	NameWithoutTLD  string            `json:"name_without_suffix,omitempty"`
-	UpdatedAt       string            `json:"updated_at,omitempty"`
-	WHOISParsed     WHOISParsedData   `json:"whois_parsed,omitempty"`
-	WhoisUpdatedAt  string            `json:"whois_updated_at,omitempty"`
-	ScreenshotURL   string            `json:"screenshot_url,omitempty"`
-	Score           DomainScore       `json:"security_score,omitempty"`
-	CVEList         []CVEInfo         `json:"cve_list,omitempty"`
-	Organization    *DomainOrg        `json:"organization,omitempty"`
-	Technologies    []Technology      `json:"technology"`
-	Trackers        Trackers          `json:"trackers"`
+	AlexaInfo       AlexaInfo            `json:"alexa,omitempty"`
+	CertSummary     DomainCertSummary    `json:"cert_summary,omitempty"`
+	DNSRecords      DNSRecords           `json:"dns_records,omitempty"`
+	HostsEnrichment []GeoData            `json:"hosts_enrichment"`
+	Extract         DomainExtractData    `json:"http_extract,omitempty"`
+	IsCNAME         *bool                `json:"is_CNAME,omitempty"`
+	IsMX            *bool                `json:"is_MX,omitempty"`
+	IsNS            *bool                `json:"is_NS,omitempty"`
+	IsPTR           *bool                `json:"is_PTR,omitempty"`
+	IsSubdomain     *bool                `json:"is_subdomain,omitempty"`
+	Name            string               `json:"name,omitempty"`
+	NameWithoutTLD  string               `json:"name_without_suffix,omitempty"`
+	UpdatedAt       string               `json:"updated_at,omitempty"`
+	WHOISParsed     WHOISParsedData      `json:"whois_parsed,omitempty"`
+	ScreenshotURL   string               `json:"screenshot_url,omitempty"`
+	Score           DomainScore          `json:"security_score,omitempty"`
+	CVEList         []CVEInfo            `json:"cve_list,omitempty"`
+	Technologies    []Technology         `json:"technologies,omitempty"`
+	Trackers        Trackers             `json:"trackers,omitempty"`
+	Organizations   []DomainOrganization `json:"organizations,omitempty"`
+}
+
+type DomainOrganization struct {
+	CrunchBase DomainCrunchBase `json:"crunchbase"`
+}
+
+type DomainCrunchBase struct {
+	Name             string   `json:"name"`
+	LegalName        string   `json:"legal_name"`
+	HomepageURL      string   `json:"homepage_url"`
+	Description      string   `json:"description"`
+	ShortDescription string   `json:"short_description"`
+	Address          string   `json:"address"`
+	Categories       []string `json:"categories"`
+	FoundedOn        string   `json:"founded_on"`
+	ClosedOn         string   `json:"closed_on"`
+	ContactEmail     string   `json:"contact_email"`
+	ImageURL         string   `json:"image_url"`
+	NumberEmployees  string   `json:"num_employees_enum"`
+	OperatingStatus  string   `json:"operating_status"`
+	Phone            string   `json:"phone_number"`
+	RevenueRange     string   `json:"revenue_range"`
+	Status           string   `json:"status"`
+	CountryCode      string   `json:"country_code"`
+	StatusCode       string   `json:"state_code"`
+	Region           string   `json:"region"`
+	City             string   `json:"city"`
+	PostalCode       string   `json:"postal_code"`
+	CrunchBaseURL    string   `json:"cb_url"`
+	CreatedAt        string   `json:"created_at"`
+	UpdatedAt        string   `json:"updated_at"`
 }
 
 type Trackers struct {
@@ -106,7 +136,7 @@ type DNSRecords struct {
 	SOA       *DNSSOARecord `json:"SOA,omitempty"`
 	TXT       []string      `json:"TXT,omitempty"`
 	SPF       []*SPF        `json:"SPF,omitempty"`
-	UpdatedAt string        `json:"updated_at"`
+	UpdatedAt string        `json:"updated_at,omitempty"`
 }
 
 type IPInfo struct {
@@ -240,8 +270,7 @@ type Hyperlink struct {
 }
 
 type HyperlinkAttributes struct {
-	NoFollow *bool    `json:"nofollow,omitempty"`
-	URI      URIParts `json:"uri,omitempty"`
+	URI URIParts `json:"uri,omitempty"`
 }
 
 type MetaTag struct {
