@@ -1,4 +1,8 @@
-# go-spyse
+# go-spyse-v4
+
+[![codecov.io](https://codecov.io/github/spyse-com/go-spyse/coverage.svg?branch=master)](https://codecov.io/github/spyse-com/go-spyse?branch=master)
+
+The official wrapper around Spyse APIv4 written in Golang.
 
 The Spyse API uses token-based authentication, which means that developers must pass their API token parameter with
 every request.
