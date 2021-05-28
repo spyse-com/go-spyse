@@ -33,6 +33,7 @@ go get github.com/spyse-com/go-spyse-v4
 
 - [x] Details: /certificate/{fingerprint_sha256}
 - [x] Search: /certificate/search
+- [x] Scroll search: /certificate/scroll/search
 - [x] Search count: /certificate/search/count
 
 **CVEs Methods**
