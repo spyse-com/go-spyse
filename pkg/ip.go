@@ -97,7 +97,7 @@ type IPTechnologies struct {
 
 // Details returns a full representation of the IP for the given IP address.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip
+// Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_details
 func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(IPDetailsEndpoint+"%s", ip), nil)
 	if err != nil {
