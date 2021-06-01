@@ -22,7 +22,7 @@ func main() {
 		os.Exit(1)
 	}
 	println(asResponse.Number)
-	var filters = []map[string]spyse.SearchParameter{
+	var params = []map[string]spyse.SearchParameter{
 		{
 			"asn": spyse.SearchParameter{
 				Operator: "eq",
@@ -30,7 +30,7 @@ func main() {
 			},
 		},
 	}
-	asSearchResponse, err := client.AS.Search(context.Background(), filters, 1, 0)
+	asSearchResponse, err := client.AS.Search(context.Background(), params, 1, 0)
 	if err != nil {
 		outputErr(err)
 		os.Exit(1)

@@ -116,13 +116,13 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 	return nil, nil
 }
 
-// Search returns a paginated list of IPs that match the specified filters.
+// Search returns a paginated list of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search
-func (s *IPService) Search(ctx context.Context, filters []map[string]SearchParameter, limit, offset int) ([]*IP, error) {
+func (s *IPService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*IP, error) {
 	body, err := json.Marshal(
 		SearchRequest{
-			SearchParams: filters,
+			SearchParams: params,
 			PaginatedRequest: PaginatedRequest{
 				Size: limit,
 				From: offset,
@@ -154,11 +154,11 @@ func (s *IPService) Search(ctx context.Context, filters []map[string]SearchParam
 	return nil, nil
 }
 
-// SearchCount returns a count of IPs that match the specified filters.
+// SearchCount returns a count of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search_count
-func (s *IPService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+func (s *IPService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -183,15 +183,15 @@ type IPScrollResponse struct {
 	Items      []*IP  `json:"items"`
 }
 
-// ScrollSearch returns a list of IPs that match the specified filters.
+// ScrollSearch returns a list of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_scroll_search
 func (s *IPService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]SearchParameter,
+	params []map[string]SearchParameter,
 	searchID string,
 ) (*IPScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}

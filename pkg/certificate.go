@@ -325,17 +325,17 @@ func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 stri
 	return nil, nil
 }
 
-// Search returns a list of Certificates that match the specified filters.
+// Search returns a list of Certificates that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
 func (s *CertificateService) Search(
 	ctx context.Context,
-	filters []map[string]SearchParameter,
+	params []map[string]SearchParameter,
 	limit, offset int,
 ) ([]*Certificate, error) {
 	body, err := json.Marshal(
 		SearchRequest{
-			SearchParams: filters,
+			SearchParams: params,
 			PaginatedRequest: PaginatedRequest{
 				Size: limit,
 				From: offset,
@@ -369,11 +369,11 @@ func (s *CertificateService) Search(
 	return nil, nil
 }
 
-// SearchCount returns a count of Certificates that match the specified filters.
+// SearchCount returns a count of Certificates that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search_count
-func (s *CertificateService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+func (s *CertificateService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -398,15 +398,15 @@ type CertificateScrollResponse struct {
 	Items      []*Certificate `json:"items"`
 }
 
-// ScrollSearch returns a list of Certificates that match the specified filters.
+// ScrollSearch returns a list of Certificates that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_scroll_search
 func (s *CertificateService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]SearchParameter,
+	params []map[string]SearchParameter,
 	searchID string,
 ) (*CertificateScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}

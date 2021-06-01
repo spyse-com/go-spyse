@@ -153,13 +153,17 @@ func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 	return nil, nil
 }
 
-// Search returns a list of CVEs that match the specified filters.
+// Search returns a list of CVEs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search
-func (s *CVEService) Search(ctx context.Context, filters []map[string]SearchParameter, limit, offset int) ([]*CVE, error) {
+func (s *CVEService) Search(
+	ctx context.Context,
+	params []map[string]SearchParameter,
+	limit, offset int,
+) ([]*CVE, error) {
 	body, err := json.Marshal(
 		SearchRequest{
-			SearchParams: filters,
+			SearchParams: params,
 			PaginatedRequest: PaginatedRequest{
 				Size: limit,
 				From: offset,
@@ -191,11 +195,11 @@ func (s *CVEService) Search(ctx context.Context, filters []map[string]SearchPara
 	return nil, nil
 }
 
-// SearchCount returns a count of CVEs that match the specified filters.
+// SearchCount returns a count of CVEs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#cve_search_count
-func (s *CVEService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+func (s *CVEService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -220,15 +224,15 @@ type CVEScrollResponse struct {
 	Items      []*CVE `json:"items"`
 }
 
-// ScrollSearch returns a list of CVEs that match the specified filters.
+// ScrollSearch returns a list of CVEs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_scroll_search
 func (s *CVEService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]SearchParameter,
+	params []map[string]SearchParameter,
 	searchID string,
 ) (*CVEScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}

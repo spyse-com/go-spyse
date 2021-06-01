@@ -46,7 +46,7 @@ func TestIPService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var filters = []map[string]SearchParameter{
+	var params = []map[string]SearchParameter{
 		{
 			"cidr": SearchParameter{
 				Operator: "eq",
@@ -54,7 +54,7 @@ func TestIPService_Search(t *testing.T) {
 			},
 		},
 	}
-	ips, err := testClient.IP.Search(context.Background(), filters, 1, 0)
+	ips, err := testClient.IP.Search(context.Background(), params, 1, 0)
 	if ips == nil {
 		t.Error("Expected IP struct. IP struct is nil")
 	}

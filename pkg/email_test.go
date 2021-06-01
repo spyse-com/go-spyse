@@ -46,7 +46,7 @@ func TestEmailService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var filters = []map[string]SearchParameter{
+	var params = []map[string]SearchParameter{
 		{
 			"email": SearchParameter{
 				Operator: "eq",
@@ -54,7 +54,7 @@ func TestEmailService_Search(t *testing.T) {
 			},
 		},
 	}
-	emails, err := testClient.Email.Search(context.Background(), filters, 1, 0)
+	emails, err := testClient.Email.Search(context.Background(), params, 1, 0)
 	if emails == nil {
 		t.Error("Expected Email struct. Email struct is nil")
 	}

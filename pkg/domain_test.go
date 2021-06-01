@@ -46,7 +46,7 @@ func TestDomainService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var filters = []map[string]SearchParameter{
+	var params = []map[string]SearchParameter{
 		{
 			"name": SearchParameter{
 				Operator: "eq",
@@ -54,7 +54,7 @@ func TestDomainService_Search(t *testing.T) {
 			},
 		},
 	}
-	domains, err := testClient.Domain.Search(context.Background(), filters, 1, 0)
+	domains, err := testClient.Domain.Search(context.Background(), params, 1, 0)
 	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
 	}

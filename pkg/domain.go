@@ -367,10 +367,14 @@ func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain
 	return nil, nil
 }
 
-// Search returns a list of Domains that match the specified filters.
+// Search returns a list of Domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search
-func (s *DomainService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*Domain, error) {
+func (s *DomainService) Search(
+	ctx context.Context,
+	params []map[string]SearchParameter,
+	limit, offset int,
+) ([]*Domain, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -407,7 +411,7 @@ func (s *DomainService) Search(ctx context.Context, params []map[string]SearchPa
 	return nil, nil
 }
 
-// SearchCount returns a count of domains that match the specified filters.
+// SearchCount returns a count of domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search_count
 func (s *DomainService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
@@ -436,7 +440,7 @@ type DomainScrollResponse struct {
 	Items      []*Domain `json:"items"`
 }
 
-// ScrollSearch returns a list of Domains that match the specified filters.
+// ScrollSearch returns a list of Domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_scroll_search
 func (s *DomainService) ScrollSearch(
