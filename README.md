@@ -1,8 +1,8 @@
-# go-spyse-v4
+# go-spyse
 
 [![codecov](https://codecov.io/gh/spyse-com/go-spyse/branch/master/graph/badge.svg)](https://codecov.io/gh/spyse-com/go-spyse)
 
-The official client for Spyse API v4, written in Golang.
+The official client for Spyse API, written in Golang.
 
 Spyse ([https://spyse.com/](https://spyse.com/)) provides a token-based authentication API. Access tokens are available to registered users on their [account page](https://spyse.com/user).
 
@@ -11,7 +11,7 @@ For more information please check the [API Reference](https://spyse-dev.readme.i
 ## Installation
 
 ```bash
-go get github.com/spyse-com/go-spyse-v4
+go get github.com/spyse-com/go-spyse
 ```
 
 ## Usage
