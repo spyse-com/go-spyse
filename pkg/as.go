@@ -29,16 +29,15 @@ type TotalCountResponseData struct {
 }
 
 type AS struct {
-	Number       int            `json:"num,omitempty"`
-	Organization string         `json:"org,omitempty"`
+	Number       int            `json:"asn,omitempty"`
+	Organization string         `json:"as_org,omitempty"`
 	IPv4Prefixes []IPV4Prefixes `json:"ipv4_prefixes,omitempty"`
 	IPv6Prefixes []IPV6Prefixes `json:"ipv6_prefixes,omitempty"`
 }
 
 type IPV4Prefixes struct {
-	CIDR         string `json:"cidr,omitempty"`
-	ISP          string `json:"isp,omitempty"`
-	DomainsCount int64  `json:"domains_count,omitempty"`
+	CIDR string `json:"cidr,omitempty"`
+	ISP  string `json:"isp,omitempty"`
 }
 
 type IPV6Prefixes struct {
