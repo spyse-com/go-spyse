@@ -305,7 +305,7 @@ type Validation struct {
 
 // Details returns a full representation of the Certificate for the given fingerprintSHA256.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate
+// Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_details
 func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 string) (*Certificate, error) {
 	refURI := fmt.Sprintf(CertificateDetailsEndpoint+"%s", fingerprintSHA256)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)

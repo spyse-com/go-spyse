@@ -134,7 +134,7 @@ type CVETime struct {
 
 // Details returns a full representation of the CVE for the given CVE ID.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve
+// Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_details
 func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(CVEDetailsEndpoint+"%s", cve), nil)
 	if err != nil {
@@ -197,7 +197,7 @@ func (s *CVEService) Search(
 
 // SearchCount returns a count of CVEs that match the specified search params.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#cve_search_count
+// Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search_count
 func (s *CVEService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
