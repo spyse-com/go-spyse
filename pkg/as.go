@@ -49,7 +49,6 @@ type IPV6Prefixes struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_details
 func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
-	// TODO: refactor
 	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"%s", strconv.Itoa(asn))
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
