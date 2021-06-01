@@ -21,7 +21,7 @@ type BulkSearchService struct {
 
 // Domain lookup returns a full representation of the domains for the given domain names.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#domain_search_bulk
+// Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#bulk_search_domain
 func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string) ([]*Domain, error) {
 	body, err := json.Marshal(DomainBulkSearchRequest{DomainList: domainNames})
 	if err != nil {
@@ -53,7 +53,7 @@ func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string) ([
 
 // IP lookup returns a full representation of the ips for the given ip addresses.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#ip_search_bulk
+// Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#bulk_search_ip
 func (s *BulkSearchService) IP(ctx context.Context, ipList []string) ([]*IP, error) {
 	body, err := json.Marshal(IPBulkSearchRequest{IPList: ipList})
 	if err != nil {
