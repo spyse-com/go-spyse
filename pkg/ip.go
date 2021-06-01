@@ -33,7 +33,7 @@ type IP struct {
 	Score        Score           `json:"security_score,omitempty"`
 	UpdatedAt    string          `json:"updated_at,omitempty"`
 	CIDR         string          `json:"cidr,omitempty"`
-	Technologies []Technology    `json:"technologies,omitempty"`
+	Technologies []IPTechnology  `json:"technologies,omitempty"`
 	Abuses       ShortAbusesInfo `json:"abuses,omitempty"`
 }
 
@@ -86,13 +86,14 @@ type PortExtract struct {
 }
 
 type Technology struct {
-	Port    int    `json:"port,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Version string `json:"version,omitempty"`
 }
 
-type IPTechnologies struct {
-	HTTP []Technology `json:"http,omitempty"`
+type IPTechnology struct {
+	Port    int    `json:"port,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Version string `json:"version,omitempty"`
 }
 
 // Details returns a full representation of the IP for the given IP address.
