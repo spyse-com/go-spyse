@@ -22,9 +22,9 @@ func main() {
 		os.Exit(1)
 	}
 	println(asResponse.Number)
-	var filters = []map[string]spyse.Filter{
+	var filters = []map[string]spyse.SearchParameter{
 		{
-			"asn": spyse.Filter{
+			"asn": spyse.SearchParameter{
 				Operator: "eq",
 				Value:    "1",
 			},

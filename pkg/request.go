@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Filter struct {
+type SearchParameter struct {
 	Operator string `json:"operator"`
 	Value    string `json:"value"`
 }
@@ -20,13 +20,13 @@ type PaginatedRequest struct {
 }
 
 type SearchRequest struct {
-	SearchParams []map[string]Filter `json:"search_params"`
+	SearchParams []map[string]SearchParameter `json:"search_params"`
 	PaginatedRequest
 }
 
 type ScrollSearchRequest struct {
-	SearchParams []map[string]Filter `json:"search_params"`
-	SearchID     string              `json:"search_id"`
+	SearchParams []map[string]SearchParameter `json:"search_params"`
+	SearchID     string                       `json:"search_id"`
 }
 
 type DomainBulkSearchRequest struct {

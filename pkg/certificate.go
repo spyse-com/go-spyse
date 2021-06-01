@@ -330,7 +330,7 @@ func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 stri
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
 func (s *CertificateService) Search(
 	ctx context.Context,
-	filters []map[string]Filter,
+	filters []map[string]SearchParameter,
 	limit, offset int,
 ) ([]*Certificate, error) {
 	body, err := json.Marshal(
@@ -372,7 +372,7 @@ func (s *CertificateService) Search(
 // SearchCount returns a count of Certificates that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search_count
-func (s *CertificateService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
+func (s *CertificateService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
 		return 0, err
@@ -403,7 +403,7 @@ type CertificateScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_scroll_search
 func (s *CertificateService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]Filter,
+	searchParams []map[string]SearchParameter,
 	searchID string,
 ) (*CertificateScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}

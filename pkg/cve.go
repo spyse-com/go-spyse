@@ -156,7 +156,7 @@ func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 // Search returns a list of CVEs that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search
-func (s *CVEService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*CVE, error) {
+func (s *CVEService) Search(ctx context.Context, filters []map[string]SearchParameter, limit, offset int) ([]*CVE, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
@@ -194,7 +194,7 @@ func (s *CVEService) Search(ctx context.Context, filters []map[string]Filter, li
 // SearchCount returns a count of CVEs that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#cve_search_count
-func (s *CVEService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
+func (s *CVEService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
 		return 0, err
@@ -225,7 +225,7 @@ type CVEScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_scroll_search
 func (s *CVEService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]Filter,
+	searchParams []map[string]SearchParameter,
 	searchID string,
 ) (*CVEScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}

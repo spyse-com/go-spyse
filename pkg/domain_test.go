@@ -46,9 +46,9 @@ func TestDomainService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var filters = []map[string]Filter{
+	var filters = []map[string]SearchParameter{
 		{
-			"name": Filter{
+			"name": SearchParameter{
 				Operator: "eq",
 				Value:    "spyse.com",
 			},

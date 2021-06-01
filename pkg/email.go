@@ -58,7 +58,7 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 // Search returns a list of Domains that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search
-func (s *EmailService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*Email, error) {
+func (s *EmailService) Search(ctx context.Context, filters []map[string]SearchParameter, limit, offset int) ([]*Email, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: filters,
@@ -98,7 +98,7 @@ func (s *EmailService) Search(ctx context.Context, filters []map[string]Filter, 
 // SearchCount returns a count of emails that match the specified filters.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search_count
-func (s *EmailService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
+func (s *EmailService) SearchCount(ctx context.Context, filters []map[string]SearchParameter) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: filters})
 	if err != nil {
 		return 0, err
@@ -129,7 +129,7 @@ type EmailScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_scroll_search
 func (s *EmailService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]Filter,
+	searchParams []map[string]SearchParameter,
 	searchID string,
 ) (*EmailScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
