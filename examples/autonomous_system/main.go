@@ -24,7 +24,7 @@ func main() {
 	println(asResponse.Number)
 	var filters = []map[string]spyse.Filter{
 		{
-			"as_num": spyse.Filter{
+			"asn": spyse.Filter{
 				Operator: "eq",
 				Value:    "1",
 			},
