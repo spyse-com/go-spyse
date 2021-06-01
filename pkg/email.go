@@ -55,13 +55,13 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 	return nil, nil
 }
 
-// Search returns a list of Domains that match the specified filters.
+// Search returns a list of Domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search
-func (s *EmailService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*Email, error) {
+func (s *EmailService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*Email, error) {
 	body, err := json.Marshal(
 		SearchRequest{
-			SearchParams: filters,
+			SearchParams: params,
 			PaginatedRequest: PaginatedRequest{
 				Size: limit,
 				From: offset,
@@ -95,11 +95,11 @@ func (s *EmailService) Search(ctx context.Context, filters []map[string]Filter, 
 	return nil, nil
 }
 
-// SearchCount returns a count of emails that match the specified filters.
+// SearchCount returns a count of emails that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search_count
-func (s *EmailService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+func (s *EmailService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -124,15 +124,15 @@ type EmailScrollResponse struct {
 	Items      []*Email `json:"items"`
 }
 
-// ScrollSearch returns a list of Emails that match the specified filters.
+// ScrollSearch returns a list of Emails that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_scroll_search
 func (s *EmailService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]Filter,
+	params []map[string]SearchParameter,
 	searchID string,
 ) (*EmailScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}

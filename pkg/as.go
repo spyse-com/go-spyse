@@ -47,9 +47,8 @@ type IPV6Prefixes struct {
 
 // Details returns a full representation of the Autonomous System for the given AS number.
 //
-// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as
+// Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_details
 func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
-	// TODO: refactor
 	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"%s", strconv.Itoa(asn))
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
@@ -68,13 +67,13 @@ func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
 	return nil, nil
 }
 
-// Search returns a list of Autonomous Systems that match the specified filters.
+// Search returns a list of Autonomous Systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, limit, offset int) ([]*AS, error) {
+func (s *ASService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*AS, error) {
 	body, err := json.Marshal(
 		SearchRequest{
-			SearchParams: filters,
+			SearchParams: params,
 			PaginatedRequest: PaginatedRequest{
 				Size: limit,
 				From: offset,
@@ -108,11 +107,11 @@ func (s *ASService) Search(ctx context.Context, filters []map[string]Filter, lim
 	return nil, nil
 }
 
-// SearchCount returns a count of Autonomous Systems that match the specified filters.
+// SearchCount returns a count of Autonomous Systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search_count
-func (s *ASService) SearchCount(ctx context.Context, filters []map[string]Filter) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: filters})
+func (s *ASService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -137,15 +136,15 @@ type ASScrollResponse struct {
 	Items      []*AS  `json:"items"`
 }
 
-// ScrollSearch returns a list of autonomous systems that match the specified filters.
+// ScrollSearch returns a list of autonomous systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_scroll_search
 func (s *ASService) ScrollSearch(
 	ctx context.Context,
-	searchParams []map[string]Filter,
+	params []map[string]SearchParameter,
 	searchID string,
 ) (*ASScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: searchParams}
+	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
