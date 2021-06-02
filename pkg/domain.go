@@ -99,23 +99,23 @@ type DomainCertSummary struct {
 }
 
 type DomainCertIssuerDN struct {
-	C            string `json:"C,omitempty"`
-	CN           string `json:"CN,omitempty"`
-	L            string `json:"L,omitempty"`
-	O            string `json:"O,omitempty"`
-	OU           string `json:"OU,omitempty"`
-	ST           string `json:"ST,omitempty"`
+	C            string `json:"C,omitempty"`  // Country
+	CN           string `json:"CN,omitempty"` // Common Name
+	L            string `json:"L,omitempty"`  // Locality
+	O            string `json:"O,omitempty"`  // Organization
+	OU           string `json:"OU,omitempty"` // Organization unit
+	ST           string `json:"ST,omitempty"` // State
 	EmailAddress string `json:"emailAddress,omitempty"`
 	Raw          string `json:"raw,omitempty"`
 }
 
 type DomainCertSubjectDN struct {
-	C                           string `json:"C,omitempty"`
-	CN                          string `json:"CN,omitempty"`
-	L                           string `json:"L,omitempty"`
-	O                           string `json:"O,omitempty"`
-	OU                          string `json:"OU,omitempty"`
-	ST                          string `json:"ST,omitempty"`
+	C                           string `json:"C,omitempty"`  // Country
+	CN                          string `json:"CN,omitempty"` // Common Name
+	L                           string `json:"L,omitempty"`  // Locality
+	O                           string `json:"O,omitempty"`  // Organization
+	OU                          string `json:"OU,omitempty"` // Organization unit
+	ST                          string `json:"ST,omitempty"` // State
 	BusinessCategory            string `json:"businessCategory,omitempty"`
 	EmailAddress                string `json:"emailAddress,omitempty"`
 	JurisdictionCountry         string `json:"jurisdictionCountry,omitempty"`
