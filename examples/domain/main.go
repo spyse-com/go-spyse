@@ -56,13 +56,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	for i := 0; i < int(countResults); i++ {
-		println("-", searchResults[i].Name)
-	}
-
 	println(fmt.Sprintf("Subdomains (%d) :", countResults))
 	println("-", searchResults[0].Name)
 	println("-", searchResults[1].Name)
 	println("-", searchResults[2].Name)
-	println(fmt.Sprintf("- and %d more", countResults-int64(limit)))
+	println(fmt.Sprintf("- and %d more", countResults-3))
 }
