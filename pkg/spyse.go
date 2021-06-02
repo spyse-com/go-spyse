@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	DefaultBaseURL          = "https://api.spyse.com/v3/data/"
 	AuthorizationHeaderName = "Authorization"
 	AuthorizationType       = "Bearer"
 	ContentTypeHeaderName   = "Content-Type"
