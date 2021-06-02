@@ -26,7 +26,6 @@ func TestBulkSearchService_Domain(t *testing.T) {
 	domains, err := testClient.BulkSearch.Domain(
 		context.Background(),
 		[]string{"google.com"},
-		1, 0,
 	)
 	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
@@ -54,7 +53,6 @@ func TestBulkSearchService_IP(t *testing.T) {
 	domains, err := testClient.BulkSearch.IP(
 		context.Background(),
 		[]string{"8.8.8.8"},
-		1, 0,
 	)
 	if domains == nil {
 		t.Error("Expected IP struct. IP struct is nil")
