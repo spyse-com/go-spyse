@@ -58,7 +58,7 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 // Search returns a list of Domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search
-func (s *EmailService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*Email, error) {
+func (s *EmailService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]Email, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -77,16 +77,16 @@ func (s *EmailService) Search(ctx context.Context, params []map[string]SearchPar
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Email{})
+	resp, err := s.client.Do(req, Email{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*Email
+	var items []Email
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*Email))
+			items = append(items, i.(Email))
 		}
 
 		return items, nil
@@ -118,10 +118,10 @@ func (s *EmailService) SearchCount(ctx context.Context, params []map[string]Sear
 }
 
 type EmailScrollResponse struct {
-	SearchID   string   `json:"search_id"`
-	TotalItems int64    `json:"total_items"`
-	Offset     int      `json:"offset"`
-	Items      []*Email `json:"items"`
+	SearchID   string  `json:"search_id"`
+	TotalItems int64   `json:"total_items"`
+	Offset     int     `json:"offset"`
+	Items      []Email `json:"items"`
 }
 
 // ScrollSearch returns a list of Emails that match the specified search params.
@@ -146,7 +146,7 @@ func (s *EmailService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Email{})
+	resp, err := s.client.Do(req, Email{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -157,7 +157,7 @@ func (s *EmailService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*Email))
+			response.Items = append(response.Items, i.(Email))
 		}
 	}
 	return response, err

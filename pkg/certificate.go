@@ -332,7 +332,7 @@ func (s *CertificateService) Search(
 	ctx context.Context,
 	params []map[string]SearchParameter,
 	limit, offset int,
-) ([]*Certificate, error) {
+) ([]Certificate, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -351,16 +351,16 @@ func (s *CertificateService) Search(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Certificate{})
+	resp, err := s.client.Do(req, Certificate{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*Certificate
+	var items []Certificate
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*Certificate))
+			items = append(items, i.(Certificate))
 		}
 
 		return items, nil
@@ -392,10 +392,10 @@ func (s *CertificateService) SearchCount(ctx context.Context, params []map[strin
 }
 
 type CertificateScrollResponse struct {
-	SearchID   string         `json:"search_id"`
-	TotalItems int64          `json:"total_items"`
-	Offset     int            `json:"offset"`
-	Items      []*Certificate `json:"items"`
+	SearchID   string        `json:"search_id"`
+	TotalItems int64         `json:"total_items"`
+	Offset     int           `json:"offset"`
+	Items      []Certificate `json:"items"`
 }
 
 // ScrollSearch returns a list of Certificates that match the specified search params.
@@ -420,7 +420,7 @@ func (s *CertificateService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Certificate{})
+	resp, err := s.client.Do(req, Certificate{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -431,7 +431,7 @@ func (s *CertificateService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*Certificate))
+			response.Items = append(response.Items, i.(Certificate))
 		}
 	}
 	return response, err

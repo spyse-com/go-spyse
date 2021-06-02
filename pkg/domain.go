@@ -374,7 +374,7 @@ func (s *DomainService) Search(
 	ctx context.Context,
 	params []map[string]SearchParameter,
 	limit, offset int,
-) ([]*Domain, error) {
+) ([]Domain, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -393,16 +393,16 @@ func (s *DomainService) Search(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Domain{})
+	resp, err := s.client.Do(req, Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*Domain
+	var items []Domain
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*Domain))
+			items = append(items, i.(Domain))
 		}
 
 		return items, nil
@@ -434,10 +434,10 @@ func (s *DomainService) SearchCount(ctx context.Context, params []map[string]Sea
 }
 
 type DomainScrollResponse struct {
-	SearchID   string    `json:"search_id"`
-	TotalItems int64     `json:"total_items"`
-	Offset     int       `json:"offset"`
-	Items      []*Domain `json:"items"`
+	SearchID   string   `json:"search_id"`
+	TotalItems int64    `json:"total_items"`
+	Offset     int      `json:"offset"`
+	Items      []Domain `json:"items"`
 }
 
 // ScrollSearch returns a list of Domains that match the specified search params.
@@ -462,7 +462,7 @@ func (s *DomainService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Domain{})
+	resp, err := s.client.Do(req, Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -473,7 +473,7 @@ func (s *DomainService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*Domain))
+			response.Items = append(response.Items, i.(Domain))
 		}
 	}
 	return response, err

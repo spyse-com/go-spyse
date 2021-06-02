@@ -23,15 +23,15 @@ type Data struct {
 	SearchID *string `json:"search_id,omitempty"`
 }
 
-func (r *Response) decodeFromJSON(source []byte, result interface{}) error {
+func (res *Response) decodeFromJSON(source []byte, result interface{}) error {
 	var err error
 	var items []interface{}
 
-	if err = json.Unmarshal(source, r); err != nil {
+	if err = json.Unmarshal(source, res); err != nil {
 		return err
 	}
 
-	for _, i := range r.Data.Items {
+	for _, i := range res.Data.Items {
 		config := &mapstructure.DecoderConfig{
 			TagName: "json",
 		}
@@ -48,7 +48,7 @@ func (r *Response) decodeFromJSON(source []byte, result interface{}) error {
 		items = append(items, r)
 	}
 
-	r.Data.Items = items
+	res.Data.Items = items
 
 	return err
 }

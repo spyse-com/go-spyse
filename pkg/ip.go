@@ -120,7 +120,7 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 // Search returns a paginated list of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search
-func (s *IPService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*IP, error) {
+func (s *IPService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]IP, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -139,16 +139,16 @@ func (s *IPService) Search(ctx context.Context, params []map[string]SearchParame
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &IP{})
+	resp, err := s.client.Do(req, IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*IP
+	var items []IP
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*IP))
+			items = append(items, i.(IP))
 		}
 		return items, nil
 	}
@@ -181,7 +181,7 @@ type IPScrollResponse struct {
 	SearchID   string `json:"search_id"`
 	TotalItems int64  `json:"total_items"`
 	Offset     int    `json:"offset"`
-	Items      []*IP  `json:"items"`
+	Items      []IP   `json:"items"`
 }
 
 // ScrollSearch returns a list of IPs that match the specified search params.
@@ -206,7 +206,7 @@ func (s *IPService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &IP{})
+	resp, err := s.client.Do(req, IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -217,7 +217,7 @@ func (s *IPService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*IP))
+			response.Items = append(response.Items, i.(IP))
 		}
 	}
 	return response, err

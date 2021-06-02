@@ -40,7 +40,7 @@ func (s *HistoryService) DNS(
 	ctx context.Context,
 	domain, dnsType string,
 	limit, offset int,
-) ([]*DNSSimpleHistorical, error) {
+) ([]DNSSimpleHistorical, error) {
 	path := fmt.Sprintf(DNSHistoryEndpoint, dnsType, domain, limit, offset)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
@@ -48,16 +48,16 @@ func (s *HistoryService) DNS(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &DNSSimpleHistorical{})
+	resp, err := s.client.Do(req, DNSSimpleHistorical{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*DNSSimpleHistorical
+	var items []DNSSimpleHistorical
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*DNSSimpleHistorical))
+			items = append(items, i.(DNSSimpleHistorical))
 		}
 
 		return items, nil
@@ -69,22 +69,22 @@ func (s *HistoryService) DNS(
 // Whois returns the WHOIS history of the given domain.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/history#domain_whois_history
-func (s *HistoryService) Whois(ctx context.Context, domain string, limit, offset int) ([]*WhoisHistory, error) {
+func (s *HistoryService) Whois(ctx context.Context, domain string, limit, offset int) ([]WhoisHistory, error) {
 	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(WHOISHistoryEndpoint, domain, limit, offset), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &WhoisHistory{})
+	resp, err := s.client.Do(req, WhoisHistory{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*WhoisHistory
+	var items []WhoisHistory
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*WhoisHistory))
+			items = append(items, i.(WhoisHistory))
 		}
 
 		return items, nil

@@ -160,7 +160,7 @@ func (s *CVEService) Search(
 	ctx context.Context,
 	params []map[string]SearchParameter,
 	limit, offset int,
-) ([]*CVE, error) {
+) ([]CVE, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -179,16 +179,16 @@ func (s *CVEService) Search(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &CVE{})
+	resp, err := s.client.Do(req, CVE{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*CVE
+	var items []CVE
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*CVE))
+			items = append(items, i.(CVE))
 		}
 		return items, nil
 	}
@@ -221,7 +221,7 @@ type CVEScrollResponse struct {
 	SearchID   string `json:"search_id"`
 	TotalItems int64  `json:"total_items"`
 	Offset     int    `json:"offset"`
-	Items      []*CVE `json:"items"`
+	Items      []CVE  `json:"items"`
 }
 
 // ScrollSearch returns a list of CVEs that match the specified search params.
@@ -246,7 +246,7 @@ func (s *CVEService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &CVE{})
+	resp, err := s.client.Do(req, CVE{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -257,7 +257,7 @@ func (s *CVEService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*CVE))
+			response.Items = append(response.Items, i.(CVE))
 		}
 	}
 	return response, err

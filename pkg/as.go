@@ -69,7 +69,7 @@ func (s *ASService) Details(ctx context.Context, asn string) (*AS, error) {
 // Search returns a list of Autonomous Systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-func (s *ASService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]*AS, error) {
+func (s *ASService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]AS, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -88,16 +88,16 @@ func (s *ASService) Search(ctx context.Context, params []map[string]SearchParame
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &AS{})
+	resp, err := s.client.Do(req, AS{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
 
-	var items []*AS
+	var items []AS
 
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			items = append(items, i.(*AS))
+			items = append(items, i.(AS))
 		}
 
 		return items, nil
@@ -132,7 +132,7 @@ type ASScrollResponse struct {
 	SearchID   string `json:"search_id"`
 	TotalItems int64  `json:"total_items"`
 	Offset     int    `json:"offset"`
-	Items      []*AS  `json:"items"`
+	Items      []AS   `json:"items"`
 }
 
 // ScrollSearch returns a list of autonomous systems that match the specified search params.
@@ -157,7 +157,7 @@ func (s *ASService) ScrollSearch(
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &AS{})
+	resp, err := s.client.Do(req, AS{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -168,7 +168,7 @@ func (s *ASService) ScrollSearch(
 	}
 	if len(resp.Data.Items) > 0 {
 		for _, i := range resp.Data.Items {
-			response.Items = append(response.Items, i.(*AS))
+			response.Items = append(response.Items, i.(AS))
 		}
 	}
 	return response, err
