@@ -130,6 +130,6 @@ func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 
 		return response, nil
 
-	}
+	} // todo: if result == nil ?
 	return nil, err
 }
