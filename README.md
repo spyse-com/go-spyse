@@ -14,10 +14,16 @@ For more information please check the [API Reference](https://spyse-dev.readme.i
 go get github.com/spyse-com/go-spyse
 ```
 
-## Usage
+## Examples
 
-```golang
+Please take a look at examples provided in the [examples](./examples) directory.
 
+Run an example as follows:
+```bash
+# Access tokens are available to registered users on their account page.
+export ACCESS_TOKEN=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+go run examples/autonomous_system/main.go --access_token=$ACCESS_TOKEN
 ```
 
 ## Covered API endpoints
