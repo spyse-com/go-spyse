@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -48,8 +47,8 @@ type IPV6Prefixes struct {
 // Details returns a full representation of the Autonomous System for the given AS number.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_details
-func (s *ASService) Details(ctx context.Context, asn int) (*AS, error) {
-	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"%s", strconv.Itoa(asn))
+func (s *ASService) Details(ctx context.Context, asn string) (*AS, error) {
+	refURI := fmt.Sprintf(AutonomousSystemDetailsEndpoint+"%s", asn)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err

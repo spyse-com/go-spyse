@@ -23,7 +23,7 @@ func TestASService_Details(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	autonomousSystem, err := testClient.AS.Details(context.Background(), 1)
+	autonomousSystem, err := testClient.AS.Details(context.Background(), "1")
 	if autonomousSystem == nil {
 		t.Error("Expected AS struct. AS struct is nil")
 	}
