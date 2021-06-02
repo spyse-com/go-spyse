@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"os"
 
 	spyse "github.com/spyse-com/go-spyse/pkg"
@@ -20,7 +19,7 @@ func main() {
 	var detailsAsn = "10000"
 	asResponse, err := client.AS.Details(context.Background(), detailsAsn)
 	if err != nil {
-		outputErr(err)
+		println(err.Error())
 		os.Exit(1)
 	}
 	println("Details result")
@@ -44,7 +43,7 @@ func main() {
 	}
 	asSearchResponse, err := client.AS.Search(context.Background(), params, limit, offset)
 	if err != nil {
-		outputErr(err)
+		println(err.Error())
 		os.Exit(1)
 	}
 	println("Search result")
@@ -56,11 +55,5 @@ func main() {
 		)
 	} else {
 		println("No data")
-	}
-}
-
-func outputErr(err error) {
-	if err != nil {
-		fmt.Printf("%s\n", err.Error())
 	}
 }
