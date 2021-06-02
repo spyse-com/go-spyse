@@ -17,16 +17,16 @@ func main() {
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
 	var detailsAsn = "10000"
-	asResponse, err := client.AS.Details(context.Background(), detailsAsn)
+	details, err := client.AS.Details(context.Background(), detailsAsn)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 	println("Details result")
-	println("ASN", asResponse.Number,
-		"-", asResponse.Organization,
-		"-", len(asResponse.IPv4Prefixes), "IPv4 prefixes",
-		"-", len(asResponse.IPv6Prefixes), "IPv6 prefixes",
+	println("ASN", details.Number,
+		"-", details.Organization,
+		"-", len(details.IPv4Prefixes), "IPv4 prefixes",
+		"-", len(details.IPv6Prefixes), "IPv6 prefixes",
 	)
 	println()
 
@@ -35,23 +35,23 @@ func main() {
 	var offset = 0
 	var params = []map[string]spyse.SearchParameter{
 		{
-			"asn": spyse.SearchParameter{
-				Operator: "eq",
+			"asn": spyse.SearchParameter{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
+				Operator: spyse.SEARCH_OPERATOR_EQUAL,
 				Value:    searchAsn,
 			},
 		},
 	}
-	asSearchResponse, err := client.AS.Search(context.Background(), params, limit, offset)
+	searchResults, err := client.AS.Search(context.Background(), params, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 	println("Search result")
-	if len(asSearchResponse) > 0 {
-		println("ASN", asSearchResponse[0].Number,
-			"-", asSearchResponse[0].Organization,
-			"-", len(asSearchResponse[0].IPv4Prefixes), "IPv4 prefixes",
-			"-", len(asSearchResponse[0].IPv6Prefixes), "IPv6 prefixes",
+	if len(searchResults) > 0 {
+		println("ASN", searchResults[0].Number,
+			"-", searchResults[0].Organization,
+			"-", len(searchResults[0].IPv4Prefixes), "IPv4 prefixes",
+			"-", len(searchResults[0].IPv6Prefixes), "IPv6 prefixes",
 		)
 	} else {
 		println("No data")
