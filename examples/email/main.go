@@ -49,13 +49,22 @@ func main() {
 		printFormat := "  %-35v%-35v%-25v%s"
 		println(fmt.Sprintf(printFormat, "Email", "Last seen", "At location", "Location type"))
 		for emailIdx := 0; emailIdx < examplesToPrint; emailIdx++ {
-			for sourceIdx := 0; sourceIdx < len(emails[emailIdx].Sources); sourceIdx++ {
+			if len(emails[emailIdx].Sources) == 0 {
 				println(fmt.Sprintf(printFormat,
 					emails[emailIdx].Email,
-					emails[emailIdx].Sources[sourceIdx].LastSeen,
-					emails[emailIdx].Sources[sourceIdx].Target,
-					emails[emailIdx].Sources[sourceIdx].Type,
+					"n/a",
+					"n/a",
+					"n/a",
 				))
+			} else {
+				for sourceIdx := 0; sourceIdx < len(emails[emailIdx].Sources); sourceIdx++ {
+					println(fmt.Sprintf(printFormat,
+						emails[emailIdx].Email,
+						emails[emailIdx].Sources[sourceIdx].LastSeen,
+						emails[emailIdx].Sources[sourceIdx].Target,
+						emails[emailIdx].Sources[sourceIdx].Type,
+					))
+				}
 			}
 		}
 		println(fmt.Sprintf("  --- and %d more ---", countResults-int64(examplesToPrint)))
