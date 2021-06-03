@@ -1,0 +1,73 @@
+run:
+  # default concurrency is a available CPU number
+  concurrency: 4
+
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  timeout: 1m
+
+  # exit code when at least one issue was found, default is 1
+  issues-exit-code: 1
+
+  # include test files or not, default is true
+  tests: true
+
+output:
+  # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
+  format: colored-line-number
+
+  # print lines of code with issue, default is true
+  print-issued-lines: true
+
+  # print linter name in the end of issue text, default is true
+  print-linter-name: true
+
+linters:
+  enable:
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - funlen
+    - gocyclo
+    - goimports
+    - revive
+    - govet
+    - gosec
+    - goconst
+    - gocritic
+    - gocyclo
+    - ineffassign
+    - lll
+    - structcheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+  disable-all: false
+  fast: true
+
+linters-settings:
+  funlen:
+    lines: 60
+    statements: 40
+  govet:
+    check-shadowing: true
+  goimports:
+    local-prefixes: github.com/spyse-com/go-spyse
+  golint:
+    min-confidence: 0.8
+  gocyclo:
+    min-complexity: 10
+  dupl:
+    threshold: 200
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  lll:
+    # max line length, lines longer will be reported. Default is 120.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option
+    line-length: 120
+    # tab width in spaces. Default to 1.
+    tab-width: 1
+
