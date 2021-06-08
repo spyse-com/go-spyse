@@ -2,6 +2,7 @@ package spyse
 
 import (
 	"context"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +16,10 @@ const (
 	contentTypeHeaderName   = "Content-Type"
 	defaultContentType      = "application/json"
 	defaultBaseURL          = "https://api.spyse.com/v4/data/"
+)
+
+var (
+	ErrInvalidAccessTokenFormat = errors.New("invalid Spyse API access token format")
 )
 
 // httpClient defines an interface for an http.Client implementation so that alternative
@@ -49,6 +54,10 @@ type Client struct {
 // To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
 func NewClient(accessToken string, httpClient httpClient) (*Client, error) {
+	if accessToken == "" {
+		return nil, ErrInvalidAccessTokenFormat
+	}
+
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}

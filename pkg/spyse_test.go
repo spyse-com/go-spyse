@@ -26,7 +26,7 @@ func setup() {
 	testServer = httptest.NewServer(testMux)
 
 	// spyse client configured to use test server
-	testClient, _ = NewClient("", nil)
+	testClient, _ = NewClient("00000000-0000-0000-0000-000000000000", nil)
 	_ = testClient.SetBaseURL(testServer.URL)
 }
 
