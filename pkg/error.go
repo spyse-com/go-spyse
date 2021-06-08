@@ -44,11 +44,10 @@ type FieldError struct {
 
 // Error message from Spyse
 type Error struct {
-	HTTPError error         `json:"http_error,omitempty"`
-	Status    int           `json:"-"`
-	Code      string        `json:"code"`
-	Message   string        `json:"message"`
-	Errors    []*FieldError `json:"errors,omitempty"`
+	Status  int           `json:"-"`
+	Code    string        `json:"code"`
+	Message string        `json:"message"`
+	Errors  []*FieldError `json:"errors,omitempty"`
 }
 
 func (e *Error) Error() string {
@@ -66,14 +65,15 @@ func NewSpyseError(err error) error {
 	if errors.Is(&ErrResponse{}, err) {
 		return err
 	}
-	return &ErrResponse{Err: &Error{HTTPError: err}}
+	return &ErrResponse{Err: &Error{Message: err.Error()}}
 }
 
 func getErrorFromResponse(r *http.Response) error {
 	errorResponse := new(ErrResponse)
 	message, err := ioutil.ReadAll(r.Body)
 	if err == nil {
-		if err := json.Unmarshal(message, &errorResponse); err == nil {
+		if err = json.Unmarshal(message, &errorResponse); err == nil {
+			errorResponse.Err.Status = r.StatusCode
 			return errorResponse
 		}
 		return errors.New(strings.TrimSpace(string(message)))
