@@ -9,6 +9,18 @@ import (
 	"strings"
 )
 
+const (
+	CodeBadRequest               = "bad_request"
+	CodeValidationError          = "validation_error"
+	CodeRequestsLimitReached     = "requests_limit_reached"
+	CodeDownloadsLimitReached    = "downloads_limit_reached"
+	CodeSearchParamsLimitReached = "search_params_limit_reached"
+	CodeUnauthorized             = "unauthorized"
+	CodeForbidden                = "forbidden"
+	CodeHTTPClientError          = "http_client_error"
+	CodeInternalServerError      = "internal_server_error"
+)
+
 var (
 	// ErrReadBody is returned when response's body cannot be read.
 	ErrReadBody = errors.New("could not read error response")
@@ -44,11 +56,10 @@ type FieldError struct {
 
 // Error message from Spyse
 type Error struct {
-	HTTPError error         `json:"http_error,omitempty"`
-	Status    int           `json:"-"`
-	Code      string        `json:"code"`
-	Message   string        `json:"message"`
-	Errors    []*FieldError `json:"errors,omitempty"`
+	Status  int           `json:"-"`
+	Code    string        `json:"code"`
+	Message string        `json:"message"`
+	Errors  []*FieldError `json:"errors,omitempty"`
 }
 
 func (e *Error) Error() string {
@@ -66,14 +77,15 @@ func NewSpyseError(err error) error {
 	if errors.Is(&ErrResponse{}, err) {
 		return err
 	}
-	return &ErrResponse{Err: &Error{HTTPError: err}}
+	return &ErrResponse{Err: &Error{Code: CodeHTTPClientError, Message: err.Error()}}
 }
 
 func getErrorFromResponse(r *http.Response) error {
 	errorResponse := new(ErrResponse)
 	message, err := ioutil.ReadAll(r.Body)
 	if err == nil {
-		if err := json.Unmarshal(message, &errorResponse); err == nil {
+		if err = json.Unmarshal(message, &errorResponse); err == nil {
+			errorResponse.Err.Status = r.StatusCode
 			return errorResponse
 		}
 		return errors.New(strings.TrimSpace(string(message)))
