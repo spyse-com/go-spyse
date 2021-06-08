@@ -26,7 +26,8 @@ func setup() {
 	testServer = httptest.NewServer(testMux)
 
 	// spyse client configured to use test server
-	testClient, _ = NewClient(testServer.URL, "", nil)
+	testClient, _ = NewClient("", nil)
+	_ = testClient.SetBaseURL(testServer.URL)
 }
 
 // teardown closes the test HTTP server.

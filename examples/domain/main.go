@@ -13,9 +13,7 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
-
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, _ := spyse.NewClient(*accessToken, nil)
 
 	var teslaRootDomainName = "tesla.com"
 	details, err := client.Domain.Details(context.Background(), teslaRootDomainName)

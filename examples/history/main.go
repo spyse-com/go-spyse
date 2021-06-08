@@ -13,7 +13,6 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
 	var domain = "google.com"
 	var examplesToPrint = 3
 	var limit = 100
@@ -23,7 +22,7 @@ func main() {
 	println("DNS history for domain " + domain)
 	println()
 
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, _ := spyse.NewClient(*accessToken, nil)
 
 	dnsHistoryA, err := client.History.DNS(context.Background(), domain, "A", limit, offset)
 	if err != nil {

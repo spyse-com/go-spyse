@@ -13,10 +13,9 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
 	var examplesToPrint = 3
 
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, _ := spyse.NewClient(*accessToken, nil)
 
 	var detailsIP = "91.210.36.26"
 	details, err := client.IP.Details(context.Background(), detailsIP)

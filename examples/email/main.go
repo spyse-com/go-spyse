@@ -13,11 +13,10 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
 	var examplesToPrint = 10
 	var emailDomain = "tesla.com"
 
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, _ := spyse.NewClient(*accessToken, nil)
 
 	var emailsSearchParams = []map[string]spyse.SearchParameter{
 		{

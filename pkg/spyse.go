@@ -14,6 +14,7 @@ const (
 	authorizationType       = "Bearer"
 	contentTypeHeaderName   = "Content-Type"
 	defaultContentType      = "application/json"
+	defaultBaseURL          = "https://api.spyse.com/v4/data/"
 )
 
 // httpClient defines an interface for an http.Client implementation so that alternative
@@ -47,24 +48,18 @@ type Client struct {
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, error) {
+func NewClient(accessToken string, httpClient httpClient) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 
-	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	parsedBaseURL, err := url.Parse(baseURL)
-	if err != nil {
-		return nil, err
-	}
-
 	c := &Client{
 		httpClient:  httpClient,
-		baseURL:     parsedBaseURL,
 		accessToken: accessToken,
+	}
+
+	if err := c.SetBaseURL(defaultBaseURL); err != nil {
+		return nil, err
 	}
 
 	c.AS = &ASService{client: c}
@@ -77,6 +72,23 @@ func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, err
 	c.History = &HistoryService{client: c}
 
 	return c, nil
+}
+
+// SetBaseURL sets Base URL for API requests.
+// Currently used for testing during development only
+func (c *Client) SetBaseURL(baseURL string) error {
+	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
+	if !strings.HasSuffix(baseURL, "/") {
+		baseURL += "/"
+	}
+
+	parsedBaseURL, err := url.Parse(baseURL)
+	if err != nil {
+		return err
+	}
+
+	c.baseURL = parsedBaseURL
+	return nil
 }
 
 // NewRequest creates an API request.

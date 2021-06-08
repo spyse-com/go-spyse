@@ -14,9 +14,7 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
-
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, _ := spyse.NewClient(*accessToken, nil)
 
 	var domainNames = []string{"example.com", "tesla.com", "google.com", "some-nonexistent-domain.io"}
 	domainSearchResults, err := client.BulkSearch.Domain(context.Background(), domainNames)
