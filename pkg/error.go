@@ -9,6 +9,18 @@ import (
 	"strings"
 )
 
+const (
+	CodeBadRequest               = "bad_request"
+	CodeValidationError          = "validation_error"
+	CodeRequestsLimitReached     = "requests_limit_reached"
+	CodeDownloadsLimitReached    = "downloads_limit_reached"
+	CodeSearchParamsLimitReached = "search_params_limit_reached"
+	CodeUnauthorized             = "unauthorized"
+	CodeForbidden                = "forbidden"
+	CodeHTTPClientError          = "http_client_error"
+	CodeInternalServerError      = "internal_server_error"
+)
+
 var (
 	// ErrReadBody is returned when response's body cannot be read.
 	ErrReadBody = errors.New("could not read error response")
@@ -65,7 +77,7 @@ func NewSpyseError(err error) error {
 	if errors.Is(&ErrResponse{}, err) {
 		return err
 	}
-	return &ErrResponse{Err: &Error{Message: err.Error()}}
+	return &ErrResponse{Err: &Error{Code: CodeHTTPClientError, Message: err.Error()}}
 }
 
 func getErrorFromResponse(r *http.Response) error {
