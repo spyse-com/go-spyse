@@ -23,7 +23,7 @@ func main() {
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/emails#email_search
 			"email": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEndsWith,
+				Operator: spyse.OperatorEndsWith,
 				Value:    "@" + emailDomain,
 			},
 		},

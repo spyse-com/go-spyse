@@ -6,15 +6,15 @@ import (
 	"net/http"
 )
 
-const SearchOperatorEqual = "eq"
-const SearchOperatorNotEqual = "not_eq"
-const SearchOperatorContains = "contains"
-const SearchOperatorStartsWith = "starts"
-const SearchOperatorEndsWith = "ends"
-const SearchOperatorExists = "exists"
-const SearchOperatorNotExists = "not_exists"
-const SearchOperatorGreaterThanOrEqual = "gte"
-const SearchOperatorLessThanOrEqual = "lte"
+const OperatorEqual = "eq"
+const OperatorNotEqual = "not_eq"
+const OperatorContains = "contains"
+const OperatorStartsWith = "starts"
+const OperatorEndsWith = "ends"
+const OperatorExists = "exists"
+const OperatorNotExists = "not_exists"
+const OperatorGreaterThanOrEqual = "gte"
+const OperatorLessThanOrEqual = "lte"
 
 type SearchParameter struct {
 	Operator string `json:"operator"`

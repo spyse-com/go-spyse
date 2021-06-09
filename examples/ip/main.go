@@ -58,7 +58,7 @@ func main() {
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
 			"open_port": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
+				Operator: spyse.OperatorEqual,
 				Value:    searchPort,
 			},
 		},
@@ -92,7 +92,7 @@ func main() {
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
 			"geo_country": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
+				Operator: spyse.OperatorEqual,
 				Value:    usCountryName,
 			},
 		},

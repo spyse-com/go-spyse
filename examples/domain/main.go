@@ -39,7 +39,7 @@ func main() {
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
 			"name": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEndsWith,
+				Operator: spyse.OperatorEndsWith,
 				Value:    searchDomain,
 			},
 		},
@@ -72,11 +72,11 @@ func main() {
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
 			"without_suffix": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
+				Operator: spyse.OperatorEqual,
 				Value:    teslaRootDomainNameWithoutTld,
 			},
 			"name": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorNotEqual,
+				Operator: spyse.OperatorNotEqual,
 				Value:    teslaRootDomainName,
 			},
 		},

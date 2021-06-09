@@ -35,7 +35,7 @@ func main() {
 	var params = []map[string]spyse.SearchParameter{
 		{
 			"asn": spyse.SearchParameter{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-				Operator: spyse.SearchOperatorEqual,
+				Operator: spyse.OperatorEqual,
 				Value:    searchAsn,
 			},
 		},
