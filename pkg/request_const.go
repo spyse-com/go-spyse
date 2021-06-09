@@ -223,9 +223,11 @@ const (
 	CVEParamModifiedAt = "modified_at"
 )
 
-// EmailParamEmail option for Email search params:
+// Options for Email search params:
 //
 // ALl search parameters see at https://spyse-dev.readme.io/reference/emailss#email_search
 const (
+	// EmailParamEmail gives a chance to search by the email address.
+	// Operators: eq, not_eq, contains, not_contains, starts, ends.
 	EmailParamEmail = "email"
 )
