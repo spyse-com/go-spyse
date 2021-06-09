@@ -191,14 +191,36 @@ const (
 //
 // All search parameters see at https://spyse-dev.readme.io/reference/cves#cve_search
 const (
-	CVEParamID            = "id"
-	CVEParamCPE           = "cpe"
-	CVEParamScoreCVSS2    = "score_cvss2"
-	CVEParamScoreCVSS3    = "score_cvss3"
+	// CVEParamID gives a chance to search by the CVE ID defined by the MITRE Corporation. Operators: eq.
+	CVEParamID = "id"
+
+	// CVEParamCPE gives a chance to search by the Common Platform Enumeration (CPE) name or prefix. Example:
+	// cpe:2.3:o:canonical:ubuntu_linux:12.04. Operators: eq, starts.
+	CVEParamCPE = "cpe"
+
+	// CVEParamScoreCVSS2 gives a chance to search by the CVE score according to the Common Vulnerability Scoring System
+	// Version 2 (CVSS2). Operators: gte, lte.
+	CVEParamScoreCVSS2 = "score_cvss2"
+
+	// CVEParamScoreCVSS3 gives a chance to search by the CVE score according to the Common Vulnerability Scoring System
+	// Version 3 (CVSS3). Operators: gte, lte.
+	CVEParamScoreCVSS3 = "score_cvss3"
+
+	// CVEParamSeverityCVSS2 gives a chance to search by the CVE severity according to CVSSv2.
+	// Supported options: high, medium, low. Operators: eq.
 	CVEParamSeverityCVSS2 = "severity_cvss2"
+
+	// CVEParamSeverityCVSS3 gives a chance to search by the CVE severity according to CVSSv3.
+	// Supported options: high, medium, low, critical. Operators: eq.
 	CVEParamSeverityCVSS3 = "severity_cvss3"
-	CVEParamPublishedAt   = "published_at"
-	CVEParamModifiedAt    = "modified_at"
+
+	// CVEParamPublishedAt gives a chance to search by the vulnerability publication date. Format: YYYY-MM-DD .
+	// Operators: gte, lte.
+	CVEParamPublishedAt = "published_at"
+
+	// CVEParamModifiedAt gives a chance to search by the vulnerability modification date. Format: YYYY-MM-DD .
+	// Operators: gte, lte.
+	CVEParamModifiedAt = "modified_at"
 )
 
 // EmailParamEmail option for Email search params:
