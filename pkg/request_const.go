@@ -16,92 +16,305 @@ const (
 //
 // All search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
 const (
-	// DomainParamName search by the domain name. Operators: eq, starts, ends, not_eq
-	DomainParamName                                     = "name"
-	DomainParamAdsenseID                                = "http_extract_tracker_adsense_id"
-	DomainParamAlexaRank                                = "alexa_rank"
-	DomainParamDNSA                                     = "dns_a"
-	DomainParamDNSAAAA                                  = "dns_aaaa"
-	DomainParamDNSNS                                    = "dns_ns"
-	DomainParamDNSMX                                    = "dns_mx"
-	DomainParamDNSTXT                                   = "dns_txt"
-	DomainParamDNSCAA                                   = "dns_caa"
-	DomainParamDNSCNAME                                 = "dns_cname"
-	DomainParamDNSSPFRAW                                = "dns_spf_raw"
-	DomainParamDNSSPFVersion                            = "dns_spf_version"
-	DomainParamDNSSPFErrorsTarget                       = "dns_spf_errors_target"
-	DomainParamDNSSPFModifiersName                      = "dns_spf_modifiers_name"
-	DomainParamDNSSPFMechanismsName                     = "dns_spf_mechanisms_name"
-	DomainParamDNSSPFModifiersValue                     = "dns_spf_modifiers_value"
-	DomainParamDNSSPFMechanismsValue                    = "dns_spf_mechanisms_value"
-	DomainParamDNSSPFErrorsDescription                  = "dns_spf_errors_description"
-	DomainParamDNSSPFMechanismsQualifier                = "dns_spf_mechanisms_qualifier"
-	DomainParamHTTPExtractTitle                         = "http_extract_title"
-	DomainParamHTTPExtractEmail                         = "http_extract_email"
-	DomainParamHTTPExtractRobots                        = "http_extract_robots"
-	DomainParamHTTPExtractStyles                        = "http_extract_styles"
-	DomainParamHTTPExtractScripts                       = "http_extract_scripts"
-	DomainParamHTTPExtractMetaName                      = "http_extract_meta_name"
-	DomainParamHTTPExtractLinkHost                      = "http_extract_link_host"
-	DomainParamHTTPExtractMetaValue                     = "http_extract_meta_value"
-	DomainParamHTTPExtractFaviconURI                    = "http_extract_favicon_uri"
-	DomainParamHTTPExtractStatusCode                    = "http_extract_status_code"
-	DomainParamHTTPExtractFaviconSHA256                 = "http_extract_favicon_sha256"
-	DomainParamHTTPExtractHeadersName                   = "http_extract_headers_name"
-	DomainParamHTTPExtractDescription                   = "http_extract_description"
-	DomainParamHTTPExtractHeadersValue                  = "http_extract_headers_value"
-	DomainParamHTTPExtractLinkURL                       = "http_extract_link_url"
-	DomainParamHTTPExtractFinalRedirectURL              = "http_extract_final_redirect_url"
-	DomainParamCVEID                                    = "cve_id"
-	DomainParamCVESeverity                              = "cve_severity"
-	DomainParamTechnologyName                           = "technology_name"
-	DomainParamTechnologyVersion                        = "technology_version"
-	DomainParamTechnologyCPE                            = "technology_cpe"
-	DomainParamCertificateSHA256                        = "certificate_sha256"
-	DomainParamCertificateVersion                       = "certificate_version"
-	DomainParamWhoisRegistrarWhoisServer                = "whois_registrar_whois_server"
-	DomainParamWhoisRegistrantOrg                       = "whois_registrant_org"
-	DomainParamWhoisRegistrarName                       = "whois_registrar_name"
-	DomainParamWhoisRegistrantName                      = "whois_registrant_name"
-	DomainParamWhoisRegistrarEmail                      = "whois_registrar_email"
-	DomainParamWhoisRegistrantPhone                     = "whois_registrant_phone"
-	DomainParamWhoisRegistrantEmail                     = "whois_registrant_email"
-	DomainParamWithoutSuffix                            = "without_suffix"
-	DomainParamHTTPExtractTrackerGoogleAnalyticsKey     = "http_extract_tracker_google_analytics_key"
-	DomainParamHTTPExtractTrackerGooglePlayApp          = "http_extract_tracker_google_play_app"
-	DomainParamHTTPExtractTrackerAppleItunesApp         = "http_extract_tracker_apple_itunes_app"
+	// DomainParamName search domains by the domain name. Operators: eq, starts, ends, not_eq.
+	DomainParamName = "name"
+
+	// DomainParamAdsenseID search domains with the homepage containing the specified Google AdSense identifier.
+	// Operators: eq, exists, not_exists.
+	DomainParamAdsenseID = "http_extract_tracker_adsense_id"
+
+	// DomainParamAlexaRank search by Alexa Rank value. Operators: eq, gte, lte, exists, not_exists.
+	DomainParamAlexaRank = "alexa_rank"
+
+	// DomainParamDNSA search by a specific IPv4 address, stored in DNS A record, or CIDR.
+	// Operators: eq, exists, not_exists.
+	DomainParamDNSA = "dns_a"
+
+	// DomainParamDNSAAAA search by a specific IPv6 address stored in DNS AAAA record.
+	// Operators: eq, exists, not_exists.
+	DomainParamDNSAAAA = "dns_aaaa"
+
+	// DomainParamDNSNS search by name server (NS) address stored in DNS NS record. Example: ns1.google.com.
+	// Operators: eq, contains, starts, exists, not_exists.
+	DomainParamDNSNS = "dns_ns"
+
+	// DomainParamDNSMX search by name server (MX) address stored in DNS MX record. Example: ns1.google.com.
+	//	// Operators: eq, contains, starts, exists, not_exists.
+	DomainParamDNSMX = "dns_mx"
+
+	// DomainParamDNSTXT search by content of DNS TXT record. Operators: eq, contains, exists, not_exists.
+	DomainParamDNSTXT = "dns_txt"
+
+	// DomainParamDNSCAA search by content of DNS CAA record. Operators: eq, contains, exists, not_exists.
+	DomainParamDNSCAA = "dns_caa"
+
+	// DomainParamDNSCNAME search by content of DNS CNAME record. Operators: eq, contains, exists, not_exists.
+	DomainParamDNSCNAME = "dns_cname"
+
+	// DomainParamDNSSPFRAW search by not parsed SPF record. Operators: contains, exists, not_exists.
+	DomainParamDNSSPFRAW = "dns_spf_raw"
+
+	// DomainParamDNSSPFVersion search by an SPF record version. F.e., 'spf1'. Operators: eq, exists, not_exists.
+	DomainParamDNSSPFVersion = "dns_spf_version"
+
+	// DomainParamDNSSPFErrorsTarget search for mechanism or modifier, which includes an error.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFErrorsTarget = "dns_spf_errors_target"
+
+	// DomainParamDNSSPFModifiersName search by a modifier name. F.e., 'ip4', 'redirect', 'include'.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFModifiersName = "dns_spf_modifiers_name"
+
+	// DomainParamDNSSPFMechanismsName search by the name of the mechanism e.g. 'ip4', 'ip6', 'all'.
+	// Operators: eq, exists, not_exists.
+	DomainParamDNSSPFMechanismsName = "dns_spf_mechanisms_name"
+
+	// DomainParamDNSSPFModifiersValue search by a modifier value, e.g. '_spf.mailhostbox.com', '_spf.yandex.net.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFModifiersValue = "dns_spf_modifiers_value"
+
+	// DomainParamDNSSPFMechanismsValue search by a mechanism value, e.g. '195.201.206.85', '_spf.google.com'.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFMechanismsValue = "dns_spf_mechanisms_value"
+
+	// DomainParamDNSSPFErrorsDescription search by the description of a validation error.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFErrorsDescription = "dns_spf_errors_description"
+
+	// DomainParamDNSSPFMechanismsQualifier search by a qualifier of the mechanism.
+	// Operators: contains, exists, not_exists.
+	DomainParamDNSSPFMechanismsQualifier = "dns_spf_mechanisms_qualifier"
+
+	// DomainParamHTTPExtractTitle search by content of the HTML title tag.
+	// Operators: eq, contains, starts, exists, not_exists.
+	DomainParamHTTPExtractTitle = "http_extract_title"
+
+	// DomainParamHTTPExtractEmail search by emails found on the web-page. Operators: eq, contains, exists, not_exists.
+	DomainParamHTTPExtractEmail = "http_extract_email"
+
+	// DomainParamHTTPExtractRobots search by content of the robots.txt file. Operators: contains, exists, not_exists.
+	DomainParamHTTPExtractRobots = "http_extract_robots"
+
+	// DomainParamHTTPExtractStyles search by links found in the href attribute of the link HTML tag.
+	// Operators: contains, exists, not_exists.
+	DomainParamHTTPExtractStyles = "http_extract_styles"
+
+	// DomainParamHTTPExtractScripts search by links found in the src attribute of the script HTML tag.
+	// Operators: contains, exists, not_exists.
+	DomainParamHTTPExtractScripts = "http_extract_scripts"
+
+	// DomainParamHTTPExtractMetaName search by HTML meta tag name. Operators: eq, contains.
+	DomainParamHTTPExtractMetaName = "http_extract_meta_name"
+
+	// DomainParamHTTPExtractLinkHost search by a set of links found on sites. Operators: eq, starts, ends.
+	DomainParamHTTPExtractLinkHost = "http_extract_link_host"
+
+	// DomainParamHTTPExtractMetaValue search by HTML meta tag value. Operators: eq, contains.
+	DomainParamHTTPExtractMetaValue = "http_extract_meta_value"
+
+	// DomainParamHTTPExtractFaviconURI search by website favicon URI. Operators: eq, contains, exists, not_exists.
+	DomainParamHTTPExtractFaviconURI = "http_extract_favicon_uri"
+
+	// DomainParamHTTPExtractStatusCode search by HTTP response status code.
+	// Operators: eq, gte, lte, exists, not_exists.
+	DomainParamHTTPExtractStatusCode = "http_extract_status_code"
+
+	// DomainParamHTTPExtractFaviconSHA256 search by SHA256 hash of the site favicon.
+	// Operators: eq, exists, not_exists.
+	DomainParamHTTPExtractFaviconSHA256 = "http_extract_favicon_sha256"
+
+	// DomainParamHTTPExtractHeadersName search by HTTP response header name.
+	// Operators: eq, contains.
+	DomainParamHTTPExtractHeadersName = "http_extract_headers_name"
+
+	// DomainParamHTTPExtractDescription search by content of the HTML description meta tag.
+	// Operators: contains, exists, not_exists.
+	DomainParamHTTPExtractDescription = "http_extract_description"
+
+	// DomainParamHTTPExtractHeadersValue search by HTTP response header value.
+	// Operators: eq, contains.
+	DomainParamHTTPExtractHeadersValue = "http_extract_headers_value"
+
+	// DomainParamHTTPExtractLinkURL search by a full link found on sites. Operators: eq, starts, ends.
+	DomainParamHTTPExtractLinkURL = "http_extract_link_url"
+
+	// DomainParamHTTPExtractFinalRedirectURL find hosts that redirect to a specific domain.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamHTTPExtractFinalRedirectURL = "http_extract_final_redirect_url"
+
+	// DomainParamCVEID search by Common Vulnerability and Exposures (CVE) ID. Example: CVE-2019-16905.
+	// Operators: eq.
+	DomainParamCVEID = "cve_id"
+
+	// DomainParamCVESeverity search by CVE severity. Options: "high", "medium", "low". Operators: eq.
+	DomainParamCVESeverity = "cve_severity"
+
+	// DomainParamTechnologyName search by technology name. Example: PHP. Operators: eq, contains.
+	DomainParamTechnologyName = "technology_name"
+
+	// DomainParamTechnologyVersion search by technology version. Example: 5.6.40. Operators: eq, gte, lte.
+	DomainParamTechnologyVersion = "technology_version"
+
+	// DomainParamCertificateSHA256 search by certificate SHA256 fingerprint. Operators: eq, exists, not_exists.
+	DomainParamCertificateSHA256 = "certificate_sha256"
+
+	// DomainParamCertificateVersion search by a specific SSL/TLS version. Example: SSLv3.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateVersion = "certificate_version"
+
+	// DomainParamWhoisRegistrarWhoisServer search by WHOIS server domain name. Operators: eq, exists, not_exists.
+	DomainParamWhoisRegistrarWhoisServer = "whois_registrar_whois_server"
+
+	// DomainParamWhoisRegistrantOrg search by the name of organization who has registered the domain name.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamWhoisRegistrantOrg = "whois_registrant_org"
+
+	// DomainParamWhoisRegistrarName search by registrar name. Operators: eq, contains, exists, not_exists.
+	DomainParamWhoisRegistrarName = "whois_registrar_name"
+
+	// DomainParamWhoisRegistrantName search by registrant name. Operators: eq, contains, exists, not_exists.
+	DomainParamWhoisRegistrantName = "whois_registrant_name"
+
+	// DomainParamWhoisRegistrarEmail search by registrar email. Operators: eq, contains, exists, not_exists.
+	DomainParamWhoisRegistrarEmail = "whois_registrar_email"
+
+	// DomainParamWhoisRegistrantPhone search by registrant phone. Operators: eq, exists, not_exists.
+	DomainParamWhoisRegistrantPhone = "whois_registrant_phone"
+
+	// DomainParamWhoisRegistrantEmail search by registrant email. Operators: eq, contains, exists, not_exists.
+	DomainParamWhoisRegistrantEmail = "whois_registrant_email"
+
+	// DomainParamWithoutSuffix Search by domain name without public suffix. Example: google. Operators: eq.
+	DomainParamWithoutSuffix = "without_suffix"
+
+	// DomainParamHTTPExtractTrackerGoogleAnalyticsKey search domains with the homepage containing the specified
+	// Google Analytics key. Operators: eq, exists, not_exists.
+	DomainParamHTTPExtractTrackerGoogleAnalyticsKey = "http_extract_tracker_google_analytics_key"
+
+	// DomainParamHTTPExtractTrackerGooglePlayApp search domains with the homepage containing the specified Google
+	// Play app identifier. Operators: eq, contains, exists, not_exists.
+	DomainParamHTTPExtractTrackerGooglePlayApp = "http_extract_tracker_google_play_app"
+
+	// DomainParamHTTPExtractTrackerAppleItunesApp search domains with the homepage containing the specified Apple
+	// iTunes app identifier. Operators: eq, contains, exists, not_exists.
+	DomainParamHTTPExtractTrackerAppleItunesApp = "http_extract_tracker_apple_itunes_app"
+
+	// DomainParamHTTPExtractTrackerGoogleSiteVerification search domains with the homepage containing the specified
+	// Google Site verification identifier. Operators: eq, exists, not_exists.
 	DomainParamHTTPExtractTrackerGoogleSiteVerification = "http_extract_tracker_google_site_verification"
-	DomainParamCertificateIssuerOrg                     = "certificate_issuer_org"
-	DomainParamCertificateIssuerCname                   = "certificate_issuer_cname"
-	DomainParamCertificateIssuerEmail                   = "certificate_issuer_email"
-	DomainParamCertificateIssuerOrganizationalUnit      = "certificate_issuer_organizational_unit"
-	DomainParamCertificateIssuerCountry                 = "certificate_issuer_country"
-	DomainParamCertificateIssuerState                   = "certificate_issuer_state"
-	DomainParamCertificateIssuerLocality                = "certificate_issuer_locality"
-	DomainParamCertificateSubjectOrg                    = "certificate_subject_org"
-	DomainParamCertificateSubjectCNAME                  = "certificate_subject_cname"
-	DomainParamCertificateSubjectEmail                  = "certificate_subject_email"
-	DomainParamCertificateSubjectOrganizationalUnit     = "certificate_subject_organizational_unit"
-	DomainParamCertificateSubjectCountry                = "certificate_subject_country"
-	DomainParamCertificateSubjectState                  = "certificate_subject_state"
-	DomainParamCertificateSubjectLocality               = "certificate_subject_locality"
-	DomainParamCertificateSubjectSerialNumber           = "certificate_subject_serial_number"
-	DomainParamCertificateValidityEnd                   = "certificate_validity_end"
-	DomainParamGeoCountryISOCode                        = "geo_country_iso_code"
-	DomainParamGeoCountry                               = "geo_country"
-	DomainParamGeoCity                                  = "geo_city"
-	DomainParamASNum                                    = "as_num"
-	DomainParamOrganizationIndustry                     = "organization_industry"
-	DomainParamOrganizationEmail                        = "organization_email"
-	DomainParamOrganizationName                         = "organization_name"
-	DomainParamOrganizationLegalName                    = "organization_legal_name"
-	DomainParamISP                                      = "isp"
-	DomainParamASOrg                                    = "as_org"
-	DomainParamIsPTR                                    = "is_ptr"
-	DomainParamIsMX                                     = "is_mx"
-	DomainParamIsNS                                     = "is_ns"
-	DomainParamIsSubDomainParam                         = "is_subdomain"
-	DomainParamIsCNAME                                  = "is_cname"
+
+	// DomainParamCertificateIssuerOrg search domains by certificate issuer organization.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerOrg = "certificate_issuer_org"
+
+	// DomainParamCertificateIssuerCname search domains by certificate issuer CNAME.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerCname = "certificate_issuer_cname"
+
+	// DomainParamCertificateIssuerEmail search domains by certificate issuer email.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerEmail = "certificate_issuer_email"
+
+	// DomainParamCertificateIssuerOrganizationalUnit search domains by certificate issuer organizational unit.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerOrganizationalUnit = "certificate_issuer_organizational_unit"
+
+	// DomainParamCertificateIssuerCountry search domains by certificate issuer country.
+	// Operators: eq, exists, not_exists.
+	DomainParamCertificateIssuerCountry = "certificate_issuer_country"
+
+	// DomainParamCertificateIssuerState search domains by certificate issuer state.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerState = "certificate_issuer_state"
+
+	// DomainParamCertificateIssuerLocality search domains by certificate issuer locality.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateIssuerLocality = "certificate_issuer_locality"
+
+	// DomainParamCertificateSubjectOrg search domains by certificate subject organization.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectOrg = "certificate_subject_org"
+
+	// DomainParamCertificateSubjectCNAME search domains by certificate subject CNAME.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectCNAME = "certificate_subject_cname"
+
+	// DomainParamCertificateSubjectEmail search domains by certificate subject email.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectEmail = "certificate_subject_email"
+
+	// DomainParamCertificateSubjectOrganizationalUnit search domains by certificate subject organizational unit.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectOrganizationalUnit = "certificate_subject_organizational_unit"
+
+	// DomainParamCertificateSubjectCountry search domains by certificate subject country.
+	// Operators: eq, exists, not_exists.
+	DomainParamCertificateSubjectCountry = "certificate_subject_country"
+
+	// DomainParamCertificateSubjectState search domains by certificate subject state.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectState = "certificate_subject_state"
+
+	// DomainParamCertificateSubjectLocality search domains by certificate subject locality.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamCertificateSubjectLocality = "certificate_subject_locality"
+
+	// DomainParamCertificateSubjectSerialNumber search domains by certificate subject serial number.
+	// Operators: eq, exists, not_exists.
+	DomainParamCertificateSubjectSerialNumber = "certificate_subject_serial_number"
+
+	// DomainParamCertificateValidityEnd search domains by certificate validity end date.
+	// Operators: eq, gte, lte.
+	DomainParamCertificateValidityEnd = "certificate_validity_end"
+
+	// DomainParamGeoCountryISOCode find domains by the ISO code of the country they are located in.
+	// Operators: eq, exists, not_exists.
+	DomainParamGeoCountryISOCode = "geo_country_iso_code"
+
+	// DomainParamGeoCountry find domains by the country they are located in.
+	// Operators: eq, exists, not_exists.
+	DomainParamGeoCountry = "geo_country"
+
+	// DomainParamGeoCity find domains by the city they are located in. Operators: eq, contains, exists, not_exists.
+	DomainParamGeoCity = "geo_city"
+
+	// DomainParamASNum find domains by the autonomous system number. Operators: eq, exists, not_exists.
+	DomainParamASNum = "as_num"
+
+	// DomainParamOrganizationIndustry find domains by the organization industry.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamOrganizationIndustry = "organization_industry"
+
+	// DomainParamOrganizationEmail find domains by the organization email. Operators: eq, contains, exists, not_exists.
+	DomainParamOrganizationEmail = "organization_email"
+
+	// DomainParamOrganizationName find domains by the organization name. Operators: eq, contains, exists, not_exists.
+	DomainParamOrganizationName = "organization_name"
+
+	// DomainParamOrganizationLegalName find domains by the organization legal name.
+	// Operators: eq, contains, exists, not_exists.
+	DomainParamOrganizationLegalName = "organization_legal_name"
+
+	// DomainParamISP find domains by the autonomous system ISP. Operators: eq, contains, exists, not_exists.
+	DomainParamISP = "isp"
+
+	// DomainParamASOrg find domains by the autonomous system organization. Operators: eq, contains, exists, not_exists.
+	DomainParamASOrg = "as_org"
+
+	// DomainParamIsPTR find domain names that have been found in any DNS PTR record. Operators: eq.
+	DomainParamIsPTR = "is_ptr"
+
+	// DomainParamIsMX find domains that are fully qualified domain names of a mail server. Operators: eq.
+	DomainParamIsMX = "is_mx"
+
+	// DomainParamIsNS find domains that are fully qualified domain names of a nameserver. Operators: eq.
+	DomainParamIsNS = "is_ns"
+
+	// DomainParamIsSubDomainParam find domains that are subdomains. Operators: eq.
+	DomainParamIsSubDomainParam = "is_subdomain"
+
+	// DomainParamIsCNAME find domain names that have been found in any CNAME record. Operators: eq.
+	DomainParamIsCNAME = "is_cname"
 )
 
 // Options for IP search params:
