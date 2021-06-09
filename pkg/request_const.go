@@ -169,22 +169,71 @@ const (
 //
 // All search parameters see at https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
 const (
-	CertificateParamIssuedForDomain   = "issued_for_domain"
-	CertificateParamIssuedForIP       = "issued_for_ip"
-	CertificateParamIssuerCountry     = "issuer_country"
-	CertificateParamIssuerOrg         = "issuer_org"
-	CertificateParamIssuerCommonName  = "issuer_common_name"
-	CertificateParamIssuerEmail       = "issuer_email"
-	CertificateParamSubjectCountry    = "subject_country"
-	CertificateParamSubjectOrg        = "subject_org"
+	// CertificateParamIssuedForDomain gives a chance to search by the domain the certificate is issued for.
+	// Operators: eq.
+	CertificateParamIssuedForDomain = "issued_for_domain"
+
+	// CertificateParamIssuedForIP gives a chance to search by the IP address the certificate is issued for.
+	// Operators: eq.
+	CertificateParamIssuedForIP = "issued_for_ip"
+
+	// CertificateParamIssuerCountry gives a chance to search by the country ISO code the issuer organization is
+	// registered in. Operators: eq,  exists, not_exists.
+	CertificateParamIssuerCountry = "issuer_country"
+
+	// CertificateParamIssuerOrg gives a chance to search by the issuer organization name.
+	// Operators: eq, contains, exists, not_exists.
+	CertificateParamIssuerOrg = "issuer_org"
+
+	// CertificateParamIssuerCommonName gives a chance to search by the issuer common name.
+	// Example: “DigiCert SHA2 Secure Server CA”. Operators: eq, contains, exists, not_exists.
+	CertificateParamIssuerCommonName = "issuer_common_name"
+
+	// CertificateParamIssuerEmail gives a chance to search by the issuer email.
+	// Operators: eq, contains, exists, not_exists.
+	CertificateParamIssuerEmail = "issuer_email"
+
+	// CertificateParamSubjectCountry gives a chance to search by the domain the country ISO code the subject
+	// organization is registered in. Operators: eq,  exists, not_exists.
+	CertificateParamSubjectCountry = "subject_country"
+
+	// CertificateParamSubjectOrg gives a chance to search by the domain the subject organization name.
+	// Operators: eq, contains, exists, not_exists.
+	CertificateParamSubjectOrg = "subject_org"
+
+	// CertificateParamSubjectCommonName gives a chance to search by the domain the subject common name.
+	// Example: ssl902285.cloudflaressl.com. Operators: eq, contains, exists, not_exists.
 	CertificateParamSubjectCommonName = "subject_common_name"
-	CertificateParamSubjectEmail      = "subject_email"
-	CertificateParamFingerprintMD5    = "fingerprint_md5"
-	CertificateParamFingerprintSHA1   = "fingerprint_sha1"
+
+	// CertificateParamSubjectEmail gives a chance to search by the domain the subject email.
+	// Operators: eq, contains, exists, not_exists.
+	CertificateParamSubjectEmail = "subject_email"
+
+	// CertificateParamFingerprintMD5 gives a chance to search by the MD5 fingerprint. Enter a hexadecimal
+	// string without spaces in lowercase. Example:  500d1a99a670675a2e0b147b31ea17ce. Operators: eq.
+	CertificateParamFingerprintMD5 = "fingerprint_md5"
+
+	// CertificateParamFingerprintSHA1 gives a chance to search by the domain the SHA1 fingerprint. Enter a
+	// hexadecimal string without spaces in lowercase. Example: f817a45f860581ff9911ce6405d3e194e90a0f3f.
+	// Operators: eq.
+	CertificateParamFingerprintSHA1 = "fingerprint_sha1"
+
+	// CertificateParamFingerprintSHA256 gives a chance to search by the domain the SHA256 fingerprint. Enter a
+	// hexadecimal string without spaces in lowercase.
+	// Example: f239e183459c727c7b2694937f04e5925ffaf969a10cc31ce848fdd0ccf6e40f. Operators: eq.
 	CertificateParamFingerprintSHA256 = "fingerprint_sha256"
-	CertificateParamValidityEnd       = "validity_end"
-	CertificateParamValidityStart     = "validity_start"
-	CertificateParamIsTrusted         = "is_trusted"
+
+	// CertificateParamValidityEnd gives a chance to search by the domain the certificate validity end date.
+	// Format: YYYY-MM-DD. Operators: eq, gte, lte.
+	CertificateParamValidityEnd = "validity_end"
+
+	// CertificateParamValidityStart gives a chance to search by the domain the certificate validity start date.
+	// Format: YYYY-MM-DD. Operators: eq, gte, lte.
+	CertificateParamValidityStart = "validity_start"
+
+	// CertificateParamIsTrusted gives a chance to search certificates that have been verified and validated by Spyse.
+	// Operators: eq.
+	CertificateParamIsTrusted = "is_trusted"
 )
 
 // Options for CVE search params:
