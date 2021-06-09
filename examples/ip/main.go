@@ -54,17 +54,15 @@ func main() {
 	println()
 
 	var searchPort = "9200" // Elasticsearch port
-	var ipSearchParams = []map[string]spyse.SearchOption{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"open_port": spyse.SearchOption{
-				Operator: spyse.OperatorEqual,
-				Value:    searchPort,
-			},
-		},
-	}
+	var ipSearchParams spyse.QueryBuilder
 
-	countResults, err := client.IP.SearchCount(context.Background(), ipSearchParams)
+	ipSearchParams.AppendParam(spyse.QueryParam{
+		Name:     spyse.IPParamOpenPort,
+		Operator: spyse.OperatorEqual,
+		Value:    searchPort,
+	})
+
+	countResults, err := client.IP.SearchCount(context.Background(), ipSearchParams.Query)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -72,7 +70,7 @@ func main() {
 
 	var limit = 100
 	var offset = 0
-	searchResults, err := client.IP.Search(context.Background(), ipSearchParams, limit, offset)
+	searchResults, err := client.IP.Search(context.Background(), ipSearchParams.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -88,17 +86,16 @@ func main() {
 	println()
 
 	var usCountryName = "United States"
-	var usHostsSearchParams = []map[string]spyse.SearchOption{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"geo_country": spyse.SearchOption{
-				Operator: spyse.OperatorEqual,
-				Value:    usCountryName,
-			},
-		},
-	}
+	var usHostsSearchParams spyse.QueryBuilder
+
+	usHostsSearchParams.AppendParam(spyse.QueryParam{
+		Name:     spyse.IPParamGeoCountry,
+		Operator: spyse.OperatorEqual,
+		Value:    usCountryName,
+	})
+
 	scrollSearchResults, err := client.IP.ScrollSearch(
-		context.Background(), usHostsSearchParams, "")
+		context.Background(), usHostsSearchParams.Query, "")
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

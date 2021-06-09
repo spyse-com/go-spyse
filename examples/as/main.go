@@ -32,15 +32,15 @@ func main() {
 	var searchAsn = "21000"
 	var limit = 1
 	var offset = 0
-	var params = []map[string]spyse.SearchOption{
-		{
-			"asn": spyse.SearchOption{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-				Operator: spyse.OperatorEqual,
-				Value:    searchAsn,
-			},
-		},
-	}
-	searchResults, err := client.AS.Search(context.Background(), params, limit, offset)
+	var params spyse.QueryBuilder
+
+	params.AppendParam(spyse.QueryParam{
+		Name:     spyse.ASParamASN,
+		Operator: spyse.OperatorEqual,
+		Value:    searchAsn,
+	})
+
+	searchResults, err := client.AS.Search(context.Background(), params.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

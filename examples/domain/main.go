@@ -35,17 +35,15 @@ func main() {
 	println()
 
 	var searchDomain = ".tesla.com"
-	var subdomainsSearchParams = []map[string]spyse.SearchOption{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"name": spyse.SearchOption{
-				Operator: spyse.OperatorEndsWith,
-				Value:    searchDomain,
-			},
-		},
-	}
+	var subdomainsSearchParams spyse.QueryBuilder
 
-	countResults, err := client.Domain.SearchCount(context.Background(), subdomainsSearchParams)
+	subdomainsSearchParams.AppendParam(spyse.QueryParam{
+		Name:     spyse.DomainParamName,
+		Operator: spyse.OperatorEndsWith,
+		Value:    searchDomain,
+	})
+
+	countResults, err := client.Domain.SearchCount(context.Background(), subdomainsSearchParams.Query)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -54,7 +52,7 @@ func main() {
 	var limit = 100
 	var offset = 0
 	var examplesToPrint = 3
-	searchResults, err := client.Domain.Search(context.Background(), subdomainsSearchParams, limit, offset)
+	searchResults, err := client.Domain.Search(context.Background(), subdomainsSearchParams.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -68,35 +66,34 @@ func main() {
 	println()
 
 	var teslaRootDomainNameWithoutTld = "tesla"
-	var diffSuffixesSearchParams = []map[string]spyse.SearchOption{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"without_suffix": spyse.SearchOption{
-				Operator: spyse.OperatorEqual,
-				Value:    teslaRootDomainNameWithoutTld,
-			},
-			"name": spyse.SearchOption{
-				Operator: spyse.OperatorNotEqual,
-				Value:    teslaRootDomainName,
-			},
-		},
-	}
+	var diffSuffixesSearchParams spyse.QueryBuilder
+
+	diffSuffixesSearchParams.AppendParam(spyse.QueryParam{
+		Name:     spyse.DomainParamWithoutSuffix,
+		Operator: spyse.OperatorEqual,
+		Value:    teslaRootDomainNameWithoutTld,
+	})
+	diffSuffixesSearchParams.AppendParam(spyse.QueryParam{
+		Name:     spyse.DomainParamName,
+		Operator: spyse.OperatorNotEqual,
+		Value:    teslaRootDomainName,
+	})
 	scrollSearchResultsPageOne, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, "")
+		context.Background(), diffSuffixesSearchParams.Query, "")
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
 	scrollSearchResultsPageTwo, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, scrollSearchResultsPageOne.SearchID)
+		context.Background(), diffSuffixesSearchParams.Query, scrollSearchResultsPageOne.SearchID)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
 	scrollSearchResultsPageThree, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, scrollSearchResultsPageOne.SearchID)
+		context.Background(), diffSuffixesSearchParams.Query, scrollSearchResultsPageOne.SearchID)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

@@ -13,6 +13,8 @@ const (
 )
 
 // Options for Domain search params:
+//
+// All search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
 const (
 	// DomainParamName gives a chance to search by the domain name. Operators: eq, starts, ends, not_eq
 	DomainParamName                                     = "name"
@@ -103,6 +105,8 @@ const (
 )
 
 // Options for IP search params:
+//
+// ALl search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
 const (
 	IPParamCIDR                                     = "cidr"
 	IPParamISP                                      = "isp"
@@ -152,6 +156,8 @@ const (
 )
 
 // Options for Autonomous system search params:
+//
+// All search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
 const (
 	ASParamIP     = "ip"
 	ASParamASOrg  = "as_org"
@@ -160,6 +166,8 @@ const (
 )
 
 // Options for Certificate search params:
+//
+// All search parameters see at https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
 const (
 	CertificateParamIssuedForDomain   = "issued_for_domain"
 	CertificateParamIssuedForIP       = "issued_for_ip"
@@ -180,6 +188,8 @@ const (
 )
 
 // Options for CVE search params:
+//
+// All search parameters see at https://spyse-dev.readme.io/reference/cves#cve_search
 const (
 	CVEParamID            = "id"
 	CVEParamCPE           = "cpe"
@@ -192,6 +202,8 @@ const (
 )
 
 // EmailParamEmail option for Email search params:
+//
+// ALl search parameters see at https://spyse-dev.readme.io/reference/emailss#email_search
 const (
 	EmailParamEmail = "email"
 )
