@@ -159,9 +159,20 @@ const (
 //
 // All search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
 const (
-	ASParamIP     = "ip"
-	ASParamASOrg  = "as_org"
-	ASParamASN    = "asn"
+	// ASParamIP gives a chance to search AS by the IP address.
+	// Operators: eq.
+	ASParamIP = "ip"
+
+	// ASParamASOrg gives a chance to search by by the associated organization name.
+	// Operators: eq, contains, starts.
+	ASParamASOrg = "as_org"
+
+	// ASParamASN gives a chance to search by its number.
+	// Operators: eq.
+	ASParamASN = "asn"
+
+	// ASParamDomain gives a chance to search AS by the domain name.
+	// Operators: eq.
 	ASParamDomain = "domain"
 )
 
