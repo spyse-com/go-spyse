@@ -19,10 +19,10 @@ func main() {
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
-	var emailsSearchParams = []map[string]spyse.SearchParameter{
+	var emailsSearchParams = []map[string]spyse.SearchOption{
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/emails#email_search
-			"email": spyse.SearchParameter{
+			"email": spyse.SearchOption{
 				Operator: spyse.OperatorEndsWith,
 				Value:    "@" + emailDomain,
 			},

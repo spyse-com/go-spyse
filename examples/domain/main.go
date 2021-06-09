@@ -35,10 +35,10 @@ func main() {
 	println()
 
 	var searchDomain = ".tesla.com"
-	var subdomainsSearchParams = []map[string]spyse.SearchParameter{
+	var subdomainsSearchParams = []map[string]spyse.SearchOption{
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"name": spyse.SearchParameter{
+			"name": spyse.SearchOption{
 				Operator: spyse.OperatorEndsWith,
 				Value:    searchDomain,
 			},
@@ -68,14 +68,14 @@ func main() {
 	println()
 
 	var teslaRootDomainNameWithoutTld = "tesla"
-	var diffSuffixesSearchParams = []map[string]spyse.SearchParameter{
+	var diffSuffixesSearchParams = []map[string]spyse.SearchOption{
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"without_suffix": spyse.SearchParameter{
+			"without_suffix": spyse.SearchOption{
 				Operator: spyse.OperatorEqual,
 				Value:    teslaRootDomainNameWithoutTld,
 			},
-			"name": spyse.SearchParameter{
+			"name": spyse.SearchOption{
 				Operator: spyse.OperatorNotEqual,
 				Value:    teslaRootDomainName,
 			},

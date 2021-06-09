@@ -372,7 +372,7 @@ func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search
 func (s *DomainService) Search(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	limit, offset int,
 ) ([]Domain, error) {
 	body, err := json.Marshal(
@@ -414,7 +414,7 @@ func (s *DomainService) Search(
 // SearchCount returns a count of domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search_count
-func (s *DomainService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+func (s *DomainService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
@@ -445,7 +445,7 @@ type DomainScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_scroll_search
 func (s *DomainService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	searchID string,
 ) (*DomainScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: params}

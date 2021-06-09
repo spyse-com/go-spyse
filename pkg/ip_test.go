@@ -47,9 +47,9 @@ func TestIPService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var params = []map[string]SearchParameter{
+	var params = []map[string]SearchOption{
 		{
-			"cidr": SearchParameter{
+			"cidr": SearchOption{
 				Operator: "eq",
 				Value:    "8.8.8.8/32",
 			},

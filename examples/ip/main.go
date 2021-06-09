@@ -54,10 +54,10 @@ func main() {
 	println()
 
 	var searchPort = "9200" // Elasticsearch port
-	var ipSearchParams = []map[string]spyse.SearchParameter{
+	var ipSearchParams = []map[string]spyse.SearchOption{
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"open_port": spyse.SearchParameter{
+			"open_port": spyse.SearchOption{
 				Operator: spyse.OperatorEqual,
 				Value:    searchPort,
 			},
@@ -88,10 +88,10 @@ func main() {
 	println()
 
 	var usCountryName = "United States"
-	var usHostsSearchParams = []map[string]spyse.SearchParameter{
+	var usHostsSearchParams = []map[string]spyse.SearchOption{
 		{
 			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"geo_country": spyse.SearchParameter{
+			"geo_country": spyse.SearchOption{
 				Operator: spyse.OperatorEqual,
 				Value:    usCountryName,
 			},

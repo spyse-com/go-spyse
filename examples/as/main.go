@@ -32,9 +32,9 @@ func main() {
 	var searchAsn = "21000"
 	var limit = 1
 	var offset = 0
-	var params = []map[string]spyse.SearchParameter{
+	var params = []map[string]spyse.SearchOption{
 		{
-			"asn": spyse.SearchParameter{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
+			"asn": spyse.SearchOption{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
 				Operator: spyse.OperatorEqual,
 				Value:    searchAsn,
 			},

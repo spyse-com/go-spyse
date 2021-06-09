@@ -6,17 +6,7 @@ import (
 	"net/http"
 )
 
-const OperatorEqual = "eq"
-const OperatorNotEqual = "not_eq"
-const OperatorContains = "contains"
-const OperatorStartsWith = "starts"
-const OperatorEndsWith = "ends"
-const OperatorExists = "exists"
-const OperatorNotExists = "not_exists"
-const OperatorGreaterThanOrEqual = "gte"
-const OperatorLessThanOrEqual = "lte"
-
-type SearchParameter struct {
+type SearchOption struct {
 	Operator string `json:"operator"`
 	Value    string `json:"value"`
 }
@@ -30,13 +20,13 @@ type PaginatedRequest struct {
 }
 
 type SearchRequest struct {
-	SearchParams []map[string]SearchParameter `json:"search_params"`
+	SearchParams []map[string]SearchOption `json:"search_params"`
 	PaginatedRequest
 }
 
 type ScrollSearchRequest struct {
-	SearchParams []map[string]SearchParameter `json:"search_params"`
-	SearchID     string                       `json:"search_id"`
+	SearchParams []map[string]SearchOption `json:"search_params"`
+	SearchID     string                    `json:"search_id"`
 }
 
 type DomainBulkSearchRequest struct {
@@ -51,4 +41,38 @@ type IPBulkSearchRequest struct {
 
 func newRequestWithContext(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
 	return http.NewRequestWithContext(ctx, method, url, body)
+}
+
+type QueryBuilder struct {
+	Query []map[string]SearchOption
+}
+
+func (q *QueryBuilder) AppendParam(v QueryParam) {
+	q.Query = append(q.Query, map[string]SearchOption{
+		v.Name: {
+			Operator: v.Operator,
+			Value:    v.Value,
+		},
+	})
+}
+
+func (q *QueryBuilder) AppendGroupParams(lst ...QueryParam) {
+	groupParams := make(map[string]SearchOption, len(lst))
+	for _, v := range lst {
+		groupParams[v.Name] = SearchOption{
+			Value:    v.Value,
+			Operator: v.Operator,
+		}
+	}
+	q.Query = append(q.Query, groupParams)
+}
+
+func (q *QueryBuilder) Clear() {
+	q.Query = []map[string]SearchOption{}
+}
+
+type QueryParam struct {
+	Name     string
+	Operator string
+	Value    string
 }

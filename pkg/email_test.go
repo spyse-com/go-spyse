@@ -47,9 +47,9 @@ func TestEmailService_Search(t *testing.T) {
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var params = []map[string]SearchParameter{
+	var params = []map[string]SearchOption{
 		{
-			"email": SearchParameter{
+			"email": SearchOption{
 				Operator: "eq",
 				Value:    "test@gmail.com",
 			},
