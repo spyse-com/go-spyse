@@ -1,29 +1,30 @@
-package spyse
+package bulk_search
 
 import (
 	"context"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
 	"io/ioutil"
 	"net/http"
 	"testing"
 )
 
 func TestBulkSearchService_Domain(t *testing.T) {
-	setup()
-	defer teardown()
+	spyse.setup()
+	defer spyse.teardown()
 	testAPIEndpoint := "/bulk-search/domain"
 
 	raw, err := ioutil.ReadFile("../data/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEndpoint)
+	spyse.testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		spyse.testMethod(t, r, http.MethodPost)
+		spyse.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.BulkSearch.Domain(
+	domains, err := spyse.testClient.BulkSearch.Domain(
 		context.Background(),
 		[]string{"google.com"},
 	)
@@ -36,21 +37,21 @@ func TestBulkSearchService_Domain(t *testing.T) {
 }
 
 func TestBulkSearchService_IP(t *testing.T) {
-	setup()
-	defer teardown()
+	spyse.setup()
+	defer spyse.teardown()
 	testAPIEndpoint := "/bulk-search/ip"
 
 	raw, err := ioutil.ReadFile("../data/ip_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEndpoint)
+	spyse.testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		spyse.testMethod(t, r, http.MethodPost)
+		spyse.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.BulkSearch.IP(
+	domains, err := spyse.testClient.BulkSearch.IP(
 		context.Background(),
 		[]string{"8.8.8.8"},
 	)

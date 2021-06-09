@@ -324,7 +324,7 @@ const (
 	// IPParamCIDR search IPs by CIDR. Operators: eq.
 	IPParamCIDR = "cidr"
 
-	// IPParamISP search IPs by the internet service provider name. Operators: eq, contains, exists, not_exists.
+	// IPParamISP search IPs by the internet services provider name. Operators: eq, contains, exists, not_exists.
 	IPParamISP = "isp"
 
 	// IPParamPTR search IPs PTR record value. Operators: eq, contains, exists, not_exists.

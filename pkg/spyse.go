@@ -2,6 +2,14 @@ package spyse
 
 import (
 	"context"
+	"github.com/spyse-com/go-spyse/pkg/services/as"
+	"github.com/spyse-com/go-spyse/pkg/services/bulk_search"
+	"github.com/spyse-com/go-spyse/pkg/services/certificate"
+	"github.com/spyse-com/go-spyse/pkg/services/cve"
+	"github.com/spyse-com/go-spyse/pkg/services/domain"
+	"github.com/spyse-com/go-spyse/pkg/services/email"
+	"github.com/spyse-com/go-spyse/pkg/services/history"
+	"github.com/spyse-com/go-spyse/pkg/services/ip"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -33,14 +41,14 @@ type Client struct {
 	// Base URL for API requests.
 	baseURL *url.URL
 
-	Certificate *CertificateService
-	AS          *ASService
-	CVE         *CVEService
-	Domain      *DomainService
-	Email       *EmailService
-	IP          *IPService
-	BulkSearch  *BulkSearchService
-	History     *HistoryService
+	Certificate *certificate.CertificateService
+	AS          *as.ASService
+	CVE         *cve.CVEService
+	Domain      *domain.DomainService
+	Email       *email.EmailService
+	IP          *ip.IPService
+	BulkSearch  *bulk_search.BulkSearchService
+	History     *history.HistoryService
 }
 
 // NewClient returns a new Spyse API httpClient.
@@ -67,14 +75,14 @@ func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, err
 		accessToken: accessToken,
 	}
 
-	c.AS = &ASService{client: c}
-	c.Certificate = &CertificateService{client: c}
-	c.CVE = &CVEService{client: c}
-	c.Domain = &DomainService{client: c}
-	c.Email = &EmailService{client: c}
-	c.IP = &IPService{client: c}
-	c.BulkSearch = &BulkSearchService{client: c}
-	c.History = &HistoryService{client: c}
+	c.AS = &as.ASService{client: c}
+	c.Certificate = &certificate.CertificateService{client: c}
+	c.CVE = &cve.CVEService{client: c}
+	c.Domain = &domain.DomainService{client: c}
+	c.Email = &email.EmailService{client: c}
+	c.IP = &ip.IPService{client: c}
+	c.BulkSearch = &bulk_search.BulkSearchService{client: c}
+	c.History = &history.HistoryService{client: c}
 
 	return c, nil
 }

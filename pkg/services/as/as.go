@@ -1,10 +1,11 @@
-package spyse
+package as
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
 	"net/http"
 )
 
@@ -19,7 +20,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems
 type ASService struct {
-	client *Client
+	client *spyse.Client
 }
 
 type TotalCountResponseData struct {
@@ -56,7 +57,7 @@ func (s *ASService) Details(ctx context.Context, asn string) (*AS, error) {
 
 	resp, err := s.client.Do(req, &AS{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	if len(resp.Data.Items) > 0 {
@@ -69,11 +70,11 @@ func (s *ASService) Details(ctx context.Context, asn string) (*AS, error) {
 // Search returns a list of Autonomous Systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-func (s *ASService) Search(ctx context.Context, params []map[string]SearchOption, limit, offset int) ([]AS, error) {
+func (s *ASService) Search(ctx context.Context, params []map[string]spyse.SearchOption, limit, offset int) ([]AS, error) {
 	body, err := json.Marshal(
-		SearchRequest{
+		spyse.SearchRequest{
 			SearchParams: params,
-			PaginatedRequest: PaginatedRequest{
+			PaginatedRequest: spyse.PaginatedRequest{
 				Size: limit,
 				From: offset,
 			},
@@ -90,7 +91,7 @@ func (s *ASService) Search(ctx context.Context, params []map[string]SearchOption
 
 	resp, err := s.client.Do(req, AS{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []AS
@@ -109,8 +110,8 @@ func (s *ASService) Search(ctx context.Context, params []map[string]SearchOption
 // SearchCount returns a count of Autonomous Systems that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_search_count
-func (s *ASService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: params})
+func (s *ASService) SearchCount(ctx context.Context, params []map[string]spyse.SearchOption) (int64, error) {
+	body, err := json.Marshal(spyse.SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -122,7 +123,7 @@ func (s *ASService) SearchCount(ctx context.Context, params []map[string]SearchO
 
 	resp, err := s.client.Do(req, &TotalCountResponseData{})
 	if err != nil {
-		return 0, NewSpyseError(err)
+		return 0, spyse.NewSpyseError(err)
 	}
 
 	return *resp.Data.TotalCount, nil
@@ -140,10 +141,10 @@ type ASScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_scroll_search
 func (s *ASService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	searchID string,
 ) (*ASScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: params}
+	scrollRequest := spyse.ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
@@ -159,7 +160,7 @@ func (s *ASService) ScrollSearch(
 
 	resp, err := s.client.Do(req, AS{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 	response := &ASScrollResponse{
 		SearchID:   *resp.Data.SearchID,

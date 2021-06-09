@@ -1,10 +1,12 @@
-package spyse
+package email
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg/services/as"
 	"net/http"
 )
 
@@ -19,7 +21,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails
 type EmailService struct {
-	client *Client
+	client *spyse.Client
 }
 
 type Email struct {
@@ -45,7 +47,7 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 
 	resp, err := s.client.Do(req, &Email{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	if len(resp.Data.Items) > 0 {
@@ -59,12 +61,12 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search
 func (s *EmailService) Search(
-	ctx context.Context, params []map[string]SearchOption, limit, offset int) ([]Email, error,
+	ctx context.Context, params []map[string]spyse.SearchOption, limit, offset int) ([]Email, error,
 ) {
 	body, err := json.Marshal(
-		SearchRequest{
+		spyse.SearchRequest{
 			SearchParams: params,
-			PaginatedRequest: PaginatedRequest{
+			PaginatedRequest: spyse.PaginatedRequest{
 				Size: limit,
 				From: offset,
 			},
@@ -81,7 +83,7 @@ func (s *EmailService) Search(
 
 	resp, err := s.client.Do(req, Email{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []Email
@@ -100,8 +102,8 @@ func (s *EmailService) Search(
 // SearchCount returns a count of emails that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search_count
-func (s *EmailService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: params})
+func (s *EmailService) SearchCount(ctx context.Context, params []map[string]spyse.SearchOption) (int64, error) {
+	body, err := json.Marshal(spyse.SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -111,9 +113,9 @@ func (s *EmailService) SearchCount(ctx context.Context, params []map[string]Sear
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
-		return 0, NewSpyseError(err)
+		return 0, spyse.NewSpyseError(err)
 	}
 
 	return *resp.Data.TotalCount, nil
@@ -131,10 +133,10 @@ type EmailScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_scroll_search
 func (s *EmailService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	searchID string,
 ) (*EmailScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: params}
+	scrollRequest := spyse.ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
@@ -150,7 +152,7 @@ func (s *EmailService) ScrollSearch(
 
 	resp, err := s.client.Do(req, Email{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 	response := &EmailScrollResponse{
 		SearchID:   *resp.Data.SearchID,

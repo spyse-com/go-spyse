@@ -1,10 +1,13 @@
-package spyse
+package ip
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg/services/as"
+	"github.com/spyse-com/go-spyse/pkg/services/domain"
 	"net/http"
 )
 
@@ -19,22 +22,22 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips
 type IPService struct {
-	client *Client
+	client *spyse.Client
 }
 
 // IP represents IP record with geo info and DNS PTR record
 type IP struct {
-	CVEList      []IPCVE         `json:"cve_list,omitempty"`
-	IPAddress    string          `json:"ip,omitempty"`
-	GEOInfo      LocationData    `json:"geo_info,omitempty"`
-	ISPInfo      ISPInfo         `json:"isp_info,omitempty"`
-	PtrRecord    PtrRecord       `json:"ptr_record,omitempty"`
-	Ports        []Port          `json:"ports,omitempty"`
-	Score        Score           `json:"security_score,omitempty"`
-	UpdatedAt    string          `json:"updated_at,omitempty"`
-	CIDR         string          `json:"cidr,omitempty"`
-	Technologies []IPTechnology  `json:"technologies,omitempty"`
-	Abuses       ShortAbusesInfo `json:"abuses,omitempty"`
+	CVEList      []domain.IPCVE      `json:"cve_list,omitempty"`
+	IPAddress    string              `json:"ip,omitempty"`
+	GEOInfo      domain.LocationData `json:"geo_info,omitempty"`
+	ISPInfo      ISPInfo             `json:"isp_info,omitempty"`
+	PtrRecord    PtrRecord           `json:"ptr_record,omitempty"`
+	Ports        []Port              `json:"ports,omitempty"`
+	Score        domain.Score        `json:"security_score,omitempty"`
+	UpdatedAt    string              `json:"updated_at,omitempty"`
+	CIDR         string              `json:"cidr,omitempty"`
+	Technologies []IPTechnology      `json:"technologies,omitempty"`
+	Abuses       ShortAbusesInfo     `json:"abuses,omitempty"`
 }
 
 type ShortAbusesInfo struct {
@@ -52,37 +55,37 @@ type ISPInfo struct {
 
 // PtrRecord of current IP
 type PtrRecord struct {
-	Value     string   `json:"value,omitempty"`
-	UpdatedAt string   `json:"updated_at,omitempty"`
-	GeoInfo   []IPInfo `json:"geo_info,omitempty"`
+	Value     string          `json:"value,omitempty"`
+	UpdatedAt string          `json:"updated_at,omitempty"`
+	GeoInfo   []domain.IPInfo `json:"geo_info,omitempty"`
 }
 
 // Port represents port record with CPE, CVE info
 type Port struct {
-	Banner    string       `json:"banner,omitempty"`
-	Extract   PortExtract  `json:"http_extract,omitempty"`
-	Port      int          `json:"port,omitempty"`
-	Tech      []Technology `json:"technology,omitempty"`
-	Service   string       `json:"masscan_service_name,omitempty"`
-	UpdatedAt string       `json:"updated_at,omitempty"`
-	Trackers  Trackers     `json:"trackers,omitempty"`
+	Banner    string          `json:"banner,omitempty"`
+	Extract   PortExtract     `json:"http_extract,omitempty"`
+	Port      int             `json:"port,omitempty"`
+	Tech      []Technology    `json:"technology,omitempty"`
+	Service   string          `json:"masscan_service_name,omitempty"`
+	UpdatedAt string          `json:"updated_at,omitempty"`
+	Trackers  domain.Trackers `json:"trackers,omitempty"`
 }
 
 type PortExtract struct {
-	Cookies             []ExtractCookie `json:"cookies,omitempty"`
-	Description         string          `json:"description,omitempty"`
-	Emails              []string        `json:"emails,omitempty"`
-	ExternalRedirectURI URIParts        `json:"final_redirect_url,omitempty"`
-	ExtractedAt         string          `json:"extracted_at,omitempty"`
-	FaviconSha256       string          `json:"favicon_sha256,omitempty"`
-	HTTPHeaders         []HTTPHeaders   `json:"http_headers,omitempty"`
-	HTTPStatusCode      *int            `json:"http_status_code,omitempty"`
-	Links               []Hyperlink     `json:"links,omitempty"`
-	MetaTags            []MetaTag       `json:"meta_tags,omitempty"`
-	RobotsTxt           string          `json:"robots_txt,omitempty"`
-	Scripts             []string        `json:"scripts,omitempty"`
-	Styles              []string        `json:"styles,omitempty"`
-	Title               string          `json:"title,omitempty"`
+	Cookies             []domain.ExtractCookie `json:"cookies,omitempty"`
+	Description         string                 `json:"description,omitempty"`
+	Emails              []string               `json:"emails,omitempty"`
+	ExternalRedirectURI domain.URIParts        `json:"final_redirect_url,omitempty"`
+	ExtractedAt         string                 `json:"extracted_at,omitempty"`
+	FaviconSha256       string                 `json:"favicon_sha256,omitempty"`
+	HTTPHeaders         []domain.HTTPHeaders   `json:"http_headers,omitempty"`
+	HTTPStatusCode      *int                   `json:"http_status_code,omitempty"`
+	Links               []domain.Hyperlink     `json:"links,omitempty"`
+	MetaTags            []domain.MetaTag       `json:"meta_tags,omitempty"`
+	RobotsTxt           string                 `json:"robots_txt,omitempty"`
+	Scripts             []string               `json:"scripts,omitempty"`
+	Styles              []string               `json:"styles,omitempty"`
+	Title               string                 `json:"title,omitempty"`
 }
 
 type Technology struct {
@@ -107,7 +110,7 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 
 	resp, err := s.client.Do(req, &IP{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	if len(resp.Data.Items) > 0 {
@@ -120,11 +123,11 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 // Search returns a paginated list of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search
-func (s *IPService) Search(ctx context.Context, params []map[string]SearchOption, limit, offset int) ([]IP, error) {
+func (s *IPService) Search(ctx context.Context, params []map[string]spyse.SearchOption, limit, offset int) ([]IP, error) {
 	body, err := json.Marshal(
-		SearchRequest{
+		spyse.SearchRequest{
 			SearchParams: params,
-			PaginatedRequest: PaginatedRequest{
+			PaginatedRequest: spyse.PaginatedRequest{
 				Size: limit,
 				From: offset,
 			},
@@ -141,7 +144,7 @@ func (s *IPService) Search(ctx context.Context, params []map[string]SearchOption
 
 	resp, err := s.client.Do(req, IP{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []IP
@@ -158,8 +161,8 @@ func (s *IPService) Search(ctx context.Context, params []map[string]SearchOption
 // SearchCount returns a count of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search_count
-func (s *IPService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: params})
+func (s *IPService) SearchCount(ctx context.Context, params []map[string]spyse.SearchOption) (int64, error) {
+	body, err := json.Marshal(spyse.SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -169,9 +172,9 @@ func (s *IPService) SearchCount(ctx context.Context, params []map[string]SearchO
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
-		return 0, NewSpyseError(err)
+		return 0, spyse.NewSpyseError(err)
 	}
 
 	return *resp.Data.TotalCount, nil
@@ -189,10 +192,10 @@ type IPScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_scroll_search
 func (s *IPService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	searchID string,
 ) (*IPScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: params}
+	scrollRequest := spyse.ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
@@ -208,7 +211,7 @@ func (s *IPService) ScrollSearch(
 
 	resp, err := s.client.Do(req, IP{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 	response := &IPScrollResponse{
 		SearchID:   *resp.Data.SearchID,

@@ -1,10 +1,12 @@
-package spyse
+package certificate
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg/services/as"
 	"net/http"
 )
 
@@ -19,7 +21,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates
 type CertificateService struct {
-	client *Client
+	client *spyse.Client
 }
 
 // Certificate represents certificate information
@@ -315,7 +317,7 @@ func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 stri
 
 	resp, err := s.client.Do(req, &Certificate{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	if len(resp.Data.Items) > 0 {
@@ -330,13 +332,13 @@ func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 stri
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search
 func (s *CertificateService) Search(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	limit, offset int,
 ) ([]Certificate, error) {
 	body, err := json.Marshal(
-		SearchRequest{
+		spyse.SearchRequest{
 			SearchParams: params,
-			PaginatedRequest: PaginatedRequest{
+			PaginatedRequest: spyse.PaginatedRequest{
 				Size: limit,
 				From: offset,
 			},
@@ -353,7 +355,7 @@ func (s *CertificateService) Search(
 
 	resp, err := s.client.Do(req, Certificate{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []Certificate
@@ -372,8 +374,8 @@ func (s *CertificateService) Search(
 // SearchCount returns a count of Certificates that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_search_count
-func (s *CertificateService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: params})
+func (s *CertificateService) SearchCount(ctx context.Context, params []map[string]spyse.SearchOption) (int64, error) {
+	body, err := json.Marshal(spyse.SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -383,9 +385,9 @@ func (s *CertificateService) SearchCount(ctx context.Context, params []map[strin
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
-		return 0, NewSpyseError(err)
+		return 0, spyse.NewSpyseError(err)
 	}
 
 	return *resp.Data.TotalCount, nil
@@ -403,10 +405,10 @@ type CertificateScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_scroll_search
 func (s *CertificateService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	searchID string,
 ) (*CertificateScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: params}
+	scrollRequest := spyse.ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
@@ -422,7 +424,7 @@ func (s *CertificateService) ScrollSearch(
 
 	resp, err := s.client.Do(req, Certificate{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 	response := &CertificateScrollResponse{
 		SearchID:   *resp.Data.SearchID,

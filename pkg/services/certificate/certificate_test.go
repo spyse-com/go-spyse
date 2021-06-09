@@ -1,29 +1,30 @@
-package spyse
+package certificate
 
 import (
 	"context"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
 	"io/ioutil"
 	"net/http"
 	"testing"
 )
 
 func TestCertificateService_Details(t *testing.T) {
-	setup()
-	defer teardown()
+	spyse.setup()
+	defer spyse.teardown()
 	testAPIEndpoint := "/certificate/5c157070be587becb7856643c9be75ab31726a0328a88377b0093c908a53abf5"
 
 	raw, err := ioutil.ReadFile("../data/certificate_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
+	spyse.testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		spyse.testMethod(t, r, http.MethodGet)
+		spyse.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	certificates, err := testClient.Certificate.Details(
+	certificates, err := spyse.testClient.Certificate.Details(
 		context.Background(),
 		"5c157070be587becb7856643c9be75ab31726a0328a88377b0093c908a53abf5",
 	)

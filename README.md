@@ -165,7 +165,7 @@ All emails seen with domain tesla.com (32)
   Email                              Last seen                          At location              Location type
   muskateer@tesla.com                2020-10-02T19:01:36.668584112Z     www.outfuel.com          site
   Press@tesla.com                    2020-10-08T03:20:15.930655717Z     pr-journal.biz           site
-  ServiceManualFeedback@tesla.com    2020-10-02T14:51:04.72981981Z      service.teslamotors.com  site
+  ServiceManualFeedback@tesla.com    2020-10-02T14:51:04.72981981Z      services.teslamotors.com  site
   elon@tesla.com                     2020-10-04T18:14:47.519434163Z     developers.madkudu.com   site
   elon@tesla.com                     2021-05-14T15:31:11.654391896Z     35.246.121.122           port
   elon@tesla.com                     2021-05-14T15:28:24.674757356Z     35.241.5.200             port
@@ -179,7 +179,7 @@ All emails seen with domain tesla.com (32)
   elon@tesla.com                     2021-05-31T21:39:19.937729111Z     165.227.193.116          port
   elon@tesla.com                     2021-06-01T19:39:25.015716367Z     37.139.0.24              port
   elon@tesla.com                     2021-06-02T07:22:56.090613983Z     3.122.118.222            port
-  ServicePortalFeedback@tesla.com    2020-10-02T14:51:04.72981981Z      service.teslamotors.com  site
+  ServicePortalFeedback@tesla.com    2020-10-02T14:51:04.72981981Z      services.teslamotors.com  site
   forums@tesla.com                   2020-10-16T02:42:09.446928549Z     4a.5n0hrvl.cn            site
   elon4president@tesla.com           n/a                                n/a                      n/a
   gfb-infra@tesla.com                2021-06-01T18:24:10.64127371Z      52.29.176.153            port

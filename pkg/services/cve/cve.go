@@ -1,10 +1,12 @@
-package spyse
+package cve
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg/services/as"
 	"net/http"
 	"time"
 )
@@ -20,7 +22,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves
 type CVEService struct {
-	client *Client
+	client *spyse.Client
 }
 
 // CVE represents cve record with vulnerability information
@@ -143,7 +145,7 @@ func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 
 	resp, err := s.client.Do(req, &CVE{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	if len(resp.Data.Items) > 0 {
@@ -158,13 +160,13 @@ func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search
 func (s *CVEService) Search(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	limit, offset int,
 ) ([]CVE, error) {
 	body, err := json.Marshal(
-		SearchRequest{
+		spyse.SearchRequest{
 			SearchParams: params,
-			PaginatedRequest: PaginatedRequest{
+			PaginatedRequest: spyse.PaginatedRequest{
 				Size: limit,
 				From: offset,
 			},
@@ -181,7 +183,7 @@ func (s *CVEService) Search(
 
 	resp, err := s.client.Do(req, CVE{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []CVE
@@ -198,8 +200,8 @@ func (s *CVEService) Search(
 // SearchCount returns a count of CVEs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search_count
-func (s *CVEService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
-	body, err := json.Marshal(SearchRequest{SearchParams: params})
+func (s *CVEService) SearchCount(ctx context.Context, params []map[string]spyse.SearchOption) (int64, error) {
+	body, err := json.Marshal(spyse.SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
@@ -209,9 +211,9 @@ func (s *CVEService) SearchCount(ctx context.Context, params []map[string]Search
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
-		return 0, NewSpyseError(err)
+		return 0, spyse.NewSpyseError(err)
 	}
 
 	return *resp.Data.TotalCount, nil
@@ -229,10 +231,10 @@ type CVEScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_scroll_search
 func (s *CVEService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchOption,
+	params []map[string]spyse.SearchOption,
 	searchID string,
 ) (*CVEScrollResponse, error) {
-	scrollRequest := ScrollSearchRequest{SearchParams: params}
+	scrollRequest := spyse.ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
 	}
@@ -248,7 +250,7 @@ func (s *CVEService) ScrollSearch(
 
 	resp, err := s.client.Do(req, CVE{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 	response := &CVEScrollResponse{
 		SearchID:   *resp.Data.SearchID,

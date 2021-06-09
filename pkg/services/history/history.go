@@ -1,8 +1,10 @@
-package spyse
+package history
 
 import (
 	"context"
 	"fmt"
+	"github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg/services/domain"
 	"net/http"
 )
 
@@ -15,7 +17,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/history
 type HistoryService struct {
-	client *Client
+	client *spyse.Client
 }
 
 type DNSSimpleHistorical struct {
@@ -25,12 +27,12 @@ type DNSSimpleHistorical struct {
 }
 
 type WhoisHistory struct {
-	Admin      DomainWHOIS          `json:"admin,omitempty"`
-	Registrant DomainWHOIS          `json:"registrant,omitempty"`
-	Registrar  DomainWHOISRegistrar `json:"registrar,omitempty"`
-	Tech       DomainWHOIS          `json:"tech,omitempty"`
-	UpdatedAt  string               `json:"updated_at,omitempty"`
-	CreatedAt  string               `json:"created_at,omitempty"`
+	Admin      domain.DomainWHOIS          `json:"admin,omitempty"`
+	Registrant domain.DomainWHOIS          `json:"registrant,omitempty"`
+	Registrar  domain.DomainWHOISRegistrar `json:"registrar,omitempty"`
+	Tech       domain.DomainWHOIS          `json:"tech,omitempty"`
+	UpdatedAt  string                      `json:"updated_at,omitempty"`
+	CreatedAt  string                      `json:"created_at,omitempty"`
 }
 
 // DNS returns the DNS history of the given domain.
@@ -50,7 +52,7 @@ func (s *HistoryService) DNS(
 
 	resp, err := s.client.Do(req, DNSSimpleHistorical{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []DNSSimpleHistorical
@@ -77,7 +79,7 @@ func (s *HistoryService) Whois(ctx context.Context, domain string, limit, offset
 
 	resp, err := s.client.Do(req, WhoisHistory{})
 	if err != nil {
-		return nil, NewSpyseError(err)
+		return nil, spyse.NewSpyseError(err)
 	}
 
 	var items []WhoisHistory
