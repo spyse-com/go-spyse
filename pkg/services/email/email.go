@@ -21,7 +21,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails
 type EmailService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 type Email struct {
@@ -40,12 +40,12 @@ type EmailSources struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_details
 func (s *EmailService) Details(ctx context.Context, email string) (*Email, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(emailDetailsEndpoint+"%s", email), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(emailDetailsEndpoint+"%s", email), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Email{})
+	resp, err := s.Client.Do(req, &Email{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -76,12 +76,12 @@ func (s *EmailService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Email{})
+	resp, err := s.Client.Do(req, Email{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -108,12 +108,12 @@ func (s *EmailService) SearchCount(ctx context.Context, params []map[string]spys
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -145,12 +145,12 @@ func (s *EmailService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Email{})
+	resp, err := s.Client.Do(req, Email{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

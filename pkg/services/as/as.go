@@ -20,7 +20,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems
 type ASService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 type TotalCountResponseData struct {
@@ -50,12 +50,12 @@ type IPV6Prefixes struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems#as_details
 func (s *ASService) Details(ctx context.Context, asn string) (*AS, error) {
 	refURI := fmt.Sprintf(autonomousSystemDetailsEndpoint+"%s", asn)
-	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &AS{})
+	resp, err := s.Client.Do(req, &AS{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -84,12 +84,12 @@ func (s *ASService) Search(ctx context.Context, params []map[string]spyse.Search
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, autonomousSystemSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, autonomousSystemSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, AS{})
+	resp, err := s.Client.Do(req, AS{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -116,12 +116,12 @@ func (s *ASService) SearchCount(ctx context.Context, params []map[string]spyse.S
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, autonomousSystemSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, autonomousSystemSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -153,12 +153,12 @@ func (s *ASService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, autonomousSystemScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, autonomousSystemScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, AS{})
+	resp, err := s.Client.Do(req, AS{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

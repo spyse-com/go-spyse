@@ -21,7 +21,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates
 type CertificateService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 // Certificate represents certificate information
@@ -310,12 +310,12 @@ type Validation struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates#certificate_details
 func (s *CertificateService) Details(ctx context.Context, fingerprintSHA256 string) (*Certificate, error) {
 	refURI := fmt.Sprintf(certificateDetailsEndpoint+"%s", fingerprintSHA256)
-	req, err := s.client.NewRequest(ctx, http.MethodGet, refURI, nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, refURI, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Certificate{})
+	resp, err := s.Client.Do(req, &Certificate{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -348,12 +348,12 @@ func (s *CertificateService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, certificateSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, certificateSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Certificate{})
+	resp, err := s.Client.Do(req, Certificate{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -380,12 +380,12 @@ func (s *CertificateService) SearchCount(ctx context.Context, params []map[strin
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, certificateSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, certificateSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -417,12 +417,12 @@ func (s *CertificateService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, certificateScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, certificateScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Certificate{})
+	resp, err := s.Client.Do(req, Certificate{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

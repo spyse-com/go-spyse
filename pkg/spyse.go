@@ -75,14 +75,14 @@ func NewClient(baseURL, accessToken string, httpClient httpClient) (*Client, err
 		accessToken: accessToken,
 	}
 
-	c.AS = &as.ASService{client: c}
-	c.Certificate = &certificate.CertificateService{client: c}
-	c.CVE = &cve.CVEService{client: c}
-	c.Domain = &domain.DomainService{client: c}
-	c.Email = &email.EmailService{client: c}
-	c.IP = &ip.IPService{client: c}
-	c.BulkSearch = &bulk_search.BulkSearchService{client: c}
-	c.History = &history.HistoryService{client: c}
+	c.AS = &as.ASService{Client: c}
+	c.Certificate = &certificate.CertificateService{Client: c}
+	c.CVE = &cve.CVEService{Client: c}
+	c.Domain = &domain.DomainService{Client: c}
+	c.Email = &email.EmailService{Client: c}
+	c.IP = &ip.IPService{Client: c}
+	c.BulkSearch = &bulk_search.BulkSearchService{Client: c}
+	c.History = &history.HistoryService{Client: c}
 
 	return c, nil
 }

@@ -19,7 +19,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search
 type BulkSearchService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 // Domain lookup returns a full representation of the domains for the given domain names.
@@ -31,12 +31,12 @@ func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string) ([
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, bulkSearchDomainEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, bulkSearchDomainEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, domain.Domain{})
+	resp, err := s.Client.Do(req, domain.Domain{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -63,12 +63,12 @@ func (s *BulkSearchService) IP(ctx context.Context, ipList []string) ([]ip.IP, e
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, bulkSearchIPEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, bulkSearchIPEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, ip.IP{})
+	resp, err := s.Client.Do(req, ip.IP{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

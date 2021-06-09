@@ -22,7 +22,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains
 type DomainService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 // Domain represents the web site domain model
@@ -353,12 +353,12 @@ type DNSRecordsInfo struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_details
 func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(domainDetailsEndpoint+"%s", domainName), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(domainDetailsEndpoint+"%s", domainName), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Domain{})
+	resp, err := s.Client.Do(req, &Domain{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -391,12 +391,12 @@ func (s *DomainService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Domain{})
+	resp, err := s.Client.Do(req, Domain{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -423,12 +423,12 @@ func (s *DomainService) SearchCount(ctx context.Context, params []map[string]spy
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -460,12 +460,12 @@ func (s *DomainService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Domain{})
+	resp, err := s.Client.Do(req, Domain{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

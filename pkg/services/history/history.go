@@ -17,7 +17,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/history
 type HistoryService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 type DNSSimpleHistorical struct {
@@ -45,12 +45,12 @@ func (s *HistoryService) DNS(
 ) ([]DNSSimpleHistorical, error) {
 	path := fmt.Sprintf(dnsHistoryEndpoint, dnsType, domain, limit, offset)
 
-	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, DNSSimpleHistorical{})
+	resp, err := s.Client.Do(req, DNSSimpleHistorical{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -72,12 +72,12 @@ func (s *HistoryService) DNS(
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/history#domain_whois_history
 func (s *HistoryService) Whois(ctx context.Context, domain string, limit, offset int) ([]WhoisHistory, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(whoisHistoryEndpoint, domain, limit, offset), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(whoisHistoryEndpoint, domain, limit, offset), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, WhoisHistory{})
+	resp, err := s.Client.Do(req, WhoisHistory{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

@@ -22,7 +22,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves
 type CVEService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 // CVE represents cve record with vulnerability information
@@ -138,12 +138,12 @@ type CVETime struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_details
 func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(cveDetailsEndpoint+"%s", cve), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(cveDetailsEndpoint+"%s", cve), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &CVE{})
+	resp, err := s.Client.Do(req, &CVE{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -176,12 +176,12 @@ func (s *CVEService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, CVE{})
+	resp, err := s.Client.Do(req, CVE{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -206,12 +206,12 @@ func (s *CVEService) SearchCount(ctx context.Context, params []map[string]spyse.
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -243,12 +243,12 @@ func (s *CVEService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, CVE{})
+	resp, err := s.Client.Do(req, CVE{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}

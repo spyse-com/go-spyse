@@ -22,7 +22,7 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips
 type IPService struct {
-	client *spyse.Client
+	Client *spyse.Client
 }
 
 // IP represents IP record with geo info and DNS PTR record
@@ -103,12 +103,12 @@ type IPTechnology struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_details
 func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(ipDetailsEndpoint+"%s", ip), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(ipDetailsEndpoint+"%s", ip), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &IP{})
+	resp, err := s.Client.Do(req, &IP{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -137,12 +137,12 @@ func (s *IPService) Search(ctx context.Context, params []map[string]spyse.Search
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, IP{})
+	resp, err := s.Client.Do(req, IP{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
@@ -167,12 +167,12 @@ func (s *IPService) SearchCount(ctx context.Context, params []map[string]spyse.S
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &as.TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &as.TotalCountResponseData{})
 	if err != nil {
 		return 0, spyse.NewSpyseError(err)
 	}
@@ -204,12 +204,12 @@ func (s *IPService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, IP{})
+	resp, err := s.Client.Do(req, IP{})
 	if err != nil {
 		return nil, spyse.NewSpyseError(err)
 	}
