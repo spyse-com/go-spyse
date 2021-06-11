@@ -18,8 +18,10 @@ func main() {
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
+	svc := spyse.NewIPService(client)
+
 	var detailsIP = "91.210.36.26"
-	details, err := client.IP.Details(context.Background(), detailsIP)
+	details, err := svc.Details(context.Background(), detailsIP)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -54,17 +56,15 @@ func main() {
 	println()
 
 	var searchPort = "9200" // Elasticsearch port
-	var ipSearchParams = []map[string]spyse.SearchParameter{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"open_port": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
-				Value:    searchPort,
-			},
-		},
-	}
+	var ipSearchParams spyse.QueryBuilder
 
-	countResults, err := client.IP.SearchCount(context.Background(), ipSearchParams)
+	ipSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().OpenPort.Name,
+		Operator: svc.Params().OpenPort.Operator.Equal,
+		Value:    searchPort,
+	})
+
+	countResults, err := svc.SearchCount(context.Background(), ipSearchParams.Query)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -72,7 +72,7 @@ func main() {
 
 	var limit = 100
 	var offset = 0
-	searchResults, err := client.IP.Search(context.Background(), ipSearchParams, limit, offset)
+	searchResults, err := svc.Search(context.Background(), ipSearchParams.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -88,17 +88,16 @@ func main() {
 	println()
 
 	var usCountryName = "United States"
-	var usHostsSearchParams = []map[string]spyse.SearchParameter{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/ips#ip_search
-			"geo_country": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
-				Value:    usCountryName,
-			},
-		},
-	}
-	scrollSearchResults, err := client.IP.ScrollSearch(
-		context.Background(), usHostsSearchParams, "")
+	var usHostsSearchParams spyse.QueryBuilder
+
+	usHostsSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().GeoCountry.Name,
+		Operator: svc.Params().GeoCountry.Operator.Equal,
+		Value:    usCountryName,
+	})
+
+	scrollSearchResults, err := svc.ScrollSearch(
+		context.Background(), usHostsSearchParams.Query, "")
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

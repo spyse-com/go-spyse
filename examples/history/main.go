@@ -25,7 +25,9 @@ func main() {
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
-	dnsHistoryA, err := client.History.DNS(context.Background(), domain, "A", limit, offset)
+	svc := spyse.NewHistoryService(client)
+
+	dnsHistoryA, err := svc.DNS(context.Background(), domain, "A", limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -39,7 +41,7 @@ func main() {
 	}
 	println()
 
-	dnsHistoryNS, err := client.History.DNS(context.Background(), domain, "NS", limit, offset)
+	dnsHistoryNS, err := svc.DNS(context.Background(), domain, "NS", limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -53,7 +55,7 @@ func main() {
 	}
 	println()
 
-	dnsHistoryMX, err := client.History.DNS(context.Background(), domain, "MX", limit, offset)
+	dnsHistoryMX, err := svc.DNS(context.Background(), domain, "MX", limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

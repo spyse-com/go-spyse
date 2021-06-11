@@ -20,7 +20,13 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves
 type CVEService struct {
-	client *Client
+	Client *HTTPClient
+}
+
+func NewCVEService(c *HTTPClient) *CVEService {
+	return &CVEService{
+		Client: c,
+	}
 }
 
 // CVE represents cve record with vulnerability information
@@ -28,7 +34,7 @@ type CVE struct {
 	ID               string       `json:"id,omitempty"`
 	References       References   `json:"references,omitempty"`
 	Description      Descriptions `json:"description,omitempty"`
-	Impact           CVEImpact    `json:"impact,omitempty"`
+	Impact           Impact       `json:"impact,omitempty"`
 	Conditions       []Conditions `json:"conditions,omitempty"`
 	ProblemType      ProblemType  `json:"problemtype,omitempty"`
 	PublishedDate    string       `json:"publishedDate,omitempty"`
@@ -55,7 +61,7 @@ type DescriptionData struct {
 	Value    string `json:"value,omitempty"`
 }
 
-type CVEBaseMetricCVSSV2 struct {
+type BaseMetricCVSSV2 struct {
 	Version               string  `json:"version,omitempty"`
 	VectorString          string  `json:"vectorString,omitempty"`
 	AccessVector          string  `json:"accessVector,omitempty"`
@@ -67,19 +73,19 @@ type CVEBaseMetricCVSSV2 struct {
 	BaseScore             float32 `json:"baseScore,omitempty"`
 }
 
-type CVEBaseMetricV2 struct {
-	CVSSV2                  CVEBaseMetricCVSSV2 `json:"cvssV2,omitempty"`
-	Severity                string              `json:"severity,omitempty"`
-	ExploitabilityScore     float32             `json:"exploitabilityScore,omitempty"`
-	ImpactScore             float32             `json:"impactScore,omitempty"`
-	AcInSufInfo             *bool               `json:"acInsufInfo,omitempty"`
-	ObtainAllPrivilege      *bool               `json:"obtainAllPrivilege,omitempty"`
-	ObtainUserPrivilege     *bool               `json:"obtainUserPrivilege,omitempty"`
-	ObtainOtherPrivilege    *bool               `json:"obtainOtherPrivilege,omitempty"`
-	UserInteractionRequired *bool               `json:"userInteractionRequired,omitempty"`
+type BaseMetricV2 struct {
+	CVSSV2                  BaseMetricCVSSV2 `json:"cvssV2,omitempty"`
+	Severity                string           `json:"severity,omitempty"`
+	ExploitabilityScore     float32          `json:"exploitabilityScore,omitempty"`
+	ImpactScore             float32          `json:"impactScore,omitempty"`
+	AcInSufInfo             *bool            `json:"acInsufInfo,omitempty"`
+	ObtainAllPrivilege      *bool            `json:"obtainAllPrivilege,omitempty"`
+	ObtainUserPrivilege     *bool            `json:"obtainUserPrivilege,omitempty"`
+	ObtainOtherPrivilege    *bool            `json:"obtainOtherPrivilege,omitempty"`
+	UserInteractionRequired *bool            `json:"userInteractionRequired,omitempty"`
 }
 
-type CVEBaseMetricCVSSV3 struct {
+type BaseMetricCVSSV3 struct {
 	AttackComplexity      string  `json:"attackComplexity,omitempty"`
 	AttackVector          string  `json:"attackVector,omitempty"`
 	AvailabilityImpact    string  `json:"availabilityImpact,omitempty"`
@@ -94,15 +100,15 @@ type CVEBaseMetricCVSSV3 struct {
 	Version               string  `json:"version,omitempty"`
 }
 
-type CVEBaseMetricV3 struct {
-	CVSSV3              CVEBaseMetricCVSSV3 `json:"cvssV3,omitempty"`
-	ExploitabilityScore float32             `json:"exploitabilityScore,omitempty"`
-	ImpactScore         float32             `json:"impactScore,omitempty"`
+type BaseMetricV3 struct {
+	CVSSV3              BaseMetricCVSSV3 `json:"cvssV3,omitempty"`
+	ExploitabilityScore float32          `json:"exploitabilityScore,omitempty"`
+	ImpactScore         float32          `json:"impactScore,omitempty"`
 }
 
-type CVEImpact struct {
-	BaseMetricV2 CVEBaseMetricV2 `json:"baseMetricV2,omitempty"`
-	BaseMetricV3 CVEBaseMetricV3 `json:"baseMetricV3,omitempty"`
+type Impact struct {
+	BaseMetricV2 BaseMetricV2 `json:"baseMetricV2,omitempty"`
+	BaseMetricV3 BaseMetricV3 `json:"baseMetricV3,omitempty"`
 }
 
 type Conditions struct {
@@ -128,7 +134,7 @@ type ProblemTypeData struct {
 	Description []DescriptionData `json:"description,omitempty"`
 }
 
-type CVETime struct {
+type Time struct {
 	time.Time
 }
 
@@ -136,12 +142,12 @@ type CVETime struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_details
 func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(cveDetailsEndpoint+"%s", cve), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(cveDetailsEndpoint+"%s", cve), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &CVE{})
+	resp, err := s.Client.Do(req, &CVE{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -158,7 +164,7 @@ func (s *CVEService) Details(ctx context.Context, cve string) (*CVE, error) {
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search
 func (s *CVEService) Search(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	limit, offset int,
 ) ([]CVE, error) {
 	body, err := json.Marshal(
@@ -174,12 +180,12 @@ func (s *CVEService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, CVE{})
+	resp, err := s.Client.Do(req, CVE{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -198,18 +204,18 @@ func (s *CVEService) Search(
 // SearchCount returns a count of CVEs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_search_count
-func (s *CVEService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+func (s *CVEService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &TotalCountResponseData{})
 	if err != nil {
 		return 0, NewSpyseError(err)
 	}
@@ -229,7 +235,7 @@ type CVEScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves#cve_scroll_search
 func (s *CVEService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	searchID string,
 ) (*CVEScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: params}
@@ -241,12 +247,12 @@ func (s *CVEService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, cveScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, cveScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, CVE{})
+	resp, err := s.Client.Do(req, CVE{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}

@@ -1,22 +1,6 @@
 package spyse
 
-import (
-	"context"
-	"io"
-	"net/http"
-)
-
-const SearchOperatorEqual = "eq"
-const SearchOperatorNotEqual = "not_eq"
-const SearchOperatorContains = "contains"
-const SearchOperatorStartsWith = "starts"
-const SearchOperatorEndsWith = "ends"
-const SearchOperatorExists = "exists"
-const SearchOperatorNotExists = "not_exists"
-const SearchOperatorGreaterThanOrEqual = "gte"
-const SearchOperatorLessThanOrEqual = "lte"
-
-type SearchParameter struct {
+type SearchOption struct {
 	Operator string `json:"operator"`
 	Value    string `json:"value"`
 }
@@ -30,13 +14,13 @@ type PaginatedRequest struct {
 }
 
 type SearchRequest struct {
-	SearchParams []map[string]SearchParameter `json:"search_params"`
+	SearchParams []map[string]SearchOption `json:"search_params"`
 	PaginatedRequest
 }
 
 type ScrollSearchRequest struct {
-	SearchParams []map[string]SearchParameter `json:"search_params"`
-	SearchID     string                       `json:"search_id"`
+	SearchParams []map[string]SearchOption `json:"search_params"`
+	SearchID     string                    `json:"search_id"`
 }
 
 type DomainBulkSearchRequest struct {
@@ -49,6 +33,38 @@ type IPBulkSearchRequest struct {
 	PaginatedRequest
 }
 
-func newRequestWithContext(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
-	return http.NewRequestWithContext(ctx, method, url, body)
+type QueryBuilder struct {
+	Query []map[string]SearchOption
+}
+
+func (q *QueryBuilder) AppendParam(lst ...QueryParam) {
+	for _, v := range lst {
+		q.Query = append(q.Query, map[string]SearchOption{
+			v.Name: {
+				Operator: v.Operator,
+				Value:    v.Value,
+			},
+		})
+	}
+}
+
+func (q *QueryBuilder) AppendGroupParams(lst ...QueryParam) {
+	groupParams := make(map[string]SearchOption, len(lst))
+	for _, v := range lst {
+		groupParams[v.Name] = SearchOption{
+			Value:    v.Value,
+			Operator: v.Operator,
+		}
+	}
+	q.Query = append(q.Query, groupParams)
+}
+
+func (q *QueryBuilder) Clear() {
+	q.Query = []map[string]SearchOption{}
+}
+
+type QueryParam struct {
+	Name     string
+	Operator string
+	Value    string
 }

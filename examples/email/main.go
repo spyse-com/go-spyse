@@ -19,24 +19,24 @@ func main() {
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
-	var emailsSearchParams = []map[string]spyse.SearchParameter{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/emails#email_search
-			"email": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEndsWith,
-				Value:    "@" + emailDomain,
-			},
-		},
-	}
+	svc := spyse.NewEmailService(client)
 
-	countResults, err := client.Email.SearchCount(context.Background(), emailsSearchParams)
+	var emailsSearchParams spyse.QueryBuilder
+
+	emailsSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().Email.Name,
+		Operator: svc.Params().Email.Operator.EndsWith,
+		Value:    "@" + emailDomain,
+	})
+
+	countResults, err := svc.SearchCount(context.Background(), emailsSearchParams.Query)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
 	var offset = 0
-	emails, err := client.Email.Search(context.Background(), emailsSearchParams, examplesToPrint, offset)
+	emails, err := svc.Search(context.Background(), emailsSearchParams.Query, examplesToPrint, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

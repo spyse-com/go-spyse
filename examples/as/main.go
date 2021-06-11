@@ -16,9 +16,10 @@ func main() {
 	var apiBaseUrl = "https://api.spyse.com/v4/data/"
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	asService := spyse.NewASService(client)
 
 	var detailsAsn = "10000"
-	details, err := client.AS.Details(context.Background(), detailsAsn)
+	details, err := asService.Details(context.Background(), detailsAsn)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -32,15 +33,15 @@ func main() {
 	var searchAsn = "21000"
 	var limit = 1
 	var offset = 0
-	var params = []map[string]spyse.SearchParameter{
-		{
-			"asn": spyse.SearchParameter{ // More search parameters see at https://spyse-dev.readme.io/reference/autonomous-systems#as_search
-				Operator: spyse.SearchOperatorEqual,
-				Value:    searchAsn,
-			},
-		},
-	}
-	searchResults, err := client.AS.Search(context.Background(), params, limit, offset)
+	var params spyse.QueryBuilder
+
+	params.AppendParam(spyse.QueryParam{
+		Name:     asService.Params().ASN.Name,
+		Operator: asService.Params().ASN.Operator.Equal,
+		Value:    searchAsn,
+	})
+
+	searchResults, err := asService.Search(context.Background(), params.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

@@ -17,8 +17,10 @@ func main() {
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
 
+	svc := spyse.NewDomainService(client)
+
 	var teslaRootDomainName = "tesla.com"
-	details, err := client.Domain.Details(context.Background(), teslaRootDomainName)
+	details, err := svc.Details(context.Background(), teslaRootDomainName)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -35,17 +37,15 @@ func main() {
 	println()
 
 	var searchDomain = ".tesla.com"
-	var subdomainsSearchParams = []map[string]spyse.SearchParameter{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"name": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEndsWith,
-				Value:    searchDomain,
-			},
-		},
-	}
+	var subdomainsSearchParams spyse.QueryBuilder
 
-	countResults, err := client.Domain.SearchCount(context.Background(), subdomainsSearchParams)
+	subdomainsSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().Name.Name,
+		Operator: svc.Params().Name.Operator.EndsWith,
+		Value:    searchDomain,
+	})
+
+	countResults, err := svc.SearchCount(context.Background(), subdomainsSearchParams.Query)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -54,7 +54,7 @@ func main() {
 	var limit = 100
 	var offset = 0
 	var examplesToPrint = 3
-	searchResults, err := client.Domain.Search(context.Background(), subdomainsSearchParams, limit, offset)
+	searchResults, err := svc.Search(context.Background(), subdomainsSearchParams.Query, limit, offset)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -68,35 +68,34 @@ func main() {
 	println()
 
 	var teslaRootDomainNameWithoutTld = "tesla"
-	var diffSuffixesSearchParams = []map[string]spyse.SearchParameter{
-		{
-			// More search parameters see at https://spyse-dev.readme.io/reference/domains#domain_search
-			"without_suffix": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorEqual,
-				Value:    teslaRootDomainNameWithoutTld,
-			},
-			"name": spyse.SearchParameter{
-				Operator: spyse.SearchOperatorNotEqual,
-				Value:    teslaRootDomainName,
-			},
-		},
-	}
-	scrollSearchResultsPageOne, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, "")
+	var diffSuffixesSearchParams spyse.QueryBuilder
+
+	diffSuffixesSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().WithoutSuffix.Name,
+		Operator: svc.Params().WithoutSuffix.Operator.Equal,
+		Value:    teslaRootDomainNameWithoutTld,
+	})
+	diffSuffixesSearchParams.AppendParam(spyse.QueryParam{
+		Name:     svc.Params().Name.Name,
+		Operator: svc.Params().Name.Operator.NotEqual,
+		Value:    teslaRootDomainName,
+	})
+	scrollSearchResultsPageOne, err := svc.ScrollSearch(
+		context.Background(), diffSuffixesSearchParams.Query, "")
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
-	scrollSearchResultsPageTwo, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, scrollSearchResultsPageOne.SearchID)
+	scrollSearchResultsPageTwo, err := svc.ScrollSearch(
+		context.Background(), diffSuffixesSearchParams.Query, scrollSearchResultsPageOne.SearchID)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
-	scrollSearchResultsPageThree, err := client.Domain.ScrollSearch(
-		context.Background(), diffSuffixesSearchParams, scrollSearchResultsPageOne.SearchID)
+	scrollSearchResultsPageThree, err := svc.ScrollSearch(
+		context.Background(), diffSuffixesSearchParams.Query, scrollSearchResultsPageOne.SearchID)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)

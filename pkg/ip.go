@@ -19,7 +19,13 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips
 type IPService struct {
-	client *Client
+	Client *HTTPClient
+}
+
+func NewIPService(c *HTTPClient) *IPService {
+	return &IPService{
+		Client: c,
+	}
 }
 
 // IP represents IP record with geo info and DNS PTR record
@@ -33,8 +39,33 @@ type IP struct {
 	Score        Score           `json:"security_score,omitempty"`
 	UpdatedAt    string          `json:"updated_at,omitempty"`
 	CIDR         string          `json:"cidr,omitempty"`
-	Technologies []IPTechnology  `json:"technologies,omitempty"`
+	Technologies []Technology    `json:"technologies,omitempty"`
 	Abuses       ShortAbusesInfo `json:"abuses,omitempty"`
+}
+
+type IPCVE struct {
+	ID        string  `json:"id,omitempty"`
+	BaseScore float32 `json:"base_score_cvss2,omitempty"`
+	Ports     []int   `json:"ports,omitempty"`
+	Tech      string  `json:"technology,omitempty"`
+}
+
+// LocationData - geo information
+type LocationData struct {
+	CityName       string   `json:"city_name,omitempty"`
+	Country        string   `json:"country,omitempty"`
+	CountryISOCode string   `json:"country_iso_code,omitempty"`
+	Location       GeoPoint `json:"location,omitempty"`
+}
+
+// GeoPoint is a geographic position described via latitude and longitude.
+type GeoPoint struct {
+	Lat float64 `json:"lat,omitempty"`
+	Lon float64 `json:"lon,omitempty"`
+}
+
+type Score struct {
+	Score *int `json:"score,omitempty"`
 }
 
 type ShortAbusesInfo struct {
@@ -52,9 +83,31 @@ type ISPInfo struct {
 
 // PtrRecord of current IP
 type PtrRecord struct {
-	Value     string   `json:"value,omitempty"`
-	UpdatedAt string   `json:"updated_at,omitempty"`
-	GeoInfo   []IPInfo `json:"geo_info,omitempty"`
+	Value     string `json:"value,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
+	GeoInfo   []Info `json:"geo_info,omitempty"`
+}
+
+type Info struct {
+	Score           Score           `json:"score,omitempty"`
+	SeverityDetails SeverityDetails `json:"severity_details,omitempty"`
+	CVEList         []IPCVE         `json:"cve_list,omitempty"`
+	OSH             *int64          `json:"osh,omitempty"`
+	GeoData
+}
+
+type GeoData struct {
+	IP    string `json:"ip"`
+	ASNum *int   `json:"as_num"`
+	ASOrg string `json:"as_org"`
+	ISP   string `json:"isp"`
+	LocationData
+}
+
+type SeverityDetails struct {
+	High   int `json:"HIGH,omitempty"`
+	Medium int `json:"MEDIUM,omitempty"`
+	Low    int `json:"LOW,omitempty"`
 }
 
 // Port represents port record with CPE, CVE info
@@ -66,6 +119,14 @@ type Port struct {
 	Service   string       `json:"masscan_service_name,omitempty"`
 	UpdatedAt string       `json:"updated_at,omitempty"`
 	Trackers  Trackers     `json:"trackers,omitempty"`
+}
+
+type Trackers struct {
+	AdSenseID              string `json:"adsense_id,omitempty"`
+	AppleItunesApp         string `json:"apple_itunes_app,omitempty"`
+	GooglePlayApp          string `json:"google_play_app,omitempty"`
+	GoogleAnalyticsKey     string `json:"google_analytics_key,omitempty"`
+	GoogleSiteVerification string `json:"google_site_verification,omitempty"`
 }
 
 type PortExtract struct {
@@ -86,11 +147,6 @@ type PortExtract struct {
 }
 
 type Technology struct {
-	Name    string `json:"name,omitempty"`
-	Version string `json:"version,omitempty"`
-}
-
-type IPTechnology struct {
 	Port    int    `json:"port,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Version string `json:"version,omitempty"`
@@ -100,12 +156,12 @@ type IPTechnology struct {
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_details
 func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(ipDetailsEndpoint+"%s", ip), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(ipDetailsEndpoint+"%s", ip), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &IP{})
+	resp, err := s.Client.Do(req, &IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -120,7 +176,11 @@ func (s *IPService) Details(ctx context.Context, ip string) (*IP, error) {
 // Search returns a paginated list of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search
-func (s *IPService) Search(ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]IP, error) {
+func (s *IPService) Search(
+	ctx context.Context,
+	params []map[string]SearchOption,
+	limit, offset int,
+) ([]IP, error) {
 	body, err := json.Marshal(
 		SearchRequest{
 			SearchParams: params,
@@ -134,12 +194,12 @@ func (s *IPService) Search(ctx context.Context, params []map[string]SearchParame
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, IP{})
+	resp, err := s.Client.Do(req, IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -158,18 +218,18 @@ func (s *IPService) Search(ctx context.Context, params []map[string]SearchParame
 // SearchCount returns a count of IPs that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_search_count
-func (s *IPService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+func (s *IPService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &TotalCountResponseData{})
 	if err != nil {
 		return 0, NewSpyseError(err)
 	}
@@ -189,7 +249,7 @@ type IPScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips#ip_scroll_search
 func (s *IPService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	searchID string,
 ) (*IPScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: params}
@@ -201,12 +261,12 @@ func (s *IPService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, ipScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, ipScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, IP{})
+	resp, err := s.Client.Do(req, IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}

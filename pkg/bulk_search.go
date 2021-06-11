@@ -12,28 +12,34 @@ const (
 	bulkSearchIPEndpoint     = "/bulk-search/ip"
 )
 
-// BulkSearchService handles Bulk search for the Spyse API.
+// BulkService handles Bulk search for the Spyse API.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search
-type BulkSearchService struct {
-	client *Client
+type BulkService struct {
+	Client *HTTPClient
+}
+
+func NewBulkService(c *HTTPClient) *BulkService {
+	return &BulkService{
+		Client: c,
+	}
 }
 
 // Domain lookup returns a full representation of the domains for the given domain names.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#bulk_search_domain
-func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string) ([]Domain, error) {
+func (s *BulkService) Domain(ctx context.Context, domainNames []string) ([]Domain, error) {
 	body, err := json.Marshal(DomainBulkSearchRequest{DomainList: domainNames})
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, bulkSearchDomainEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, bulkSearchDomainEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Domain{})
+	resp, err := s.Client.Do(req, Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -54,18 +60,18 @@ func (s *BulkSearchService) Domain(ctx context.Context, domainNames []string) ([
 // IP lookup returns a full representation of the ips for the given ip addresses.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search#bulk_search_ip
-func (s *BulkSearchService) IP(ctx context.Context, ipList []string) ([]IP, error) {
+func (s *BulkService) IP(ctx context.Context, ipList []string) ([]IP, error) {
 	body, err := json.Marshal(IPBulkSearchRequest{IPList: ipList})
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, bulkSearchIPEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, bulkSearchIPEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, IP{})
+	resp, err := s.Client.Do(req, IP{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}

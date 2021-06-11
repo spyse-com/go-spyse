@@ -9,21 +9,24 @@ import (
 )
 
 func TestHistoryService_DNS(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewHistoryService(m.Client)
+
 	testAPIEndpoint := "/history/dns/A/0.07.aa0d.ip4.static.sl-reverse.com"
 
 	raw, err := ioutil.ReadFile("../data/dns_history.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodGet)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	ips, err := testClient.History.DNS(context.Background(), "0.07.aa0d.ip4.static.sl-reverse.com", "A", 1, 0)
+	ips, err := svc.DNS(context.Background(), "0.07.aa0d.ip4.static.sl-reverse.com", "A", 1, 0)
 	if ips == nil {
 		t.Error("Expected DNS history struct. DNS history struct is nil")
 	}
@@ -33,21 +36,24 @@ func TestHistoryService_DNS(t *testing.T) {
 }
 
 func TestHistoryService_Whois(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewHistoryService(m.Client)
+
 	testAPIEndpoint := "/history/domain-whois/101reasonsfilm.com"
 
 	raw, err := ioutil.ReadFile("../data/whois_history.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodGet)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	ips, err := testClient.History.Whois(context.Background(), "101reasonsfilm.com", 1, 0)
+	ips, err := svc.Whois(context.Background(), "101reasonsfilm.com", 1, 0)
 	if ips == nil {
 		t.Error("Expected WHOIS history struct. WHOIS history struct is nil")
 	}

@@ -9,21 +9,24 @@ import (
 )
 
 func TestBulkSearchService_Domain(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewBulkService(m.Client)
+
 	testAPIEndpoint := "/bulk-search/domain"
 
 	raw, err := ioutil.ReadFile("../data/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodPost)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.BulkSearch.Domain(
+	domains, err := svc.Domain(
 		context.Background(),
 		[]string{"google.com"},
 	)
@@ -36,21 +39,24 @@ func TestBulkSearchService_Domain(t *testing.T) {
 }
 
 func TestBulkSearchService_IP(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewBulkService(m.Client)
+
 	testAPIEndpoint := "/bulk-search/ip"
 
 	raw, err := ioutil.ReadFile("../data/ip_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodPost)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.BulkSearch.IP(
+	domains, err := svc.IP(
 		context.Background(),
 		[]string{"8.8.8.8"},
 	)

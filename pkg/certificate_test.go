@@ -9,21 +9,24 @@ import (
 )
 
 func TestCertificateService_Details(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewCertificateService(m.Client)
+
 	testAPIEndpoint := "/certificate/5c157070be587becb7856643c9be75ab31726a0328a88377b0093c908a53abf5"
 
 	raw, err := ioutil.ReadFile("../data/certificate_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodGet)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	certificates, err := testClient.Certificate.Details(
+	certificates, err := svc.Details(
 		context.Background(),
 		"5c157070be587becb7856643c9be75ab31726a0328a88377b0093c908a53abf5",
 	)

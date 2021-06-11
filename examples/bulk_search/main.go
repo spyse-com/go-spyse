@@ -17,9 +17,10 @@ func main() {
 	var apiBaseUrl = "https://api.spyse.com/v4/data/"
 
 	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	svc := spyse.NewBulkService(client)
 
 	var domainNames = []string{"example.com", "tesla.com", "google.com", "some-nonexistent-domain.io"}
-	domainSearchResults, err := client.BulkSearch.Domain(context.Background(), domainNames)
+	domainSearchResults, err := svc.Domain(context.Background(), domainNames)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	var ipAddresses = []string{"93.184.216.34", "199.66.11.62", "172.217.4.78"}
-	ipSearchResults, err := client.BulkSearch.IP(context.Background(), ipAddresses)
+	ipSearchResults, err := svc.IP(context.Background(), ipAddresses)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
