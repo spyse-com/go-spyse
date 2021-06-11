@@ -167,11 +167,12 @@ func (s *DomainService) Params() DomainParams {
 		HTTPExtractTitle: DomainParamHTTPExtractTitle{
 			Name: "http_extract_title",
 			Operator: DomainHTTPExtractTitleOperators{
-				Equal:      OperatorEqual,
-				StartsWith: OperatorStartsWith,
-				Contains:   OperatorContains,
-				Exists:     OperatorExists,
-				NotExists:  OperatorNotExists,
+				Equal:       OperatorEqual,
+				StartsWith:  OperatorStartsWith,
+				Contains:    OperatorContains,
+				NotContains: OperatorNotContains,
+				Exists:      OperatorExists,
+				NotExists:   OperatorNotExists,
 			},
 		},
 		HTTPExtractEmail: DomainParamHTTPExtractEmail{
@@ -1103,11 +1104,12 @@ type DomainParamHTTPExtractTitle struct {
 }
 
 type DomainHTTPExtractTitleOperators struct {
-	Equal      string
-	StartsWith string
-	Contains   string
-	Exists     string
-	NotExists  string
+	Equal       string
+	StartsWith  string
+	Contains    string
+	NotContains string
+	Exists      string
+	NotExists   string
 }
 
 type DomainParamHTTPExtractEmail struct {
