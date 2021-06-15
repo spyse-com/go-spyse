@@ -29,8 +29,8 @@ func main() {
 	println("  Website title:", details.Extract.Title)
 	println("  Alexa rank:", *details.AlexaInfo.Rank)
 	println("  Certificate fingerprint:", details.CertSummary.FingerprintSHA256[:15]+"...")
-	println("  Certificate subject org:", details.CertSummary.SubjectDN.O)
-	println("  Certificate issuer org:", details.CertSummary.IssuerDN.O)
+	println("  Certificate subject org:", details.CertSummary.Subject.O)
+	println("  Certificate issuer org:", details.CertSummary.Issuer.O)
 	println("  Updated at:", details.UpdatedAt)
 	println()
 
