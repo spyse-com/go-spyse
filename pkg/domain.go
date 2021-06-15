@@ -30,26 +30,26 @@ func NewDomainService(c *HTTPClient) *DomainService {
 
 // Domain represents the web site domain model
 type Domain struct {
-	AlexaInfo       AlexaInfo       `json:"alexa,omitempty"`
-	CertSummary     CertSummary     `json:"cert_summary,omitempty"`
-	DNSRecords      DNSRecords      `json:"dns_records,omitempty"`
-	HostsEnrichment []GeoData       `json:"hosts_enrichment"`
-	Extract         ExtractData     `json:"http_extract,omitempty"`
-	IsCNAME         *bool           `json:"is_CNAME,omitempty"`
-	IsMX            *bool           `json:"is_MX,omitempty"`
-	IsNS            *bool           `json:"is_NS,omitempty"`
-	IsPTR           *bool           `json:"is_PTR,omitempty"`
-	IsSubdomain     *bool           `json:"is_subdomain,omitempty"`
-	Name            string          `json:"name,omitempty"`
-	NameWithoutTLD  string          `json:"name_without_suffix,omitempty"`
-	UpdatedAt       string          `json:"updated_at,omitempty"`
-	WHOISParsed     WHOISParsedData `json:"whois_parsed,omitempty"`
-	ScreenshotURL   string          `json:"screenshot_url,omitempty"`
-	Score           Score           `json:"security_score,omitempty"`
-	CVEList         []CVEInfo       `json:"cve_list,omitempty"`
-	Technologies    []Technology    `json:"technologies,omitempty"`
-	Trackers        Trackers        `json:"trackers,omitempty"`
-	Organizations   []Organization  `json:"organizations,omitempty"`
+	AlexaInfo       AlexaInfo        `json:"alexa,omitempty"`
+	CertSummary     CertSummary      `json:"cert_summary,omitempty"`
+	DNSRecords      DNSRecords       `json:"dns_records,omitempty"`
+	HostsEnrichment []GeoData        `json:"hosts_enrichment"`
+	Extract         ExtractData      `json:"http_extract,omitempty"`
+	IsCNAME         *bool            `json:"is_CNAME,omitempty"`
+	IsMX            *bool            `json:"is_MX,omitempty"`
+	IsNS            *bool            `json:"is_NS,omitempty"`
+	IsPTR           *bool            `json:"is_PTR,omitempty"`
+	IsSubdomain     *bool            `json:"is_subdomain,omitempty"`
+	Name            string           `json:"name,omitempty"`
+	NameWithoutTLD  string           `json:"name_without_suffix,omitempty"`
+	UpdatedAt       string           `json:"updated_at,omitempty"`
+	WHOISParsed     *WHOISParsedData `json:"whois_parsed,omitempty"`
+	ScreenshotURL   string           `json:"screenshot_url,omitempty"`
+	Score           Score            `json:"security_score,omitempty"`
+	CVEList         []CVEInfo        `json:"cve_list,omitempty"`
+	Technologies    []Technology     `json:"technologies,omitempty"`
+	Trackers        Trackers         `json:"trackers,omitempty"`
+	Organizations   []Organization   `json:"organizations,omitempty"`
 }
 
 type Organization struct {
