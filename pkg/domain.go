@@ -92,36 +92,36 @@ type AlexaInfo struct {
 
 type DomainCertSummary struct {
 	FingerprintSHA256 string              `json:"fingerprint_sha256,omitempty"`
-	IssuerDN          DomainCertIssuerDN  `json:"issuer_dn,omitempty"`
-	SubjectDN         DomainCertSubjectDN `json:"subject_dn,omitempty"`
+	Issuer            DomainCertIssuerDN  `json:"issuer,omitempty"`
+	IssuerDN          string              `json:"issuer_dn,omitempty"`
+	Subject           DomainCertSubjectDN `json:"subject,omitempty"`
+	SubjectDN         string              `json:"subject_dn,omitempty"`
 	TLSVersion        string              `json:"tls_version,omitempty"`
 	ValidityEnd       string              `json:"validity_end,omitempty"`
 }
 
 type DomainCertIssuerDN struct {
-	C            string `json:"C,omitempty"`  // Country
-	CN           string `json:"CN,omitempty"` // Common Name
-	L            string `json:"L,omitempty"`  // Locality
-	O            string `json:"O,omitempty"`  // Organization
-	OU           string `json:"OU,omitempty"` // Organization unit
-	ST           string `json:"ST,omitempty"` // State
+	C            string `json:"country,omitempty"`             // Country
+	CN           string `json:"common_name,omitempty"`         // Common Name
+	L            string `json:"locality,omitempty"`            // Locality
+	O            string `json:"organization,omitempty"`        // Organization
+	OU           string `json:"organizational_unit,omitempty"` // Organization unit
+	ST           string `json:"province,omitempty"`            // State
 	EmailAddress string `json:"emailAddress,omitempty"`
-	Raw          string `json:"raw,omitempty"`
 }
 
 type DomainCertSubjectDN struct {
-	C                           string `json:"C,omitempty"`  // Country
-	CN                          string `json:"CN,omitempty"` // Common Name
-	L                           string `json:"L,omitempty"`  // Locality
-	O                           string `json:"O,omitempty"`  // Organization
-	OU                          string `json:"OU,omitempty"` // Organization unit
-	ST                          string `json:"ST,omitempty"` // State
+	C                           string `json:"country,omitempty"`             // Country
+	CN                          string `json:"common_name,omitempty"`         // Common Name
+	L                           string `json:"locality,omitempty"`            // Locality
+	O                           string `json:"organization,omitempty"`        // Organization
+	OU                          string `json:"organizational_unit,omitempty"` // Organization unit
+	ST                          string `json:"province,omitempty"`            // State
 	BusinessCategory            string `json:"businessCategory,omitempty"`
 	EmailAddress                string `json:"emailAddress,omitempty"`
 	JurisdictionCountry         string `json:"jurisdictionCountry,omitempty"`
 	JurisdictionStateOrProvince string `json:"jurisdictionStateOrProvince,omitempty"`
 	PostalCode                  string `json:"postalCode,omitempty"`
-	Raw                         string `json:"raw,omitempty"`
 	SerialNumber                string `json:"serialNumber,omitempty"`
 	Street                      string `json:"street,omitempty"`
 }
