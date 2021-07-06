@@ -192,6 +192,10 @@ All emails seen with domain tesla.com (32)
 ```
 
 ## Covered API endpoints
+
+**Account**
+
+- [x] Quota: /account/quota
  
 **Autonomous Systems Methods**
 
