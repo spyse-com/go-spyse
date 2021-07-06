@@ -76,6 +76,10 @@ You can assert default golang error to `spyse.ErrResponse` for more details:
 You can see all error codes in [pkg/error.go](pkg/error.go)
 
 ## Covered API endpoints
+
+**Account**
+
+- [x] Quota: /account/quota
  
 **Autonomous Systems Methods**
 

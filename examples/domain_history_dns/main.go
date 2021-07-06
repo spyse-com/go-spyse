@@ -26,7 +26,7 @@ func main() {
 	var limit = 100
 	var offset = 0
 	//You can obtain DNS A, AAAA, MX, NS, TXT, CNAME records
-	dnsHistoryA, err := svc.DNS(context.Background(), domain, "A", limit, offset)
+	dnsHistoryA, err := svc.DNS(context.Background(), domain, spyse.DNSTYPEA, limit, offset)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -35,7 +35,7 @@ func main() {
 		fmt.Println(record.Value)
 	}
 
-	dnsHistoryNS, err := svc.DNS(context.Background(), domain, "NS", limit, offset)
+	dnsHistoryNS, err := svc.DNS(context.Background(), domain, spyse.DNSTYPENS, limit, offset)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -45,7 +45,7 @@ func main() {
 		fmt.Println(record.Value)
 	}
 
-	dnsHistoryMX, err := svc.DNS(context.Background(), domain, "MX", limit, offset)
+	dnsHistoryMX, err := svc.DNS(context.Background(), domain, spyse.DNSTYPEMX, limit, offset)
 	if err != nil {
 		log.Fatal(err.Error())
 
