@@ -13,3 +13,13 @@ const (
 	OperatorGreaterThanOrEqual = "gte"
 	OperatorLessThanOrEqual    = "lte"
 )
+
+// Options for DNS history
+const (
+	DNSTYPEA     = "A"
+	DNSTYPEMX    = "MX"
+	DNSTYPENS    = "NS"
+	DNSTYPETXT   = "TXT"
+	DNSTYPEAAAA  = "AAAA"
+	DNSTYPECNAME = "CNAME"
+)
