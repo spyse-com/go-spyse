@@ -1,10 +1,13 @@
 # Spyse API wrapper for Go
 
-The official wrapper for Spyse API, written in Golang, aimed to help developers build their
+The official wrapper for [spyse.com](https://spyse.com/) API, written in Golang, aimed to help developers build their
 integrations with Spyse.
 
-[Spyse](https://spyse.com/) is the most complete Internet assets registry for every cybersecurity
-professional. Examples of data Spyse delivers:
+[Spyse](https://spyse.com/) is the most complete Internet assets search engine for every cybersecurity
+professional.
+
+Examples of data Spyse delivers:
+
 * List of 300+ most popular open ports found on 3.5 Billion publicly accessible IPv4 hosts.
 * Technologies used on 300+ most popular open ports and IP addresses and domains using a particular technology.
 * Security score for each IP host and website, calculated based on the found vulnerabilities.
@@ -16,9 +19,9 @@ professional. Examples of data Spyse delivers:
 * Organizations and industries associated with the domain names.
 * Email addresses found during the Internet scanning, associated with a domain name.
 
-More information about the data Spyse collects is available on the [Our data](https://spyse.com/our-data) page. 
+More information about the data Spyse collects is available on the [Our data](https://spyse.com/our-data) page.
 
-Spyse provides an API accessible via **token-based authentication**. 
+Spyse provides an API accessible via **token-based authentication**.
 API tokens are **available only for registered users** on their [account page](https://spyse.com/user).
 
 For more information about the API, please check the [API Reference](https://spyse-dev.readme.io/reference/quick-start).
@@ -30,108 +33,74 @@ go get github.com/spyse-com/go-spyse
 ```
 
 ## Quick start
-
-Add import to your project
 ```go
-import spyse "github.com/spyse-com/go-spyse/pkg"
+// Add import
+import "github.com/spyse-com/go-spyse/pkg"
+// ...
+
+// Use your API key to init the client
+client, err := spyse.NewClient("XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", nil)
+
+// Create a new service suitable for your case
+svc := spyse.NewDomainService(client)
+
+// Fetch all information about the domain
+details, err := svc.Details(context.Background(), "tesla.com")
+// ...
 ```
 
-Create client using Spyse API base URL `https://api.spyse.com/v4/data/` and your API token (See on [account page](https://spyse.com/user)). 
+## Examples
 
-You can specify HTTP client or pass `nil` for default net.http client.
-```go
-client, err := spyse.NewClient("https://api.spyse.com/v4/data/", "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", nil)
+Account:
+- [Check your API quotas](./examples/account/main.go)
+
+Target info:
+- [IP details](./examples/ip_details/main.go)
+- [Domain details](./examples/domain_details/main.go)
+- [Autonomous System details](./examples/as_details/main.go)
+
+Search with params (up to 10 000 results):
+- [Subdomains lookup](./examples/domain_subdomains/main.go)
+- [Search domains by technology](./examples/domains_with_technology/main.go)
+- [Search emails by domain name](./examples/emails_search/main.go)
+- [Search IPv4 hosts with specific open port](./examples/ips_with_open_port/main.go)
+- [Search IPv4 hosts by geolocation](./examples/ips_by_country/main.go)
+
+Scroll search (unlimited results):
+- [Subdomains lookup using scroll API](./examples/domain_subdomains_via_scroll/main.go)
+- [Search domains by with different suffixes](examples/domains_with_different_suffix_via_scroll/main.go)
+
+
+Historical records:
+- [Domain DNS history](./examples/domain_history_dns/main.go)
+
+Bulk Search:
+- [Bulk search domains / IPv4 hosts](./examples/bulk_search/main.go)
+
+Note: You need to pass access_token as an argument to run any example:
+```bash
+go run ./examples/domain_details/main.go --access_token=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 ```
-<sup>It's better to use a secure way to pass your API token to code. Please, do NOT push your token to public repos ;)
 
-Create new service for your case.  For example, domains (more at [examples](./examples/examples.md)):
-```go
-	svc := spyse.NewDomainService(client)
-```
-
-Obtain all data about the domain:
-```go
-	details, err := svc.Details(context.Background(), "spyse.com")
-```
-
-For more see [examples](./examples/examples.md).
-
-## Troubleshooting
-
-If you need help with installation and/or usage, please join our [Discord](https://discord.gg/XqaUP8c) server.
 
 ## Errors handling
-
-You can assert default golang error to `spyse.ErrResponse` for more details:
+To properly handle Spyse errors, assert them to `spyse.ErrResponse` and then check the "Code" field.
 ```go
-        spyseError := err.(*spyse.ErrResponse)
-        // Error message, e.g. "wrong access token provided"
-        spyseError.Err.Message
-        // Status code for request to API, e.g. 401
-        spyseError.Err.Status
-        // Error text code, e.g. "unauthorized"
-        spyseError.Err.Code
+spyseError := err.(*spyse.ErrResponse)
+// Error message, e.g. "wrong access token provided"
+println(spyseError.Err.Message)
+// Status code for request to API, e.g. 401
+println(spyseError.Err.Status)
+// Error text code, e.g. "unauthorized"
+println(spyseError.Err.Code)
+
+// Check for "limit reached" error
+if spyseError.Err.Code == spyse.CodeRequestsLimitReached {
+// ...
+}
 ```
 
-You can see all error codes in [pkg/error.go](pkg/error.go)
-
-## Covered API endpoints
-
-**Account**
-
-- [x] Quota: /account/quota
- 
-**Autonomous Systems Methods**
-
-- [x] Details: /as/{asn}
-- [x] Search: /as/search
-- [x] Scroll search: /as/scroll/search
-- [x] Search count: /as/search/count
-
-**SSL/TLS Certificates Methods**
-
-- [x] Details: /certificate/{fingerprint_sha256}
-- [x] Search: /certificate/search
-- [x] Scroll search: /certificate/scroll/search
-- [x] Search count: /certificate/search/count
-
-**CVEs Methods**
-
-- [x] Details: /cve/{cve_id}
-- [x] Search: /cve/search
-- [x] Scroll search: /cve/scroll/search
-- [x] Search count: /cve/search/count
-
-**Domains Methods**
-
-- [x] Details: /domain/{domain_name}
-- [x] Search: /domain/search
-- [x] Scroll search: /domain/scroll/search
-- [x] Search count: /domain/search/count
-
-**Emails Methods**
-
-- [x] Details: /email/{email}
-- [x] Search: /email/search
-- [x] Scroll search: /email/scroll/search
-- [x] Search count: /email/search/count
-
-**IPs Methods**
-
-- [x] Details: /ip/{ip_address}
-- [x] Search: /ip/search
-- [x] Scroll search: /ip/scroll/search
-- [x] Search count: /ip/search/count
-
-**Bulk search Methods**
-
-- [x] Domains lookup: /bulk-search/domain
-- [x] IPs lookup: /bulk-search/ip
-
-**History Methods**
-
-- [x] DNS history: /history/dns/{dns_type}/{domain_name}
-- [x] WHOIS history: /history/domain-whois/{domain_name}
+A list of error codes can be found in [pkg/error.go](pkg/error.go)
 
 ## Testing
 
@@ -145,10 +114,19 @@ Run tests and create code coverage report:
 go test $(go list ./... | grep -v /examples/) -race -coverprofile=coverage.txt -covermode=atomic
 ```
 
+## Covered API endpoints
+
+All the available API methods are fully supported.
+
+
 ## License
 
 Distributed under the MIT License. See [LICENSE](./LICENSE.md) for more information.
 
-## Contact
+## Troubleshooting and contacts
 
-For any proposals and questions, please write at [contact@spyse.com](contact@spyse.com).
+For any proposals and questions, please write at:
+
+- Email: [contact@spyse.com](contact@spyse.com)
+- Discord: [channel](https://discord.gg/XqaUP8c)
+- Twitter: [@scanpatch](https://twitter.com/scanpatch), [@MrMristov](https://twitter.com/MrMristov)

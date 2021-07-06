@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	spyse "github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg"
 )
 
 func main() {
@@ -14,8 +14,7 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
-	client, err := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, err := spyse.NewClient(*accessToken, nil)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -25,7 +24,7 @@ func main() {
 	var domain = "google.com"
 	var limit = 100
 	var offset = 0
-	//You can obtain DNS A, AAAA, MX, NS, TXT, CNAME records
+	//DNS A, AAAA, MX, NS, TXT, CNAME records type available
 	dnsHistoryA, err := svc.DNS(context.Background(), domain, spyse.DNSTYPEA, limit, offset)
 	if err != nil {
 		log.Fatal(err.Error())

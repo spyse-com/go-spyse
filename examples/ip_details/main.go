@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	spyse "github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg"
 	"log"
 )
 
@@ -12,8 +12,7 @@ func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
-	client, err := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, err := spyse.NewClient(*accessToken, nil)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

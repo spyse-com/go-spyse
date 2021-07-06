@@ -36,20 +36,15 @@ type HTTPClient struct {
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(baseURL, accessToken string, httpClient client) (*HTTPClient, error) {
+func NewClient(accessToken string, httpClient client) (*HTTPClient, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 
-	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	parsedBaseURL, err := url.Parse(baseURL)
+	parsedBaseURL, err := url.Parse("https://api.spyse.com/v4/data/")
 	if err != nil {
 		return nil, err
 	}
-
 	return &HTTPClient{
 		client:      httpClient,
 		baseURL:     parsedBaseURL,
@@ -59,6 +54,20 @@ func NewClient(baseURL, accessToken string, httpClient client) (*HTTPClient, err
 
 func newRequestWithContext(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
 	return http.NewRequestWithContext(ctx, method, url, body)
+}
+
+// SetBaseURL set base URL for API endpoints.
+func (c *HTTPClient) SetBaseURL(baseURL string) error {
+	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
+	if !strings.HasSuffix(baseURL, "/") {
+		baseURL += "/"
+	}
+	parsedBaseURL, err := url.Parse(baseURL)
+	if err != nil {
+		return err
+	}
+	c.baseURL = parsedBaseURL
+	return nil
 }
 
 // NewRequest creates an API request.
