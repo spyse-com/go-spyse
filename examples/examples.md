@@ -18,6 +18,7 @@ go run main.go --access_token=$ACCESS_TOKEN
 
 ### Get requests limit and current requests amount
 
+In [this](./account/main.go) example you can see limits and requests amount for your account.
 
 ### All data about domain
 
