@@ -4,31 +4,29 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
-
 	spyse "github.com/spyse-com/go-spyse/pkg"
+	"log"
 )
 
 func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
-
 	var apiBaseUrl = "https://api.spyse.com/v4/data/"
-
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	client, err := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	asService := spyse.NewAccountService(client)
 
 	account, err := asService.Quota(context.Background())
 	if err != nil {
-		println(err.Error())
-		os.Exit(1)
+		log.Fatal(err.Error())
 	}
-	println("Customer account quotas:")
-	println(fmt.Sprintf("start_at: %s", account.StartAt))
-	println(fmt.Sprintf("end_at: %s", account.EndAt))
-	println(fmt.Sprintf("api_requests_remaining: %d", account.APIRequestsRemaining))
-	println(fmt.Sprintf("api_requests_limit: %d", account.APIRequestsLimit))
-	println(fmt.Sprintf("downloads_limit_remaining: %d", account.DownloadsLimitRemaining))
-	println(fmt.Sprintf("downloads_limit: %d", account.DownloadsLimit))
-	println()
+	fmt.Println("Customer account quotas:")
+	fmt.Println(fmt.Sprintf("Subscription period start at: %s", account.StartAt))
+	fmt.Println(fmt.Sprintf("Subscription period end at: %s", account.EndAt))
+	fmt.Println(fmt.Sprintf("API requests remaining: %d", account.APIRequestsRemaining))
+	fmt.Println(fmt.Sprintf("API requests limit: %d", account.APIRequestsLimit))
+	fmt.Println(fmt.Sprintf("Downloads remaining: %d", account.DownloadsLimitRemaining))
+	fmt.Println(fmt.Sprintf("Downloads limit: %d", account.DownloadsLimit))
 }
