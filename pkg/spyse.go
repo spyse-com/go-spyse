@@ -14,6 +14,7 @@ const (
 	authorizationType       = "Bearer"
 	contentTypeHeaderName   = "Content-Type"
 	defaultContentType      = "application/json"
+	defaultBaseURL          = "https://api.spyse.com/v4/data/"
 )
 
 // HTTPClient defines an interface for an http.Client implementation so that alternative
@@ -41,15 +42,16 @@ func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 		httpClient = http.DefaultClient
 	}
 
-	parsedBaseURL, err := url.Parse("https://api.spyse.com/v4/data/")
-	if err != nil {
+	c := &Client{
+		client:      httpClient,
+		accessToken: accessToken,
+	}
+
+	if err := c.SetBaseURL(defaultBaseURL); err != nil {
 		return nil, err
 	}
-	return &Client{
-		client:      httpClient,
-		baseURL:     parsedBaseURL,
-		accessToken: accessToken,
-	}, nil
+
+	return c, nil
 }
 
 func newRequestWithContext(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
