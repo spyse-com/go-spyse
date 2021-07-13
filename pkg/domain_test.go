@@ -1,4 +1,3 @@
-//nolint:dupl
 package spyse
 
 import (
@@ -10,21 +9,24 @@ import (
 )
 
 func TestDomainService_Details(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewDomainService(m.Client)
+
 	testAPIEndpoint := "/domain/test.com"
 
 	raw, err := ioutil.ReadFile("../data/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodGet)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
-	domains, err := testClient.Domain.Details(context.Background(), "test.com")
+	domains, err := svc.Details(context.Background(), "test.com")
 	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
 	}
@@ -34,28 +36,31 @@ func TestDomainService_Details(t *testing.T) {
 }
 
 func TestDomainService_Search(t *testing.T) {
-	setup()
-	defer teardown()
+	m := setup()
+	defer m.teardown()
+
+	svc := NewDomainService(m.Client)
+
 	testAPIEndpoint := "/domain/search"
 
 	raw, err := ioutil.ReadFile("../data/domain_details.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodPost)
-		testRequestURL(t, r, testAPIEndpoint)
+	m.TestMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		m.testMethod(t, r, http.MethodPost)
+		m.testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
-	var params = []map[string]SearchParameter{
-		{
-			"name": SearchParameter{
-				Operator: "eq",
-				Value:    "spyse.com",
-			},
-		},
-	}
-	domains, err := testClient.Domain.Search(context.Background(), params, 1, 0)
+	var params QueryBuilder
+
+	params.AppendParam(QueryParam{
+		Name:     svc.Params().Name.Name,
+		Operator: svc.Params().Name.Operator.Equal,
+		Value:    "spyse.com",
+	})
+
+	domains, err := svc.Search(context.Background(), params.Query, 1, 0)
 	if domains == nil {
 		t.Error("Expected Domain struct. Domain struct is nil")
 	}

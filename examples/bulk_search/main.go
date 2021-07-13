@@ -4,69 +4,36 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
-	"strings"
-
-	spyse "github.com/spyse-com/go-spyse/pkg"
+	"github.com/spyse-com/go-spyse/pkg"
+	"log"
 )
 
 func main() {
 	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
-	var apiBaseUrl = "https://api.spyse.com/v4/data/"
+	client, err := spyse.NewClient(*accessToken, nil)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-	client, _ := spyse.NewClient(apiBaseUrl, *accessToken, nil)
+	svc := spyse.NewBulkService(client)
 
 	var domainNames = []string{"example.com", "tesla.com", "google.com", "some-nonexistent-domain.io"}
-	domainSearchResults, err := client.BulkSearch.Domain(context.Background(), domainNames)
+	domainSearchResults, err := svc.Domain(context.Background(), domainNames)
 	if err != nil {
-		println(err.Error())
-		os.Exit(1)
-	}
-	println()
-	println(fmt.Sprintf("Domain bulk search results"))
-	println(fmt.Sprintf("  Sent domains (%d):", len(domainNames)))
-	for i := 0; i < len(domainNames); i++ {
-		println(fmt.Sprintf("  - %s", domainNames[i]))
-	}
-	println()
-	println(fmt.Sprintf("  Received datasets (%d):", len(domainSearchResults)))
-	for i := 0; i < len(domainSearchResults); i++ {
-		println(fmt.Sprintf("  - %s", domainSearchResults[i].Name))
-		if len(domainSearchResults[i].DNSRecords.A) > 0 {
-			println(fmt.Sprintf("    A records: %s", strings.Join(domainSearchResults[i].DNSRecords.A, ", ")))
-		}
-		if len(domainSearchResults[i].DNSRecords.NS) > 0 {
-			println(fmt.Sprintf("    NS records: %s", strings.Join(domainSearchResults[i].DNSRecords.NS, ", ")))
-		}
-		if len(domainSearchResults[i].DNSRecords.MX) > 0 {
-			println(fmt.Sprintf("    MX records: %s", strings.Join(domainSearchResults[i].DNSRecords.MX, ", ")))
-		}
-		println()
-	}
+		log.Fatal(err.Error())
 
-	var ipAddresses = []string{"93.184.216.34", "199.66.11.62", "172.217.4.78"}
-	ipSearchResults, err := client.BulkSearch.IP(context.Background(), ipAddresses)
+	}
+	for _, result := range domainSearchResults {
+		fmt.Println(fmt.Sprintf("Domain %s, DNS A recod: %s, HTTP status code: %d, Title: %s", result.Name, result.DNSRecords.A[0], *result.Extract.HTTPStatusCode, result.Extract.Title))
+	}
+	var ipAddresses = []string{"8.8.8.8", "104.22.58.132", "93.184.216.34", "199.66.11.62", "172.217.4.78"}
+	ipSearchResults, err := svc.IP(context.Background(), ipAddresses)
 	if err != nil {
-		println(err.Error())
-		os.Exit(1)
+		log.Fatal(err.Error())
 	}
-	println(fmt.Sprintf("IP bulk search results"))
-	println(fmt.Sprintf("  Sent IPs (%d):", len(ipAddresses)))
-	for i := 0; i < len(ipAddresses); i++ {
-		println(fmt.Sprintf("  - %s", ipAddresses[i]))
-	}
-	println()
-	println(fmt.Sprintf("  Received datasets (%d):", len(ipSearchResults)))
-	for i := 0; i < len(ipSearchResults); i++ {
-		println(fmt.Sprintf("  - %s", ipSearchResults[i].IPAddress))
-		if len(ipSearchResults[i].GEOInfo.Country) > 0 {
-			println(fmt.Sprintf("    Country: %s", ipSearchResults[i].GEOInfo.Country))
-		}
-		if len(ipSearchResults[i].PtrRecord.Value) > 0 {
-			println(fmt.Sprintf("    PTR record: %s", ipSearchResults[i].PtrRecord.Value))
-		}
-		println()
+	for _, result := range ipSearchResults {
+		fmt.Println(fmt.Sprintf("IP %s, open ports: %d, Country: %s, AS number: %d", result.IPAddress, len(result.Ports), result.GEOInfo.Country, *result.ISPInfo.ASNum))
 	}
 }

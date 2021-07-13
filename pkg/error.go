@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Possible Apyse API error codes
 const (
 	CodeBadRequest               = "bad_request"
 	CodeValidationError          = "validation_error"

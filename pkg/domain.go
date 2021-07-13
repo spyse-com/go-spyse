@@ -19,38 +19,44 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains
 type DomainService struct {
-	client *Client
+	Client *HTTPClient
+}
+
+func NewDomainService(c *HTTPClient) *DomainService {
+	return &DomainService{
+		Client: c,
+	}
 }
 
 // Domain represents the web site domain model
 type Domain struct {
-	AlexaInfo       AlexaInfo            `json:"alexa,omitempty"`
-	CertSummary     DomainCertSummary    `json:"cert_summary,omitempty"`
-	DNSRecords      DNSRecords           `json:"dns_records,omitempty"`
-	HostsEnrichment []GeoData            `json:"hosts_enrichment"`
-	Extract         DomainExtractData    `json:"http_extract,omitempty"`
-	IsCNAME         *bool                `json:"is_CNAME,omitempty"`
-	IsMX            *bool                `json:"is_MX,omitempty"`
-	IsNS            *bool                `json:"is_NS,omitempty"`
-	IsPTR           *bool                `json:"is_PTR,omitempty"`
-	IsSubdomain     *bool                `json:"is_subdomain,omitempty"`
-	Name            string               `json:"name,omitempty"`
-	NameWithoutTLD  string               `json:"name_without_suffix,omitempty"`
-	UpdatedAt       string               `json:"updated_at,omitempty"`
-	WHOISParsed     WHOISParsedData      `json:"whois_parsed,omitempty"`
-	ScreenshotURL   string               `json:"screenshot_url,omitempty"`
-	Score           DomainScore          `json:"security_score,omitempty"`
-	CVEList         []CVEInfo            `json:"cve_list,omitempty"`
-	Technologies    []Technology         `json:"technologies,omitempty"`
-	Trackers        Trackers             `json:"trackers,omitempty"`
-	Organizations   []DomainOrganization `json:"organizations,omitempty"`
+	AlexaInfo       AlexaInfo        `json:"alexa,omitempty"`
+	CertSummary     CertSummary      `json:"cert_summary,omitempty"`
+	DNSRecords      DNSRecords       `json:"dns_records,omitempty"`
+	HostsEnrichment []GeoData        `json:"hosts_enrichment"`
+	Extract         ExtractData      `json:"http_extract,omitempty"`
+	IsCNAME         *bool            `json:"is_CNAME,omitempty"`
+	IsMX            *bool            `json:"is_MX,omitempty"`
+	IsNS            *bool            `json:"is_NS,omitempty"`
+	IsPTR           *bool            `json:"is_PTR,omitempty"`
+	IsSubdomain     *bool            `json:"is_subdomain,omitempty"`
+	Name            string           `json:"name,omitempty"`
+	NameWithoutTLD  string           `json:"name_without_suffix,omitempty"`
+	UpdatedAt       string           `json:"updated_at,omitempty"`
+	WHOISParsed     *WHOISParsedData `json:"whois_parsed,omitempty"`
+	ScreenshotURL   string           `json:"screenshot_url,omitempty"`
+	Score           Score            `json:"security_score,omitempty"`
+	CVEList         []CVEInfo        `json:"cve_list,omitempty"`
+	Technologies    []Technology     `json:"technologies,omitempty"`
+	Trackers        Trackers         `json:"trackers,omitempty"`
+	Organizations   []Organization   `json:"organizations,omitempty"`
 }
 
-type DomainOrganization struct {
-	CrunchBase DomainCrunchBase `json:"crunchbase"`
+type Organization struct {
+	CrunchBase CrunchBase `json:"crunchbase"`
 }
 
-type DomainCrunchBase struct {
+type CrunchBase struct {
 	Name             string   `json:"name"`
 	LegalName        string   `json:"legal_name"`
 	HomepageURL      string   `json:"homepage_url"`
@@ -77,20 +83,12 @@ type DomainCrunchBase struct {
 	UpdatedAt        string   `json:"updated_at"`
 }
 
-type Trackers struct {
-	AdSenseID              string `json:"adsense_id,omitempty"`
-	AppleItunesApp         string `json:"apple_itunes_app,omitempty"`
-	GooglePlayApp          string `json:"google_play_app,omitempty"`
-	GoogleAnalyticsKey     string `json:"google_analytics_key,omitempty"`
-	GoogleSiteVerification string `json:"google_site_verification,omitempty"`
-}
-
 type AlexaInfo struct {
 	Rank      *int   `json:"rank,omitempty"`
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
-type DomainCertSummary struct {
+type CertSummary struct {
 	FingerprintSHA256 string              `json:"fingerprint_sha256,omitempty"`
 	Issuer            DomainCertIssuerDN  `json:"issuer,omitempty"`
 	IssuerDN          string              `json:"issuer_dn,omitempty"`
@@ -147,48 +145,9 @@ type IPInfo struct {
 	GeoData
 }
 
-type Score struct {
-	Score *int `json:"score,omitempty"`
-}
-
-type SeverityDetails struct {
-	High   int `json:"HIGH,omitempty"`
-	Medium int `json:"MEDIUM,omitempty"`
-	Low    int `json:"LOW,omitempty"`
-}
-
-type IPCVE struct {
-	ID        string  `json:"id,omitempty"`
-	BaseScore float32 `json:"base_score_cvss2,omitempty"`
-	Ports     []int   `json:"ports,omitempty"`
-	Tech      string  `json:"technology,omitempty"`
-}
-
 type CVEInfo struct {
 	ID        string  `json:"id,omitempty"`
 	BaseScore float32 `json:"base_score_cvss2,omitempty"`
-}
-
-type GeoData struct {
-	IP    string `json:"ip"`
-	ASNum *int   `json:"as_num"`
-	ASOrg string `json:"as_org"`
-	ISP   string `json:"isp"`
-	LocationData
-}
-
-// LocationData - geo information
-type LocationData struct {
-	CityName       string   `json:"city_name,omitempty"`
-	Country        string   `json:"country,omitempty"`
-	CountryISOCode string   `json:"country_iso_code,omitempty"`
-	Location       GeoPoint `json:"location,omitempty"`
-}
-
-// GeoPoint is a geographic position described via latitude and longitude.
-type GeoPoint struct {
-	Lat float64 `json:"lat,omitempty"`
-	Lon float64 `json:"lon,omitempty"`
 }
 
 type DNSSOARecord struct {
@@ -225,7 +184,7 @@ type ValidationError struct {
 	Target      string `json:"target,omitempty"`
 }
 
-type DomainExtractData struct {
+type ExtractData struct {
 	Cookies             []ExtractCookie `json:"cookies,omitempty"`
 	Description         string          `json:"description,omitempty"`
 	Emails              []string        `json:"emails,omitempty"`
@@ -278,20 +237,15 @@ type MetaTag struct {
 	Value string `json:"value,omitempty"`
 }
 
-// DomainScore represents scoring information about target
-type DomainScore struct {
-	Score *int `json:"score,omitempty"`
-}
-
 type WHOISParsedData struct {
-	Admin      DomainWHOIS          `json:"admin,omitempty"`
-	Registrant DomainWHOIS          `json:"registrant,omitempty"`
-	Registrar  DomainWHOISRegistrar `json:"registrar,omitempty"`
-	Tech       DomainWHOIS          `json:"tech,omitempty"`
-	UpdatedAt  string               `json:"updated_at,omitempty"`
+	Admin      WHOIS          `json:"admin,omitempty"`
+	Registrant WHOIS          `json:"registrant,omitempty"`
+	Registrar  WHOISRegistrar `json:"registrar,omitempty"`
+	Tech       WHOIS          `json:"tech,omitempty"`
+	UpdatedAt  string         `json:"updated_at,omitempty"`
 }
 
-type DomainWHOIS struct {
+type WHOIS struct {
 	City         string `json:"city,omitempty"`
 	Country      string `json:"country,omitempty"`
 	Email        string `json:"email,omitempty"`
@@ -308,7 +262,7 @@ type DomainWHOIS struct {
 	StreetExt    string `json:"street_ext,omitempty"`
 }
 
-type DomainWHOISRegistrar struct {
+type WHOISRegistrar struct {
 	CreatedDate    string `json:"created_date,omitempty"`
 	DomainDNSSec   string `json:"domain_dnssec,omitempty"`
 	DomainID       string `json:"domain_id,omitempty"`
@@ -324,38 +278,16 @@ type DomainWHOISRegistrar struct {
 	WHOISServer    string `json:"whois_server,omitempty"`
 }
 
-type DomainOrg struct {
-	ID       string `json:"id,omitempty"`
-	Name     string `json:"name,omitempty"`
-	ImageURL string `json:"image_url,omitempty"`
-}
-
-type DNSRecordsData struct {
-	Data DomainDNSRecords `json:"data"`
-}
-
-type DomainDNSRecords struct {
-	DNSRecords
-	DNSRecordsInfo
-	Count int64 `json:"count,omitempty"`
-}
-
-type DNSRecordsInfo struct {
-	MXInfo    map[string][]IPInfo `json:"mx_info,omitempty"`
-	NSInfo    map[string][]IPInfo `json:"ns_info,omitempty"`
-	CNAMEInfo map[string][]IPInfo `json:"cname_info,omitempty"`
-}
-
 // Details returns a full representation of the Domain for the given Domain name.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_details
 func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(domainDetailsEndpoint+"%s", domainName), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(domainDetailsEndpoint+"%s", domainName), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Domain{})
+	resp, err := s.Client.Do(req, &Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -372,7 +304,7 @@ func (s *DomainService) Details(ctx context.Context, domainName string) (*Domain
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search
 func (s *DomainService) Search(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	limit, offset int,
 ) ([]Domain, error) {
 	body, err := json.Marshal(
@@ -388,12 +320,12 @@ func (s *DomainService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Domain{})
+	resp, err := s.Client.Do(req, Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -414,18 +346,18 @@ func (s *DomainService) Search(
 // SearchCount returns a count of domains that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_search_count
-func (s *DomainService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+func (s *DomainService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &TotalCountResponseData{})
 	if err != nil {
 		return 0, NewSpyseError(err)
 	}
@@ -445,7 +377,7 @@ type DomainScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains#domain_scroll_search
 func (s *DomainService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	searchID string,
 ) (*DomainScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: params}
@@ -457,12 +389,12 @@ func (s *DomainService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, domainScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, domainScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Domain{})
+	resp, err := s.Client.Do(req, Domain{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}

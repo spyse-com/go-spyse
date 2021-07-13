@@ -19,31 +19,75 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails
 type EmailService struct {
-	client *Client
+	Client *HTTPClient
+}
+
+func NewEmailService(c *HTTPClient) *EmailService {
+	return &EmailService{
+		Client: c,
+	}
 }
 
 type Email struct {
-	Email     string         `json:"email,omitempty"`
-	Sources   []EmailSources `json:"sources,omitempty"`
-	UpdatedAt string         `json:"updated_at,omitempty"`
+	Email     string    `json:"email,omitempty"`
+	Sources   []Sources `json:"sources,omitempty"`
+	UpdatedAt string    `json:"updated_at,omitempty"`
 }
 
-type EmailSources struct {
+type Sources struct {
 	Target   string `json:"target,omitempty"`
 	Type     string `json:"type,omitempty"`
 	LastSeen string `json:"last_seen,omitempty"`
+}
+
+func (s *EmailService) Params() EmailParams {
+	return EmailParams{
+		Email: ParamEmail{
+			Name: "email",
+			Operator: EmailOperators{
+				Equal:       OperatorEqual,
+				EndsWith:    OperatorEndsWith,
+				NotEqual:    OperatorNotEqual,
+				StartsWith:  OperatorStartsWith,
+				Contains:    OperatorContains,
+				NotContains: OperatorNotContains,
+			},
+		},
+	}
+}
+
+// EmailParams for Email search:
+//
+// ALl search parameters see at https://spyse-dev.readme.io/reference/emailss#email_search
+type EmailParams struct {
+	// Email search by the email address.
+	Email ParamEmail
+}
+
+type ParamEmail struct {
+	Name     string
+	Operator EmailOperators
+}
+
+type EmailOperators struct {
+	Equal       string
+	EndsWith    string
+	NotEqual    string
+	StartsWith  string
+	Contains    string
+	NotContains string
 }
 
 // Details returns a full representation of the emails for the given emails address.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_details
 func (s *EmailService) Details(ctx context.Context, email string) (*Email, error) {
-	req, err := s.client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(emailDetailsEndpoint+"%s", email), nil)
+	req, err := s.Client.NewRequest(ctx, http.MethodGet, fmt.Sprintf(emailDetailsEndpoint+"%s", email), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, &Email{})
+	resp, err := s.Client.Do(req, &Email{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -59,7 +103,7 @@ func (s *EmailService) Details(ctx context.Context, email string) (*Email, error
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search
 func (s *EmailService) Search(
-	ctx context.Context, params []map[string]SearchParameter, limit, offset int) ([]Email, error,
+	ctx context.Context, params []map[string]SearchOption, limit, offset int) ([]Email, error,
 ) {
 	body, err := json.Marshal(
 		SearchRequest{
@@ -74,12 +118,12 @@ func (s *EmailService) Search(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Email{})
+	resp, err := s.Client.Do(req, Email{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
@@ -100,18 +144,18 @@ func (s *EmailService) Search(
 // SearchCount returns a count of emails that match the specified search params.
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_search_count
-func (s *EmailService) SearchCount(ctx context.Context, params []map[string]SearchParameter) (int64, error) {
+func (s *EmailService) SearchCount(ctx context.Context, params []map[string]SearchOption) (int64, error) {
 	body, err := json.Marshal(SearchRequest{SearchParams: params})
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailSearchCountEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailSearchCountEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
 
-	resp, err := s.client.Do(req, &TotalCountResponseData{})
+	resp, err := s.Client.Do(req, &TotalCountResponseData{})
 	if err != nil {
 		return 0, NewSpyseError(err)
 	}
@@ -119,7 +163,7 @@ func (s *EmailService) SearchCount(ctx context.Context, params []map[string]Sear
 	return *resp.Data.TotalCount, nil
 }
 
-type EmailScrollResponse struct {
+type ScrollResponse struct {
 	SearchID   string  `json:"search_id"`
 	TotalItems int64   `json:"total_items"`
 	Offset     int     `json:"offset"`
@@ -131,9 +175,9 @@ type EmailScrollResponse struct {
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails#email_scroll_search
 func (s *EmailService) ScrollSearch(
 	ctx context.Context,
-	params []map[string]SearchParameter,
+	params []map[string]SearchOption,
 	searchID string,
-) (*EmailScrollResponse, error) {
+) (*ScrollResponse, error) {
 	scrollRequest := ScrollSearchRequest{SearchParams: params}
 	if searchID != "" {
 		scrollRequest.SearchID = searchID
@@ -143,16 +187,16 @@ func (s *EmailService) ScrollSearch(
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodPost, emailScrollSearchEndpoint, bytes.NewReader(body))
+	req, err := s.Client.NewRequest(ctx, http.MethodPost, emailScrollSearchEndpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, Email{})
+	resp, err := s.Client.Do(req, Email{})
 	if err != nil {
 		return nil, NewSpyseError(err)
 	}
-	response := &EmailScrollResponse{
+	response := &ScrollResponse{
 		SearchID:   *resp.Data.SearchID,
 		TotalItems: *resp.Data.TotalCount,
 		Offset:     *resp.Data.Offset,

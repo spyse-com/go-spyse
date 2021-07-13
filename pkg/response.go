@@ -6,6 +6,11 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
+type TotalCountResponseData struct {
+	// The precise number of search results that matched the search query.
+	TotalCount int64 `json:"total_count"`
+}
+
 type Response struct {
 	Data  *Data  `json:"data"`
 	Error *Error `json:"error"`
