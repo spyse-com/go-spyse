@@ -8,32 +8,32 @@
         },
         "cert_summary": {
           "fingerprint_sha256": "39b1d164f63d6044e92b4b72ff054a6ad0e9584968b132a9e1fcd90b4b45d449",
-          "issuer_dn": {
-            "C": "US",
-            "CN": "Network Solutions DV Server CA 2",
-            "L": "Herndon",
-            "O": "Network Solutions L.L.C.",
-            "OU": "",
-            "ST": "VA",
-            "emailAddress": "",
-            "raw": "C=US, ST=VA, L=Herndon, O=Network Solutions L.L.C., CN=Network Solutions DV Server CA 2"
+          "issuer": {
+            "country": "US",
+            "common_name": "Network Solutions DV Server CA 2",
+            "locality": "Herndon",
+            "organization": "Network Solutions L.L.C.",
+            "organizational_unit": "",
+            "province": "VA",
+            "emailAddress": ""
           },
-          "subject_dn": {
-            "C": "",
-            "CN": "www.test.com",
-            "L": "",
-            "O": "",
-            "OU": "",
-            "ST": "",
+          "issuer_dn" : "C=US, ST=VA, L=Herndon, O=Network Solutions L.L.C., CN=Network Solutions DV Server CA 2",
+          "subject": {
+            "country": "",
+            "common_name": "www.test.com",
+            "locality": "",
+            "organization": "",
+            "organizational_unit": "",
+            "province": "",
             "businessCategory": "",
             "emailAddress": "",
             "jurisdictionCountry": "",
             "jurisdictionStateOrProvince": "",
             "postalCode": "",
-            "raw": "CN=www.test.com",
             "serialNumber": "",
             "street": ""
           },
+          "subject_dn": "CN=www.test.com",
           "tls_version": "TLSv1.2",
           "validity_end": "2022-01-24T23:59:59Z",
           "updated_at": null
