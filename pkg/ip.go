@@ -19,10 +19,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ips
 type IPService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewIPService(c *HTTPClient) *IPService {
+func NewIPService(c *Client) *IPService {
 	return &IPService{
 		Client: c,
 	}

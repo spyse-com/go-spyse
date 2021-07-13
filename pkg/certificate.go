@@ -19,10 +19,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/ssltls-certificates
 type CertificateService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewCertificateService(c *HTTPClient) *CertificateService {
+func NewCertificateService(c *Client) *CertificateService {
 	return &CertificateService{
 		Client: c,
 	}

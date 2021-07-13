@@ -19,10 +19,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/autonomous-systems
 type ASService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewASService(c *HTTPClient) *ASService {
+func NewASService(c *Client) *ASService {
 	return &ASService{
 		Client: c,
 	}

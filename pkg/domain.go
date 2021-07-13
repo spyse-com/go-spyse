@@ -19,10 +19,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/domains
 type DomainService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewDomainService(c *HTTPClient) *DomainService {
+func NewDomainService(c *Client) *DomainService {
 	return &DomainService{
 		Client: c,
 	}

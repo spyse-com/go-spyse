@@ -13,10 +13,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/account-1
 type AccountService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewAccountService(c *HTTPClient) *AccountService {
+func NewAccountService(c *Client) *AccountService {
 	return &AccountService{
 		Client: c,
 	}

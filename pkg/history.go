@@ -15,10 +15,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/history
 type HistoryService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewHistoryService(c *HTTPClient) *HistoryService {
+func NewHistoryService(c *Client) *HistoryService {
 	return &HistoryService{
 		Client: c,
 	}

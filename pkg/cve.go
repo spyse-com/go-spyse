@@ -20,10 +20,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/cves
 type CVEService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewCVEService(c *HTTPClient) *CVEService {
+func NewCVEService(c *Client) *CVEService {
 	return &CVEService{
 		Client: c,
 	}
