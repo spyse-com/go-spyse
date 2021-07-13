@@ -19,10 +19,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/emails
 type EmailService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewEmailService(c *HTTPClient) *EmailService {
+func NewEmailService(c *Client) *EmailService {
 	return &EmailService{
 		Client: c,
 	}

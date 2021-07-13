@@ -16,10 +16,10 @@ const (
 //
 // Spyse API docs: https://spyse-dev.readme.io/reference/bulk-search
 type BulkService struct {
-	Client *HTTPClient
+	Client *Client
 }
 
-func NewBulkService(c *HTTPClient) *BulkService {
+func NewBulkService(c *Client) *BulkService {
 	return &BulkService{
 		Client: c,
 	}

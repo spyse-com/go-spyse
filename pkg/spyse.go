@@ -14,42 +14,44 @@ const (
 	authorizationType       = "Bearer"
 	contentTypeHeaderName   = "Content-Type"
 	defaultContentType      = "application/json"
+	defaultBaseURL          = "https://api.spyse.com/v4/data/"
 )
 
-// client defines an interface for an http.Client implementation so that alternative
+// HTTPClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
-type client interface {
+type HTTPClient interface {
 	Do(request *http.Request) (response *http.Response, err error)
 }
 
-type HTTPClient struct {
+type Client struct {
 	// The Spyse API's uses accessToken-based authentication, which means that developers must pass their API accessToken.
 	accessToken string
 
 	// HTTP httpClient used to communicate with the API.
-	client
+	client HTTPClient
 	// Base URL for API requests.
 	baseURL *url.URL
 }
 
-// NewClient returns a new Spyse API httpClient.
+// NewClient returns a new Spyse API Client.
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods you must provide your API accessToken.
 // See https://spyse-dev.readme.io/reference/quick-start
-func NewClient(accessToken string, httpClient client) (*HTTPClient, error) {
+func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 
-	parsedBaseURL, err := url.Parse("https://api.spyse.com/v4/data/")
-	if err != nil {
+	c := &Client{
+		client:      httpClient,
+		accessToken: accessToken,
+	}
+
+	if err := c.SetBaseURL(defaultBaseURL); err != nil {
 		return nil, err
 	}
-	return &HTTPClient{
-		client:      httpClient,
-		baseURL:     parsedBaseURL,
-		accessToken: accessToken,
-	}, nil
+
+	return c, nil
 }
 
 func newRequestWithContext(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
@@ -57,7 +59,7 @@ func newRequestWithContext(ctx context.Context, method, url string, body io.Read
 }
 
 // SetBaseURL set base URL for API endpoints.
-func (c *HTTPClient) SetBaseURL(baseURL string) error {
+func (c *Client) SetBaseURL(baseURL string) error {
 	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
 	if !strings.HasSuffix(baseURL, "/") {
 		baseURL += "/"
@@ -73,7 +75,7 @@ func (c *HTTPClient) SetBaseURL(baseURL string) error {
 // NewRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
-func (c *HTTPClient) NewRequest(ctx context.Context, method, urlStr string, body io.Reader) (*http.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.Reader) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -97,7 +99,7 @@ func (c *HTTPClient) NewRequest(ctx context.Context, method, urlStr string, body
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to result,
 // or returned an error if an API error has occurred.
-func (c *HTTPClient) Do(req *http.Request, result interface{}) (*Response, error) {
+func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 	httpResp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err

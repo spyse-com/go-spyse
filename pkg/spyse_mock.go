@@ -12,7 +12,7 @@ type mock struct {
 	// TestMux is the HTTP request multiplexer used with the test server.
 	TestMux *http.ServeMux
 
-	Client *HTTPClient
+	Client *Client
 	// TestServer is a test HTTP server used to provide mock API responses.
 	TestServer *httptest.Server
 }
@@ -29,7 +29,7 @@ func setup() *mock {
 
 	parsedBaseURL, _ := url.Parse(apiBaseUrl)
 
-	c := &HTTPClient{
+	c := &Client{
 		client:  http.DefaultClient,
 		baseURL: parsedBaseURL,
 	}
