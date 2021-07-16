@@ -293,10 +293,8 @@ func (s *IPService) Params() IPParams { // nolint:funlen
 		AbusesReportsComment: IPParamAbusesReportsComment{
 			Name: "abuses_reports_comment",
 			Operator: IPAbusesReportsCommentOperators{
-				Equal:     OperatorEqual,
-				Contains:  OperatorContains,
-				Exists:    OperatorExists,
-				NotExists: OperatorNotExists,
+				Equal:    OperatorEqual,
+				Contains: OperatorContains,
 			},
 		},
 		AbusesConfidenceScore: IPParamAbusesConfidenceScore{
@@ -309,10 +307,8 @@ func (s *IPService) Params() IPParams { // nolint:funlen
 		AbusesCategoryName: IPParamAbusesCategoryName{
 			Name: "abuses_category_name",
 			Operator: IPAbusesCategoryNameOperators{
-				Equal:     OperatorEqual,
-				Contains:  OperatorContains,
-				Exists:    OperatorExists,
-				NotExists: OperatorNotExists,
+				Equal:    OperatorEqual,
+				Contains: OperatorContains,
 			},
 		},
 		AbusesIsWhitelistStrong: IPParamAbusesIsWhitelistStrong{
@@ -851,10 +847,8 @@ type IPParamAbusesReportsComment struct {
 }
 
 type IPAbusesReportsCommentOperators struct {
-	Equal     string
-	Contains  string
-	Exists    string
-	NotExists string
+	Equal    string
+	Contains string
 }
 
 type IPParamAbusesConfidenceScore struct {
@@ -873,10 +867,8 @@ type IPParamAbusesCategoryName struct {
 }
 
 type IPAbusesCategoryNameOperators struct {
-	Equal     string
-	Contains  string
-	Exists    string
-	NotExists string
+	Equal    string
+	Contains string
 }
 
 type IPParamAbusesIsWhitelistStrong struct {
