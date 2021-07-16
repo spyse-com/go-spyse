@@ -35,6 +35,10 @@ type Account struct {
 	DownloadsLimitRemaining int64 `json:"downloads_limit_remaining"`
 	// The number of maximum downloads you can make during the quota period.
 	DownloadsLimit int64 `json:"downloads_limit"`
+	// The flag shows whether scrolling is enabled for the client or not.
+	IsScrollSearchEnabled bool `json:"is_scroll_search_enabled"`
+	// The number of search parameters allowed.
+	SearchParamsLimit int `json:"search_params_limit"`
 }
 
 // Quota returns details about your account quotas.
