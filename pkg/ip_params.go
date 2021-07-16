@@ -1,6 +1,6 @@
 package spyse
 
-func (s *IPService) Params() IPParams {
+func (s *IPService) Params() IPParams { // nolint:funlen
 	return IPParams{
 		CIDR: IPParamCIDR{
 			Name: "cidr",
@@ -293,10 +293,8 @@ func (s *IPService) Params() IPParams {
 		AbusesReportsComment: IPParamAbusesReportsComment{
 			Name: "abuses_reports_comment",
 			Operator: IPAbusesReportsCommentOperators{
-				Equal:     OperatorEqual,
-				Contains:  OperatorContains,
-				Exists:    OperatorExists,
-				NotExists: OperatorNotExists,
+				Equal:    OperatorEqual,
+				Contains: OperatorContains,
 			},
 		},
 		AbusesConfidenceScore: IPParamAbusesConfidenceScore{
@@ -309,10 +307,16 @@ func (s *IPService) Params() IPParams {
 		AbusesCategoryName: IPParamAbusesCategoryName{
 			Name: "abuses_category_name",
 			Operator: IPAbusesCategoryNameOperators{
-				Equal:     OperatorEqual,
-				Contains:  OperatorContains,
-				Exists:    OperatorExists,
-				NotExists: OperatorNotExists,
+				Equal:    OperatorEqual,
+				Contains: OperatorContains,
+			},
+		},
+		AbusesReportedAt: IPParamAbusesReportedAt{
+			Name: "abuses_reported_at",
+			Operator: IPAbusesReportedAtOperators{
+				Equal: OperatorEqual,
+				Gte:   OperatorGreaterThanOrEqual,
+				Lte:   OperatorLessThanOrEqual,
 			},
 		},
 		AbusesIsWhitelistStrong: IPParamAbusesIsWhitelistStrong{
@@ -439,6 +443,8 @@ type IPParams struct {
 	AbusesConfidenceScore IPParamAbusesConfidenceScore
 	// AbusesCategoryName find IPs by abuse category name.
 	AbusesCategoryName IPParamAbusesCategoryName
+	// AbusesReportedAt find IPs by abuse reported at date.
+	AbusesReportedAt IPParamAbusesReportedAt
 	// AbusesIsWhitelistStrong find IPs, which contains benign crawlers verified by reverse-forward DNS
 	// resolution checks.
 	AbusesIsWhitelistStrong IPParamAbusesIsWhitelistStrong
@@ -851,10 +857,8 @@ type IPParamAbusesReportsComment struct {
 }
 
 type IPAbusesReportsCommentOperators struct {
-	Equal     string
-	Contains  string
-	Exists    string
-	NotExists string
+	Equal    string
+	Contains string
 }
 
 type IPParamAbusesConfidenceScore struct {
@@ -873,10 +877,19 @@ type IPParamAbusesCategoryName struct {
 }
 
 type IPAbusesCategoryNameOperators struct {
-	Equal     string
-	Contains  string
-	Exists    string
-	NotExists string
+	Equal    string
+	Contains string
+}
+
+type IPParamAbusesReportedAt struct {
+	Name     string
+	Operator IPAbusesReportedAtOperators
+}
+
+type IPAbusesReportedAtOperators struct {
+	Equal string
+	Gte   string
+	Lte   string
 }
 
 type IPParamAbusesIsWhitelistStrong struct {

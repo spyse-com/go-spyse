@@ -1,6 +1,6 @@
 package spyse
 
-func (s *DomainService) Params() DomainParams {
+func (s *DomainService) Params() DomainParams { // nolint:funlen
 	return DomainParams{
 		Name: DomainParamName{
 			Name: "name",

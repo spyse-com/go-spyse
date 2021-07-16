@@ -1,6 +1,6 @@
 package spyse
 
-func (s *CertificateService) Params() CertificateParams {
+func (s *CertificateService) Params() CertificateParams { // nolint:funlen
 	return CertificateParams{
 		IssuedForDomain: CertificateParamIssuedForDomain{
 			Name: "issued_for_domain",

@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/spyse-com/go-spyse/pkg"
 	"log"
+
+	spyse "github.com/spyse-com/go-spyse/pkg"
 )
 
 func main() {
@@ -28,4 +29,6 @@ func main() {
 	fmt.Println(fmt.Sprintf("API requests limit: %d", account.APIRequestsLimit))
 	fmt.Println(fmt.Sprintf("Downloads remaining: %d", account.DownloadsLimitRemaining))
 	fmt.Println(fmt.Sprintf("Downloads limit: %d", account.DownloadsLimit))
+	fmt.Println(fmt.Sprintf("Is scroll search enabled: %t", account.IsScrollSearchEnabled))
+	fmt.Println(fmt.Sprintf("Search params limit: %d", account.SearchParamsLimit))
 }
