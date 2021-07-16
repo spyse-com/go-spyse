@@ -1,6 +1,6 @@
 package spyse
 
-func (s *IPService) Params() IPParams {
+func (s *IPService) Params() IPParams { // nolint:funlen
 	return IPParams{
 		CIDR: IPParamCIDR{
 			Name: "cidr",

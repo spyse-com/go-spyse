@@ -22,12 +22,12 @@ func setup() *mock {
 	testMux := http.NewServeMux()
 	testServer := httptest.NewServer(testMux)
 
-	apiBaseUrl := testServer.URL
-	if !strings.HasSuffix(apiBaseUrl, "/") {
-		apiBaseUrl += "/"
+	apiBaseURL := testServer.URL
+	if !strings.HasSuffix(apiBaseURL, "/") {
+		apiBaseURL += "/"
 	}
 
-	parsedBaseURL, _ := url.Parse(apiBaseUrl)
+	parsedBaseURL, _ := url.Parse(apiBaseURL)
 
 	c := &Client{
 		client:  http.DefaultClient,
