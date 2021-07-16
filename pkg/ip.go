@@ -69,8 +69,21 @@ type Score struct {
 }
 
 type ShortAbusesInfo struct {
-	ReportsNum int `json:"reports_num"`
-	Score      int `json:"score"`
+	ReportsNum int      `json:"reports_num,omitempty"`
+	Score      int      `json:"score,omitempty"`
+	Reports    []Report `json:"reports,omitempty"`
+}
+
+type Report struct {
+	Categories []ReportCategory `json:"categories,omitempty"`
+	Comment    string           `json:"comment,omitempty"`
+	ReportedAt string           `json:"reportedAt,omitempty"`
+}
+
+type ReportCategory struct {
+	ID          int64  `json:"id,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 // ISPInfo - info about ISP, AS, organization

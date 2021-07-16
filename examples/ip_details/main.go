@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/spyse-com/go-spyse/pkg"
 	"log"
+
+	spyse "github.com/spyse-com/go-spyse/pkg"
 )
 
 func main() {
