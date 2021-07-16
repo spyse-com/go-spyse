@@ -311,6 +311,14 @@ func (s *IPService) Params() IPParams { // nolint:funlen
 				Contains: OperatorContains,
 			},
 		},
+		AbusesReportedAt: IPParamAbusesReportedAt{
+			Name: "abuses_reported_at",
+			Operator: IPAbusesReportedAtOperators{
+				Equal: OperatorEqual,
+				Gte:   OperatorGreaterThanOrEqual,
+				Lte:   OperatorLessThanOrEqual,
+			},
+		},
 		AbusesIsWhitelistStrong: IPParamAbusesIsWhitelistStrong{
 			Name: "abuses_is_whitelist_strong",
 			Operator: IPAbusesIsWhitelistStrongOperators{
@@ -435,6 +443,8 @@ type IPParams struct {
 	AbusesConfidenceScore IPParamAbusesConfidenceScore
 	// AbusesCategoryName find IPs by abuse category name.
 	AbusesCategoryName IPParamAbusesCategoryName
+	// AbusesReportedAt find IPs by abuse reported at date.
+	AbusesReportedAt IPParamAbusesReportedAt
 	// AbusesIsWhitelistStrong find IPs, which contains benign crawlers verified by reverse-forward DNS
 	// resolution checks.
 	AbusesIsWhitelistStrong IPParamAbusesIsWhitelistStrong
@@ -869,6 +879,17 @@ type IPParamAbusesCategoryName struct {
 type IPAbusesCategoryNameOperators struct {
 	Equal    string
 	Contains string
+}
+
+type IPParamAbusesReportedAt struct {
+	Name     string
+	Operator IPAbusesReportedAtOperators
+}
+
+type IPAbusesReportedAtOperators struct {
+	Equal string
+	Gte   string
+	Lte   string
 }
 
 type IPParamAbusesIsWhitelistStrong struct {
