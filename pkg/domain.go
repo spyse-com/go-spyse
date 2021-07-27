@@ -74,7 +74,7 @@ type CrunchBase struct {
 	RevenueRange     string   `json:"revenue_range"`
 	Status           string   `json:"status"`
 	CountryCode      string   `json:"country_code"`
-	StatusCode       string   `json:"state_code"`
+	StateCode        string   `json:"state_code"`
 	Region           string   `json:"region"`
 	City             string   `json:"city"`
 	PostalCode       string   `json:"postal_code"`
