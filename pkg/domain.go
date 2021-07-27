@@ -81,6 +81,7 @@ type CrunchBase struct {
 	CrunchBaseURL    string   `json:"cb_url"`
 	CreatedAt        string   `json:"created_at"`
 	UpdatedAt        string   `json:"updated_at"`
+	IsPrimary        bool     `json:"is_primary"`
 }
 
 type AlexaInfo struct {
