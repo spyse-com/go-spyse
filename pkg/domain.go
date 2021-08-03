@@ -74,13 +74,14 @@ type CrunchBase struct {
 	RevenueRange     string   `json:"revenue_range"`
 	Status           string   `json:"status"`
 	CountryCode      string   `json:"country_code"`
-	StatusCode       string   `json:"state_code"`
+	StateCode        string   `json:"state_code"`
 	Region           string   `json:"region"`
 	City             string   `json:"city"`
 	PostalCode       string   `json:"postal_code"`
 	CrunchBaseURL    string   `json:"cb_url"`
 	CreatedAt        string   `json:"created_at"`
 	UpdatedAt        string   `json:"updated_at"`
+	IsPrimary        bool     `json:"is_primary"`
 }
 
 type AlexaInfo struct {

@@ -224,11 +224,41 @@
           "score": 100
         },
         "cve_list": null,
-        "organization": {
-          "id": "02ee1f65-4fc3-4988-a929-b6ceeaa5d16d",
-          "name": "Text.com",
-          "image_url": "https://res.cloudinary.com/crunchbase-production/image/upload/bpe8ymkfkqerireojc1d"
-        },
+        "organizations":[
+          {
+            "crunchbase": {
+              "name": "Spyse",
+              "legal_name": "",
+              "homepage_url": "https://spyse.com/",
+              "description": "Spyse is a cybersecurity data provider that is presented by a cybersecurity search engine for technical. It provides users with access to any technical information that is usually used for penetration testing and cyber investigations.  The company implements a unique data gathering approach, using a distributed scanning system with more than 50 servers spread across the world for getting larger and more precise data.  Data storing has its own features as self-made analyzers that connect all the information found by scanners allowing exploring relationships between network elements as well as instant data accessing. Spyse was released at the beginning of the 2020 year.",
+              "short_description": "Spyse is a lead cybersecurity data provider.",
+              "address": "",
+              "categories": [
+                "Big Data",
+                "Cyber Security",
+                "Search Engine"
+              ],
+              "founded_on": "2018-07-09",
+              "closed_on": "",
+              "contact_email": "contact@spyse.com",
+              "image_url": "https://res.cloudinary.com/crunchbase-production/image/upload/ap1f3uwpfqdckplqfr29",
+              "num_employees_enum": "1-10",
+              "operating_status": "",
+              "phone_number": "",
+              "revenue_range": "",
+              "status": "operating",
+              "country_code": "",
+              "state_code": "",
+              "region": "",
+              "city": "",
+              "postal_code": "",
+              "cb_url": "https://www.crunchbase.com/organization/spyse",
+              "is_primary": true,
+              "created_at": "2020-05-19 15:42:33",
+              "updated_at": "2021-03-25 12:45:31"
+            }
+          }
+        ],
         "technology": [
           {
             "name": "Nginx",
