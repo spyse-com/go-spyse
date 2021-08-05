@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/spyse-com/go-spyse/pkg"
 	"log"
+
+	spyse "github.com/spyse-com/go-spyse/pkg"
 )
 
 func main() {
@@ -50,7 +51,7 @@ func printDomainInfo(details *spyse.Domain) {
 		fmt.Println("DNS A record:", dnsA)
 	}
 	fmt.Println("Website title:", details.Extract.Title)
-	fmt.Println("Alexa rank:", *details.AlexaInfo.Rank)
+	fmt.Println("Alexa rank:", details.AlexaInfo.Rank)
 	fmt.Println("Certificate subject org:", details.CertSummary.Subject.O)
 	fmt.Println("Certificate issuer org:", details.CertSummary.Issuer.O)
 	fmt.Println("Updated at:", details.UpdatedAt)
