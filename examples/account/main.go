@@ -29,6 +29,9 @@ func main() {
 	fmt.Println(fmt.Sprintf("API requests limit: %d", account.APIRequestsLimit))
 	fmt.Println(fmt.Sprintf("Downloads remaining: %d", account.DownloadsLimitRemaining))
 	fmt.Println(fmt.Sprintf("Downloads limit: %d", account.DownloadsLimit))
+	fmt.Println(fmt.Sprintf("On demand scan remaining: %d", account.OnDemandScansRemaining))
+	fmt.Println(fmt.Sprintf("On demand scan limit: %d", account.OnDemandScansLimit))
 	fmt.Println(fmt.Sprintf("Is scroll search enabled: %t", account.IsScrollSearchEnabled))
 	fmt.Println(fmt.Sprintf("Search params limit: %d", account.SearchParamsLimit))
+	fmt.Println(fmt.Sprintf("Requests rate limit per second: %d", account.RequestsRateLimit))
 }

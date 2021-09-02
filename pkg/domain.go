@@ -85,7 +85,7 @@ type CrunchBase struct {
 }
 
 type AlexaInfo struct {
-	Rank      *int   `json:"rank,omitempty"`
+	Rank      int    `json:"rank,omitempty"`
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
