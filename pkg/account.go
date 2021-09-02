@@ -35,10 +35,16 @@ type Account struct {
 	DownloadsLimitRemaining int64 `json:"downloads_limit_remaining"`
 	// The number of maximum downloads you can make during the quota period.
 	DownloadsLimit int64 `json:"downloads_limit"`
+	// The number of remaining on demand scans during the quota period.
+	OnDemandScansRemaining int64 `json:"on_demand_scans_remaining"`
+	// The number of maximum on demand scans you can make during the quota period.
+	OnDemandScansLimit int64 `json:"on_demand_scans_limit"`
 	// The flag shows whether scrolling is enabled for the client or not.
 	IsScrollSearchEnabled bool `json:"is_scroll_search_enabled"`
 	// The number of search parameters allowed.
 	SearchParamsLimit int `json:"search_params_limit"`
+	// The requests rate limit per second.
+	RequestsRateLimit int `json:"requests_rate_limit"`
 }
 
 // Quota returns details about your account quotas.
