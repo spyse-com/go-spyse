@@ -9,13 +9,14 @@ import (
 	"strings"
 )
 
-// Possible Apyse API error codes
+// Possible Spyse API error codes
 const (
 	CodeBadRequest               = "bad_request"
 	CodeValidationError          = "validation_error"
 	CodeRequestsLimitReached     = "requests_limit_reached"
 	CodeDownloadsLimitReached    = "downloads_limit_reached"
 	CodeSearchParamsLimitReached = "search_params_limit_reached"
+	CodeTooManyRequests          = "too_many_requests"
 	CodeUnauthorized             = "unauthorized"
 	CodeForbidden                = "forbidden"
 	CodeHTTPClientError          = "http_client_error"
