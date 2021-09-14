@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+
+	"golang.org/x/time/rate"
 )
 
 type mock struct {
@@ -30,8 +32,9 @@ func setup() *mock {
 	parsedBaseURL, _ := url.Parse(apiBaseURL)
 
 	c := &Client{
-		client:  http.DefaultClient,
-		baseURL: parsedBaseURL,
+		client:      http.DefaultClient,
+		baseURL:     parsedBaseURL,
+		RateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
 	}
 
 	return &mock{

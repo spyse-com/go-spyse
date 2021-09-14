@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	accessToken := flag.String("access_token", "1c98ecc7-4aae-4d6d-91e4-449f7e123fff", "API personal access token")
+	accessToken := flag.String("access_token", "", "API personal access token")
 	flag.Parse()
 
 	client, err := spyse.NewClient(*accessToken, nil)
