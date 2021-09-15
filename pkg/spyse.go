@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"golang.org/x/time/rate"
 )
 
 const (
@@ -15,6 +17,9 @@ const (
 	contentTypeHeaderName   = "Content-Type"
 	defaultContentType      = "application/json"
 	defaultBaseURL          = "https://api.spyse.com/v4/data/"
+
+	defaultRateLimit = 1
+	defaultBurst     = 1
 )
 
 // HTTPClient defines an interface for an http.Client implementation so that alternative
@@ -31,6 +36,8 @@ type Client struct {
 	client HTTPClient
 	// Base URL for API requests.
 	baseURL *url.URL
+	// A RateLimiter controls how frequently events are allowed to happen.
+	RateLimiter *rate.Limiter
 }
 
 // NewClient returns a new Spyse API Client.
@@ -45,11 +52,19 @@ func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 	c := &Client{
 		client:      httpClient,
 		accessToken: accessToken,
+		RateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
 	}
 
 	if err := c.SetBaseURL(defaultBaseURL); err != nil {
 		return nil, err
 	}
+
+	account, err := NewAccountService(c).Quota(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	c.RateLimiter.SetLimit(rate.Limit(account.RequestsRateLimit))
 
 	return c, nil
 }
@@ -96,10 +111,16 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 	return req, nil
 }
 
-// Do sends an API request and returns the API response.
+// Do send an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to result,
 // or returned an error if an API error has occurred.
 func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
+	// This is a blocking call. Honors the rate limit.
+	err := c.RateLimiter.Wait(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
 	httpResp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
