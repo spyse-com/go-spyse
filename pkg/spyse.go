@@ -38,6 +38,8 @@ type Client struct {
 	baseURL *url.URL
 	// A rateLimiter controls how frequently events are allowed to happen.
 	rateLimiter *rate.Limiter
+	// An account represents Spyse customer Account.
+	account *Account
 }
 
 // NewClient returns a new Spyse API Client.
@@ -55,16 +57,16 @@ func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 		rateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
 	}
 
-	if err := c.SetBaseURL(defaultBaseURL); err != nil {
-		return nil, err
-	}
-
-	account, err := NewAccountService(c).Quota(context.Background())
+	err := c.SetBaseURL(defaultBaseURL)
 	if err != nil {
 		return nil, err
 	}
 
-	c.rateLimiter.SetLimit(rate.Limit(account.RequestsRateLimit))
+	if c.account, err = NewAccountService(c).Quota(context.Background()); err != nil {
+		return nil, err
+	}
+
+	c.rateLimiter.SetLimit(rate.Limit(c.account.RequestsRateLimit))
 
 	return c, nil
 }
@@ -146,4 +148,9 @@ func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 
 	} // todo: if result == nil ?
 	return nil, err
+}
+
+// Account get customer account.
+func (c *Client) Account() *Account {
+	return c.account
 }
