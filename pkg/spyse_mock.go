@@ -34,7 +34,7 @@ func setup() *mock {
 	c := &Client{
 		client:      http.DefaultClient,
 		baseURL:     parsedBaseURL,
-		RateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
+		rateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
 	}
 
 	return &mock{

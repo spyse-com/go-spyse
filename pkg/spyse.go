@@ -36,8 +36,10 @@ type Client struct {
 	client HTTPClient
 	// Base URL for API requests.
 	baseURL *url.URL
-	// A RateLimiter controls how frequently events are allowed to happen.
-	RateLimiter *rate.Limiter
+	// A rateLimiter controls how frequently events are allowed to happen.
+	rateLimiter *rate.Limiter
+	// An account represents Spyse customer Account.
+	account *Account
 }
 
 // NewClient returns a new Spyse API Client.
@@ -52,19 +54,19 @@ func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 	c := &Client{
 		client:      httpClient,
 		accessToken: accessToken,
-		RateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
+		rateLimiter: rate.NewLimiter(rate.Every(defaultRateLimit), defaultBurst),
 	}
 
-	if err := c.SetBaseURL(defaultBaseURL); err != nil {
-		return nil, err
-	}
-
-	account, err := NewAccountService(c).Quota(context.Background())
+	err := c.SetBaseURL(defaultBaseURL)
 	if err != nil {
 		return nil, err
 	}
 
-	c.RateLimiter.SetLimit(rate.Limit(account.RequestsRateLimit))
+	if c.account, err = NewAccountService(c).Quota(context.Background()); err != nil {
+		return nil, err
+	}
+
+	c.rateLimiter.SetLimit(rate.Limit(c.account.RequestsRateLimit))
 
 	return c, nil
 }
@@ -116,7 +118,7 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body io.
 // or returned an error if an API error has occurred.
 func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 	// This is a blocking call. Honors the rate limit.
-	err := c.RateLimiter.Wait(context.Background())
+	err := c.rateLimiter.Wait(context.Background())
 	if err != nil {
 		return nil, err
 	}
@@ -146,4 +148,9 @@ func (c *Client) Do(req *http.Request, result interface{}) (*Response, error) {
 
 	} // todo: if result == nil ?
 	return nil, err
+}
+
+// Account get customer account.
+func (c *Client) Account() *Account {
+	return c.account
 }
