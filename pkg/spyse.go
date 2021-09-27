@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"golang.org/x/time/rate"
 )
@@ -18,8 +19,10 @@ const (
 	defaultContentType      = "application/json"
 	defaultBaseURL          = "https://api.spyse.com/v4/data/"
 
-	defaultRateLimit = 1
-	defaultBurst     = 1
+	defaultRateLimit         = 1
+	defaultBurst             = 1
+	defaultRateLimitTime     = 1 * time.Second
+	defaultRateLimitOvertime = 100 * time.Millisecond
 )
 
 // HTTPClient defines an interface for an http.Client implementation so that alternative
@@ -65,8 +68,9 @@ func NewClient(accessToken string, httpClient HTTPClient) (*Client, error) {
 	if c.account, err = NewAccountService(c).Quota(context.Background()); err != nil {
 		return nil, err
 	}
-
-	c.rateLimiter.SetLimit(rate.Limit(c.account.RequestsRateLimit))
+	time.Sleep(defaultRateLimitTime)
+	interval := defaultRateLimitTime/time.Duration(c.account.RequestsRateLimit) + defaultRateLimitOvertime
+	c.rateLimiter.SetLimit(rate.Every(interval))
 
 	return c, nil
 }
