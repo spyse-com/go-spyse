@@ -128,5 +128,3 @@ Distributed under the MIT License. See [LICENSE](./LICENSE.md) for more informat
 For any proposals and questions, please write at:
 
 - Email: [contact@spyse.com](contact@spyse.com)
-- Discord: [channel](https://discord.gg/XqaUP8c)
-- Twitter: [@scanpatch](https://twitter.com/scanpatch), [@MrMristov](https://twitter.com/MrMristov)
